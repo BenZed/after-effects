@@ -1,4 +1,4 @@
-#after-effects 
+#after-effects
 
 ##Why?
 * You're running a node.js server with After Effects installed, and you'd like to run render commands server-side.
@@ -20,28 +20,28 @@ Additionally, in order for results from After Effects to be readable, enable:
 ## Basic Usage
 
     var ae = require("after-effects");
-_Ta Daaaa_. The rest of this readme assumes ae is the after effects module. 
+_Ta Daaaa_. The rest of this readme assumes ae is the after effects module.
 
 To execute some code in After Effects:
-    
+
     ae.execute(() => alert("Hello!\nFrom node.js"));
 
 _What fun!_
 
-Provided that After Effects is installed in your Applications directory, and that you haven't renamed any of the folders or something, this will work. 
+Provided that After Effects is installed in your Applications directory, and that you haven't renamed any of the folders or something, this will work.
 
 ## Scripting Considerations
 The After Effects scripting environment is a completely different engine than node.js. Node.js has no access to the After Effects environment, and vice versa:
-    
+
     var foo = "bar";
-    
+
     //this will not work:
     ae.execute(() => alert(foo));
 
 If you'd like to send data from node.js to After Effects, you have to supply it as an argument along with the execute command:
 
     var foo = "bar";
-    
+
     ae.execute((foo_from_node) => alert(foo_from_node), foo)
 
 What you're really doing when you use the execute method is converting the supplied function to a string and then sending it to After Effects to parse. As a result, whatever data you supply has to be convertible to JSON.
@@ -64,7 +64,7 @@ Also see the [After Effects Scripting Guide] (http://blogs.adobe.com/aftereffect
 Rather than executing code, you can create scripts for use in After Effects:
 
      ae.create(() => {
-       
+
         let say_name =  item => alert(item.name);
         say_name(app.project.activeItem);
 
@@ -73,13 +73,13 @@ Rather than executing code, you can create scripts for use in After Effects:
 This script will be available for After Effects to use in it's scripts folder. The filename provided will be treated as a relative URI, so if you want to create a script in the Scripts/Startup folder:
 
      ae.create(() => {
-       
+
        alert("After Effects totally just started.");
 
      }, "Startup/SayHello.jsx");
 
 ## Options
-How to set options: 
+How to set options:
 
     ae.options({
         errorHandling: true,
@@ -91,9 +91,9 @@ How to set options:
     });
 These are also the defaults.
 
-###errorHandling
+### errorHandling
 With errorHandling enabled, errors thrown in After Effects will be suppressed and returned in the promise result:
-    
+
     ae.options({
         errorHandling: true,
     });
@@ -101,14 +101,12 @@ With errorHandling enabled, errors thrown in After Effects will be suppressed an
     ae.execute(() => {
         throw new Error("FooBar got FooBarred all the way to FooBar.")
     })
-    .then(
-        result => console.log(result), // empty
-        err => console.log(err) // contains error
-    );
+    .then(result => console.log(result)) // empty
+    .catch(err => console.log(err)); // contains error
 
 With errorHandling disabled, After Effects create a popup and prevent further code execution until it is dealt with.
 
-###es5Shim
+### es5Shim
 The javascript environment within After Effects is very dated, pre ES5. With es5Shim enabled, methods and functions available in es5 will be available:
 
     ae.options({
@@ -121,11 +119,9 @@ The javascript environment within After Effects is very dated, pre ES5. With es5
 
 Also notice that you can use ES6 syntax (as per your node version) when executing code. It's parsed through [babel](https://www.npmjs.com/package/babel) before being sent to After Effects.
 
-The es5Shim also provides console.log to the After Effects namespace, which is an alias of $.writeln (which is the default).
+The es5Shim also provides console.log to the After Effects namespace. 'console.log' inside After Effects will return logs to the node.js console when execution is complete, assuming you correctly have *Preferences -> General -> Allow Scripts to Write Files and Access Network* set inside After Effects.
 
-Note that console.log inside After Effects will log things to the ExtendScript console, and will not be visible to node.
-
-###aeQuery
+### aeQuery
 Provides a jQuery inspired selector object to work with items in After Effects inside of an object called 'get':
 
     ae.options({
@@ -141,26 +137,25 @@ Provides a jQuery inspired selector object to work with items in After Effects i
 
 See the API for the get object below.
 
-###minify
+### minify
 If true, the code will be minified before being sent to After Effects. Handy to disable for testing.
-    
+
     ae.options({
         minify: false //disable for testing, so the debug in ExtendScript is easier to read.
     });
 
-###checkDir
+### checkDir
 The directory to look for an After Effects installation.
-    
+
     ae.options({
         checkDir: "/SomeWhere/Else",
     });
 
-
-###appName
+### appName
 If set to 'null' the module looks for any folder w. So if you have CS6 and CC 2015 installed, it'll target CS6, which is a previous version.
 
 If you'd like to target a specific version:
-    
+
     ae.options({
         appName: "Adobe After Effects 2015",
     });
@@ -172,18 +167,18 @@ The **get** method (if enabled) is a jQuery inspired selector object to work wit
 
 It parses arguments of various types into three kinds of information in order to make selections.
 
-###Argument Types
+### Argument Types
 
-####Type
+#### Type
 Quite simply, type arguments narrow down what types of objects can be selected. Constructors for Compositions, Folder, Layers or Properties can be passed in as types.
 
-####Context
+#### Context
 Context arguments provide the scope of objects to select from. ItemCollections, LayerCollections, QueryResults or Arrays of instances of each can be passed in as contexts.
 
-####Selector
+#### Selector
 Selector arguments fine tune what the results of a selection. Strings, Regular Expressions, Numbers or Functions can be passed as selectors.
 
-###Making Selections
+### Making Selections
 
 These arguments can be passed in any order, and you can supply any number of them. Or none at all:
 
@@ -192,10 +187,9 @@ These arguments can be passed in any order, and you can supply any number of the
     var everything = get();
 
 To select every object of a specific type, throw in a type argument.
-    
+
     //CompItem is the constructor for composition objects.
     var allComps = get(CompItem);
-
 
 Adding a selector argument allows you to fine tune the selection even further:
 
@@ -210,7 +204,7 @@ Adding a selector argument allows you to fine tune the selection even further:
 
 Adding a context argument allows you to narrow the scope of your selection:
 
-    var solidsFolderContents = get(FootageItem, "Solids");
+    var solidsFolderContents = get(FootageItem, "Solids").children();
     var redLabelledItems = get(1, solidsFolderContents);
 
 Collections can also be used as contexts:
@@ -230,7 +224,7 @@ Providing multiple types can get wordy. You can provide arrays of pre-arranged t
     var allRedLayers = get(1, allLayers);
 
 Or you can use shortcuts on the get object;
-    
+
     var allRedLayers = get.layers(1);
     var itemsNamedFinal = get.items("Final");
     var compsNamedMain = get.comps("Main");
@@ -253,7 +247,7 @@ Functions can also be used as selectors:
     var sel = get.folders(fold => fold.numItems > 5)
                         .children(CompItem)
                         .children(lay => lay.inPoint < 0.5);
-###Working with Selections
+### Working with Selections
 
 Selections can be unboxed, to get an array of the elements inside:
 
@@ -265,7 +259,7 @@ There are also methods on a queryResult that can be used on the selections:
 
     //.each iterates through every item in the selection
     get.comps("Main").each(c => c.comment = "Approved");
-  
+
     //.set sets each item in a selection to the given value, if possible
     get.layers(1).set("locked", true);
 

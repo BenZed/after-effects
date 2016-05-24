@@ -1,3 +1,7 @@
+## [0.3.3]
+### Changes
+- Updated README to fix some errors, added github repo
+
 ## [0.3.2]
 ### Changes
 - Fixed more .get bugs
@@ -15,7 +19,7 @@
 ## [0.2.1]
 ### Changes
 - Using a javascript string escape plugin for sending code through applescript to escape errors from my previous hacky version
-- Rather than having a just the includes minified, minify is now a settable options. It's nice to 
+- Rather than having a just the includes minified, minify is now a settable options. It's nice to
 have the includes not minified for testing, as After Effects obviously doesn't support source maps.
 
 ## [0.1.8]

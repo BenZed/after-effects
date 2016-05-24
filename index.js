@@ -35,8 +35,8 @@ const CompressionOptions = {
 // DATA
 /*******************************************************************/
 
-var after_effects_app = null, 
-	includes = {}, 
+var after_effects_app = null,
+	includes = {},
 	options = {};
 
 /*******************************************************************/
@@ -98,7 +98,7 @@ function add_error_handling(code)
 		} catch (err) {
 
 		$.lastResult = err instanceof Error ? err : new Error(err);
-		
+
 		}
 		app.endSuppressDialogs(false);
 		`.split(`\t\t`).join(``);
@@ -124,7 +124,7 @@ function add_ae_query(code)
 
 	else if (options.minify && !is(includes.aeQuery_code_min))
 		includes.aeQuery_code_min = fs.readFileSync(path.join(__dirname,"/lib/includes/get.min.jsx"), 'utf8');
-	
+
 	let include = options.minify ? includes.aeQuery_code_min : includes.aeQuery_code;
 
 	return `${include};${code}`;
@@ -144,7 +144,7 @@ function escape_code_string( code ) {
 // HELPER
 /*******************************************************************/
 
-function get_execute_args(args) 
+function get_execute_args(args)
 {
 	var arr = Array.prototype.slice.call(args);
 	arr.shift();
@@ -218,7 +218,7 @@ function find_ae_mac()
 
 	if (ae_dir === null)
 		return;
-		
+
 	//Add code to check which version of After Effects is installed, if at all.
 	after_effects_app = {
 		exists: true,
@@ -351,7 +351,7 @@ module.exports = {
 
 		if (options.aeQuery)
 			code = add_ae_query(code);
-		
+
 		code = escape_code_string(code);
 
 		return after_effects_app.execute(code, result_path);

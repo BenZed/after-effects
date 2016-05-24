@@ -11,6 +11,10 @@
     "after",
     "effects"
   ],
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/BenGaumond/after-effects"
+  },
   "author": "Ben Gaumond",
   "license": "ISC",
   "dependencies": {
