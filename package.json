@@ -2,7 +2,7 @@
   "name": "after-effects",
   "version": "0.3.2",
   "description": "Send instructions to the After Effects scripting environment from node.js.",
-  "main": "after-effects.js",
+  "main": "index.js",
   "scripts": {
     "test": "node lib/test.js",
     "minify": "node lib/minify.js"
