@@ -1,0 +1,26 @@
+{
+  "name": "after-effects",
+  "version": "0.3.2",
+  "description": "Send instructions to the After Effects scripting environment from node.js.",
+  "main": "after-effects.js",
+  "scripts": {
+    "test": "node lib/test.js",
+    "minify": "node lib/minify.js"
+  },
+  "keywords": [
+    "after",
+    "effects"
+  ],
+  "author": "Ben Gaumond",
+  "license": "ISC",
+  "dependencies": {
+    "applescript": "^1.0.0",
+    "babel-core": "^6.4.5",
+    "babel-preset-es2015": "^6.3.13",
+    "is-explicit": "^1.0.1",
+    "jsesc": "^1.0.0",
+    "q": "^1.4.1",
+    "uglify-js": "^2.6.2",
+    "uuid": "^2.0.1"
+  }
+}
