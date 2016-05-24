@@ -1,0 +1,114 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'publish' ]
+2 info using npm@3.8.9
+3 info using node@v6.2.0
+4 verbose publish [ '.' ]
+5 silly cache add args [ '.', null ]
+6 verbose cache add spec .
+7 silly cache add parsed spec Result {
+7 silly cache add   raw: '.',
+7 silly cache add   scope: null,
+7 silly cache add   name: null,
+7 silly cache add   rawSpec: '.',
+7 silly cache add   spec: '/Volumes/GM Production 02 External/Projects/Git/after-effects',
+7 silly cache add   type: 'directory' }
+8 verbose addLocalDirectory /Users/gmproduction02/.npm/after-effects/0.3.2/package.tgz not in flight; packing
+9 verbose correctMkdir /Users/gmproduction02/.npm correctMkdir not in flight; initializing
+10 info lifecycle after-effects@0.3.2~prepublish: after-effects@0.3.2
+11 silly lifecycle after-effects@0.3.2~prepublish: no script for prepublish, continuing
+12 verbose tar pack [ '/Users/gmproduction02/.npm/after-effects/0.3.2/package.tgz',
+12 verbose tar pack   '/Volumes/GM Production 02 External/Projects/Git/after-effects' ]
+13 verbose tarball /Users/gmproduction02/.npm/after-effects/0.3.2/package.tgz
+14 verbose folder /Volumes/GM Production 02 External/Projects/Git/after-effects
+15 verbose addLocalTarball adding from inside cache /Users/gmproduction02/.npm/after-effects/0.3.2/package.tgz
+16 verbose correctMkdir /Users/gmproduction02/.npm correctMkdir not in flight; initializing
+17 silly cache afterAdd after-effects@0.3.2
+18 verbose afterAdd /Users/gmproduction02/.npm/after-effects/0.3.2/package/package.json not in flight; writing
+19 verbose correctMkdir /Users/gmproduction02/.npm correctMkdir not in flight; initializing
+20 verbose afterAdd /Users/gmproduction02/.npm/after-effects/0.3.2/package/package.json written
+21 silly publish { name: 'after-effects',
+21 silly publish   version: '0.3.2',
+21 silly publish   description: 'Send instructions to the After Effects scripting environment from node.js.',
+21 silly publish   main: 'index.js',
+21 silly publish   scripts: { test: 'node lib/test.js', minify: 'node lib/minify.js' },
+21 silly publish   keywords: [ 'after', 'effects' ],
+21 silly publish   repository:
+21 silly publish    { type: 'git',
+21 silly publish      url: 'git+https://github.com/BenGaumond/after-effects.git' },
+21 silly publish   author: { name: 'Ben Gaumond' },
+21 silly publish   license: 'ISC',
+21 silly publish   dependencies:
+21 silly publish    { applescript: '^1.0.0',
+21 silly publish      'babel-core': '^6.4.5',
+21 silly publish      'babel-preset-es2015': '^6.3.13',
+21 silly publish      'is-explicit': '^1.0.1',
+21 silly publish      jsesc: '^1.0.0',
+21 silly publish      q: '^1.4.1',
+21 silly publish      'uglify-js': '^2.6.2',
+21 silly publish      uuid: '^2.0.1' },
+21 silly publish   readme: '#after-effects\n\n##Why?\n* You\'re running a node.js server with After Effects installed, and you\'d like to run render commands server-side.\n\n* You use node.js locally, and prefer not to run AE scripts with the ExtendScript toolkit.\n\n* You\'d like to run and create AE scripts using ES6 syntax.\n\n* Because it angers your religious mother, and you want to be rebellious.\n\n## Requirements\nObviously, you need After Effects installed on your machine. As of this writing (Feburary 25, 2016), this module only works in an OSX environment.\n\nAdditionally, in order for results from After Effects to be readable, enable:\n\n*Preferences -> General -> Allow Scripts to Write Files and Access Network*\n\n\n## Basic Usage\n\n    var ae = require("after-effects");\n_Ta Daaaa_. The rest of this readme assumes ae is the after effects module.\n\nTo execute some code in After Effects:\n\n    ae.execute(() => alert("Hello!\\nFrom node.js"));\n\n_What fun!_\n\nProvided that After Effects is installed in your Applications directory, and that you haven\'t renamed any of the folders or something, this will work.\n\n## Scripting Considerations\nThe After Effects scripting environment is a completely different engine than node.js. Node.js has no access to the After Effects environment, and vice versa:\n\n    var foo = "bar";\n\n    //this will not work:\n    ae.execute(() => alert(foo));\n\nIf you\'d like to send data from node.js to After Effects, you have to supply it as an argument along with the execute command:\n\n    var foo = "bar";\n\n    ae.execute((foo_from_node) => alert(foo_from_node), foo)\n\nWhat you\'re really doing when you use the execute method is converting the supplied function to a string and then sending it to After Effects to parse. As a result, whatever data you supply has to be convertible to JSON.\n\nYou can also retrieve data from After Effects with the same restriction:\n\n    //returns a promise:\n    ae.execute(() => {\n        if (app.project.file)\n            return app.project.file.name;\n        else\n            return "(project not yet saved)";\n    })\n    .then(project_name => console.log(project_name));\n\nAlso see the [After Effects Scripting Guide] (http://blogs.adobe.com/aftereffects/files/2012/06/After-Effects-CS6-Scripting-Guide.pdf) for information about the After Effects Javascript API.\n\n## Creating Scripts\n\nRather than executing code, you can create scripts for use in After Effects:\n\n     ae.create(() => {\n\n        let say_name =  item => alert(item.name);\n        say_name(app.project.activeItem);\n\n     }, "SayName.jsx");\n\nThis script will be available for After Effects to use in it\'s scripts folder. The filename provided will be treated as a relative URI, so if you want to create a script in the Scripts/Startup folder:\n\n     ae.create(() => {\n\n       alert("After Effects totally just started.");\n\n     }, "Startup/SayHello.jsx");\n\n## Options\nHow to set options:\n\n    ae.options({\n        errorHandling: true,\n        es5Shim: true,\n        aeQuery: true,\n        minify: true,\n        checkDir: "/Applications",\n        appName: null,\n    });\nThese are also the defaults.\n\n### errorHandling\nWith errorHandling enabled, errors thrown in After Effects will be suppressed and returned in the promise result:\n\n    ae.options({\n        errorHandling: true,\n    });\n\n    ae.execute(() => {\n        throw new Error("FooBar got FooBarred all the way to FooBar.")\n    })\n    .then(result => console.log(result)) // empty\n    .catch(err => console.log(err)); // contains error\n\nWith errorHandling disabled, After Effects create a popup and prevent further code execution until it is dealt with.\n\n### es5Shim\nThe javascript environment within After Effects is very dated, pre ES5. With es5Shim enabled, methods and functions available in es5 will be available:\n\n    ae.options({\n        es5Shim: true,\n    });\n\n    ae.execute(() => {\n        [1,2,3,4].forEach(i => alert(i)); // wont throw an error\n    });\n\nAlso notice that you can use ES6 syntax (as per your node version) when executing code. It\'s parsed through [babel](https://www.npmjs.com/package/babel) before being sent to After Effects.\n\nThe es5Shim also provides console.log to the After Effects namespace. \'console.log\' inside After Effects will return logs to the node.js console when execution is complete, assuming you correctly have *Preferences -> General -> Allow Scripts to Write Files and Access Network* set inside After Effects.\n\n### aeQuery\nProvides a jQuery inspired selector object to work with items in After Effects inside of an object called \'get\':\n\n    ae.options({\n        aeQuery: true,\n    });\n\n    ae.execute(() => {\n        //finds every composition with \'final\' in the name\n        //and alerts it\n        get.comps(/Final/)\n           .each(comp => alert(comp.name));\n    });\n\nSee the API for the get object below.\n\n### minify\nIf true, the code will be minified before being sent to After Effects. Handy to disable for testing.\n\n    ae.options({\n        minify: false //disable for testing, so the debug in ExtendScript is easier to read.\n    });\n\n### checkDir\nThe directory to look for an After Effects installation.\n\n    ae.options({\n        checkDir: "/SomeWhere/Else",\n    });\n\n### appName\nIf set to \'null\' the module looks for any folder w. So if you have CS6 and CC 2015 installed, it\'ll target CS6, which is a previous version.\n\nIf you\'d like to target a specific version:\n\n    ae.options({\n        appName: "Adobe After Effects 2015",\n    });\n    ae.execute(() => alert("AHA!\\nExecuted in CC 2015"));\n\n## \'get\' API\n\nThe **get** method (if enabled) is a jQuery inspired selector object to work with items in After Effects.\n\nIt parses arguments of various types into three kinds of information in order to make selections.\n\n### Argument Types\n\n#### Type\nQuite simply, type arguments narrow down what types of objects can be selected. Constructors for Compositions, Folder, Layers or Properties can be passed in as types.\n\n#### Context\nContext arguments provide the scope of objects to select from. ItemCollections, LayerCollections, QueryResults or Arrays of instances of each can be passed in as contexts.\n\n#### Selector\nSelector arguments fine tune what the results of a selection. Strings, Regular Expressions, Numbers or Functions can be passed as selectors.\n\n### Making Selections\n\nThese arguments can be passed in any order, and you can supply any number of them. Or none at all:\n\n    //selects every single item, layer and\n    //and property in the current project.\n    var everything = get();\n\nTo select every object of a specific type, throw in a type argument.\n\n    //CompItem is the constructor for composition objects.\n    var allComps = get(CompItem);\n\nAdding a selector argument allows you to fine tune the selection even further:\n\n    //String selectors match item names\n    var mainComp = get(CompItem, "Main");\n\n    //Regular expressions also work on names\n    var allCopies = get(FootageItem, /Copy$/);\n\n    //Number selectors match item labels\n    var pinkLayers = get(AVLayer, 4);\n\nAdding a context argument allows you to narrow the scope of your selection:\n\n    var solidsFolderContents = get(FootageItem, "Solids").children();\n    var redLabelledItems = get(1, solidsFolderContents);\n\nCollections can also be used as contexts:\n\n    var activeComp = app.project.activeItem;\n    var activeCompLayers = get(AVLayer, activeComp.layers);\n\nAs you\'ve seen, not providing a type will result in EVERY type of object being selected. If you only want a couple of types, you can provide mulitple type arguments:\n\n    var allVectorLayers = get(TextLayer, ShapeLayer);\n    var allItems = get(CompItem, FolderItem, FootageItem);\n\nProviding multiple types can get wordy. You can provide arrays of pre-arranged type definitions:\n\n    var allLayerTypes = [CameraLayer, LightLayer, TextLayer, AVLayer, ShapeLayer];\n    var allLayers = get(allLayerTypes);\n    var allRedLayers = get(1, allLayers);\n\nOr you can use shortcuts on the get object;\n\n    var allRedLayers = get.layers(1);\n    var itemsNamedFinal = get.items("Final");\n    var compsNamedMain = get.comps("Main");\n\nThe query results have chain-able commands, as well:\n\n    var redFoldersNamedAssets = get("Assets").folders().filter(1);\n\nThe children() method returns all objects contained within a selection.\n\n    var textLayersInCompsNamedMain = get.comps("Main").children(TextLayer);\n\nFunctions can also be used as selectors:\n\n    var guideLayers = get.layers(lay => lay.guideLayer);\n    var longRedComps = get.comps(c => c.duration > 60 && c.label == 1);\n\n    //all layers in compositions in folders with more than five items\n    //that have inpoints close to the beginning of the timeline.\n    var sel = get.folders(fold => fold.numItems > 5)\n                        .children(CompItem)\n                        .children(lay => lay.inPoint < 0.5);\n### Working with Selections\n\nSelections can be unboxed, to get an array of the elements inside:\n\n    var gotComps = get.comps("Main");\n    var comps = gotComps.selection(); //all elements\n    var comp = gotComps.selection(0);//first element in selection\n\nThere are also methods on a queryResult that can be used on the selections:\n\n    //.each iterates through every item in the selection\n    get.comps("Main").each(c => c.comment = "Approved");\n\n    //.set sets each item in a selection to the given value, if possible\n    get.layers(1).set("locked", true);\n\n    //.set can also take a function that returns a value\n    get(CompItem, AVLayer)\n        .set("width", i => i.width * 2)\n        .set("height", i => i.height * 2);\n\n    //.call looks for a matching method name, and calls it with any provided arguments\n    get.comps().call("setProxyToNone");\n',
+21 silly publish   readmeFilename: 'README.md',
+21 silly publish   gitHead: 'b8cec176bab3d2b567a0b985f281f3b2bc2393a4',
+21 silly publish   bugs: { url: 'https://github.com/BenGaumond/after-effects/issues' },
+21 silly publish   homepage: 'https://github.com/BenGaumond/after-effects#readme',
+21 silly publish   _id: 'after-effects@0.3.2',
+21 silly publish   _shasum: '316db7102316e2cdac55c44038db80dd014509b8',
+21 silly publish   _from: '.' }
+22 verbose getPublishConfig undefined
+23 silly mapToRegistry name after-effects
+24 silly mapToRegistry using default registry
+25 silly mapToRegistry registry https://registry.npmjs.org/
+26 silly mapToRegistry data Result {
+26 silly mapToRegistry   raw: 'after-effects',
+26 silly mapToRegistry   scope: null,
+26 silly mapToRegistry   name: 'after-effects',
+26 silly mapToRegistry   rawSpec: '',
+26 silly mapToRegistry   spec: 'latest',
+26 silly mapToRegistry   type: 'tag' }
+27 silly mapToRegistry uri https://registry.npmjs.org/after-effects
+28 verbose publish registryBase https://registry.npmjs.org/
+29 silly publish uploading /Users/gmproduction02/.npm/after-effects/0.3.2/package.tgz
+30 verbose request uri https://registry.npmjs.org/after-effects
+31 verbose request sending authorization for write operation
+32 info attempt registry request try #1 at 9:36:17 AM
+33 verbose request using bearer token for auth
+34 verbose request id 46ff62960f182afd
+35 http request PUT https://registry.npmjs.org/after-effects
+36 http 403 https://registry.npmjs.org/after-effects
+37 verbose headers { 'content-type': 'application/json',
+37 verbose headers   'cache-control': 'max-age=300',
+37 verbose headers   'content-length': '95',
+37 verbose headers   'accept-ranges': 'bytes',
+37 verbose headers   date: 'Tue, 24 May 2016 16:30:12 GMT',
+37 verbose headers   via: '1.1 varnish',
+37 verbose headers   connection: 'keep-alive',
+37 verbose headers   'x-served-by': 'cache-dfw1829-DFW',
+37 verbose headers   'x-cache': 'MISS',
+37 verbose headers   'x-cache-hits': '0',
+37 verbose headers   'x-timer': 'S1464107411.093205,VS0,VE1364',
+37 verbose headers   vary: 'Accept-Encoding' }
+38 verbose request invalidating /Users/gmproduction02/.npm/registry.npmjs.org/after-effects on PUT
+39 error publish Failed PUT 403
+40 verbose stack Error: "You cannot publish over the previously published version 0.3.2." : after-effects
+40 verbose stack     at makeError (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:264:12)
+40 verbose stack     at CachingRegistryClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:252:14)
+40 verbose stack     at Request._callback (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:172:14)
+40 verbose stack     at Request.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/request.js:200:22)
+40 verbose stack     at emitTwo (events.js:106:13)
+40 verbose stack     at Request.emit (events.js:191:7)
+40 verbose stack     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1067:10)
+40 verbose stack     at emitOne (events.js:101:20)
+40 verbose stack     at Request.emit (events.js:188:7)
+40 verbose stack     at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:988:12)
+41 verbose statusCode 403
+42 verbose pkgid after-effects
+43 verbose cwd /Volumes/GM Production 02 External/Projects/Git/after-effects
+44 error Darwin 14.5.0
+45 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "publish"
+46 error node v6.2.0
+47 error npm  v3.8.9
+48 error code E403
+49 error "You cannot publish over the previously published version 0.3.2." : after-effects
+50 error If you need help, you may report this error at:
+50 error     <https://github.com/npm/npm/issues>
+51 verbose exit [ 1, true ]
