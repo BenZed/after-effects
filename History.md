@@ -1,3 +1,9 @@
+## [0.4.0]
+### Changes
+- Big structural changes, top-down rewrite, with a bunch of improvments detailed in the README. Now works on windows, as well as mac.
+- Slight API differences
+- Removed several dependencies, changed default options
+
 ## [0.3.3]
 ### Changes
 - Updated README to fix some errors, added github repo
