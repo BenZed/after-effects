@@ -136,7 +136,6 @@ function get_results(command) {
 /*******************************************************************/
 
 function execute(/*args*/) {
-  platform.greenlight();
 
   let command = prepare_command(arguments);
   ensure_executable(command)
