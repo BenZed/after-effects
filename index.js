@@ -21,10 +21,10 @@ var options = {
 	errorHandling: true,
 	minify: false,
   program: null,
-	includes : [
-		'./lib/includes/console.js',
-		'./lib/includes/es5-shim.js',
-		'./lib/includes/get.js'
+  includes : [
+		path.join(__dirname, '/lib/includes/console.js'),
+		path.join(__dirname, '/lib/includes/es5-shim.js'),
+		path.join(__dirname, '/lib/includes/get.js')
 	],
 }
 
