@@ -125,8 +125,8 @@ function get_results(command) {
     command.result_file = null;
     return err;
   }
-  if (is(results.log, Array))
-    results.log.forEach(log => console.log(log));
+  if (is(results.logs, Array))
+    results.logs.forEach(log => console.log(log));
 
   return results;
 }
