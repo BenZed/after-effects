@@ -1,3 +1,8 @@
+## [0.4.3]
+### Changes
+- Fixed a es5-shim.js bug that prevented babel from working properly
+- Added error message for trying to execute applescript on After Effects when app not installed
+
 ## [0.4.0]
 ### Changes
 - Big structural changes, top-down rewrite, with a bunch of improvments detailed in the README. Now works on windows, as well as mac.
