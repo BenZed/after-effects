@@ -1,3 +1,11 @@
+## [0.4.6]
+### Changes
+- Fixed babelyification bugs, added better babel -> es3 transforms
+
+## [0.4.5]
+### Changes
+- Fixed a bug where console.logs called inside After Effects weren't being shown in node
+
 ## [0.4.3]
 ### Changes
 - Fixed a es5-shim.js bug that prevented babel from working properly
