@@ -1,3 +1,7 @@
+## [0.4.7]
+### Changes
+- Various community pull requests.
+
 ## [0.4.6]
 ### Changes
 - Fixed babelyification bugs, added better babel -> es3 transforms
@@ -13,7 +17,7 @@
 
 ## [0.4.0]
 ### Changes
-- Big structural changes, top-down rewrite, with a bunch of improvments detailed in the README. Now works on windows, as well as mac.
+- Big structural changes, top-down rewrite, with a bunch of improvements detailed in the README. Now works on windows, as well as mac.
 - Slight API differences
 - Removed several dependencies, changed default options
 

@@ -84,7 +84,7 @@ ___
 ## Options
 The ae object has a couple of options:
 
-	ae.options.error_handling = true;
+	ae.options.errorHandling = true;
 	ae.options.minify = false;
     ae.options.program = null;
 	ae.options.includes = [
