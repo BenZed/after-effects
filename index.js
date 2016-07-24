@@ -38,7 +38,7 @@ var platform = (() => {
    return win = require('./lib/platform-win');
 
  } else
-   throw Errors.UnsupportedPlatform;
+   throw new Error(Errors.UnsupportedPlatform);
 
 })();
 
@@ -47,10 +47,10 @@ var platform = (() => {
 /*******************************************************************/
 
 const Errors = {
-  UnsupportedPlatform : new Error("Cannot run After Effects commands in an environment it can't be installed in."),
-  BadExecuteArgument : new Error('execute expects a function or AfterEffectsCommand instance.'),
-  ApplicationNotFound : new Error("Cannot execute command, After Effects could not be found in your application directory. Install After Effects in your application directory, or provide a path in program option."),
-  NoResult : new Error("Could not get results from After Effects. Ensure that Preferences > General > Allow Scripts to Write Files and Access Network is enabled."),
+  UnsupportedPlatform : "Cannot run After Effects commands in an environment it can't be installed in.",
+  BadExecuteArgument : 'execute expects a function or AfterEffectsCommand instance.',
+  ApplicationNotFound : "Cannot execute command, After Effects could not be found in your application directory. Install After Effects in your application directory, or provide a path in program option.",
+  NoResult : "Could not get results from After Effects. Ensure that Preferences > General > Allow Scripts to Write Files and Access Network is enabled.",
 }
 
 class AfterEffectsError extends Error {
@@ -77,7 +77,7 @@ function prepare_command(input_args) {
     command = new Command(funcOrCommand);
 
   if (!command)
-    throw Errors.BadExecuteArgument;
+    throw new Error(Errors.BadExecuteArgument);
 
   command.arguments = args;
   command.result_file = null;
@@ -88,7 +88,7 @@ function prepare_command(input_args) {
 
 function ensure_executable(command) {
   if (!platform.canExecute(command))
-    throw Errors.ApplicationNotFound;
+    throw new Error(Errors.ApplicationNotFound);
 }
 
 function prepare_script_path(scriptPath, command) {
@@ -173,7 +173,7 @@ function executeSync(/*args*/) {
     return;
 
   if (is(results, Error))
-    throw Errors.NoResult;
+    throw new Error(Errors.NoResult);
 
   if (is(results.returned, Error))
     throw new AfterEffectsError(results.returned.message);
