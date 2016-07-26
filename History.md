@@ -1,10 +1,15 @@
+## [0.4.8]
+### Changes
+- Made a fix in osx that ensured the package couldn't execute if options.program was set to Adobe After Effects 15.3
+- Prevented crash in osx that was introduced by a pull request if After Effects couldn't be found
+
 ## [0.4.7]
 ### Changes
 - Various community pull requests.
 
 ## [0.4.6]
 ### Changes
-- Fixed babelyification bugs, added better babel -> es3 transforms
+- Fixed babelification bugs, added better babel -> es3 transforms
 
 ## [0.4.5]
 ### Changes

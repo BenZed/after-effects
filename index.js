@@ -1,23 +1,21 @@
-"use strict";
+'use strict';
 
 /*******************************************************************/
 // DEPENDENCIES
 /*******************************************************************/
 
-const os = 		    require('os'),
-      fs =        require('fs'),
-      path =      require('path'),
-      is =        require('is-explicit'),
-      uuid = 		  require('uuid'),
-      Command =   require('./lib/command');
-
-var mac, win;
+const os = 		  require('os'),
+      fs =      require('fs'),
+      path =    require('path'),
+      is =      require('is-explicit'),
+      uuid = 		require('uuid'),
+      Command = require('./lib/command');
 
 /*******************************************************************/
 // SETUP
 /*******************************************************************/
 
-var options = {
+const options = {
 	errorHandling: true,
 	minify: false,
   program: null,
@@ -25,17 +23,17 @@ var options = {
 		path.join(__dirname, '/lib/includes/console.js'),
 		path.join(__dirname, '/lib/includes/es5-shim.js'),
 		path.join(__dirname, '/lib/includes/get.js')
-	],
-}
+	]
+};
 
-var platform = (() => {
+const platform = (() => {
 
  let platform_name = os.platform();
- if (platform_name === "darwin") //mac
-   return mac = require('./lib/platform-mac');
+ if (platform_name === 'darwin') //mac
+   return require('./lib/platform-mac');
 
- else if (platform_name.includes("win")) { //windows 32 or 64
-   return win = require('./lib/platform-win');
+ else if (platform_name.includes('win')) { //windows 32 or 64
+   return require('./lib/platform-win');
 
  } else
    throw new Error(Errors.UnsupportedPlatform);
@@ -47,16 +45,16 @@ var platform = (() => {
 /*******************************************************************/
 
 const Errors = {
-  UnsupportedPlatform : "Cannot run After Effects commands in an environment it can't be installed in.",
+  UnsupportedPlatform : 'Cannot run After Effects commands in an environment it can\'t be installed in.',
   BadExecuteArgument : 'execute expects a function or AfterEffectsCommand instance.',
-  ApplicationNotFound : "Cannot execute command, After Effects could not be found in your application directory. Install After Effects in your application directory, or provide a path in program option.",
-  NoResult : "Could not get results from After Effects. Ensure that Preferences > General > Allow Scripts to Write Files and Access Network is enabled.",
-}
+  ApplicationNotFound : 'Cannot execute command, After Effects could not be found in your application directory. Install After Effects in your application directory, or provide a path in program option.',
+  NoResult : 'Could not get results from After Effects. Ensure that Preferences > General > Allow Scripts to Write Files and Access Network is enabled.'
+};
 
 class AfterEffectsError extends Error {
   constructor(message) {
     super(message);
-    this.name = "AfterEffectsError";
+    this.name = 'AfterEffectsError';
   }
 }
 
@@ -95,8 +93,8 @@ function prepare_script_path(scriptPath, command) {
   if (!path.isAbsolute(scriptPath))
     scriptPath = path.resolve(platform.scriptsDir(command), scriptPath);
 
-  if (path.extname(scriptPath) === "")
-    scriptPath += ".jsx";
+  if (path.extname(scriptPath) === '')
+    scriptPath += '.jsx';
 
   return scriptPath;
 }
@@ -109,14 +107,14 @@ function get_results(command) {
   if (!is(command.result_file, String))
     return;
 
-  var results = {};
+  let results = {};
 
   try {
     //For macs, the javascript function inside After Effects that points toward
     //the operating systems temp folder is slightly different than os.tmpdir,
     //having a 'TemporaryItems' subfolder.
-    var sub_temp_dir = platform === mac ? "TemporaryItems" : "";
-    var jsfile = path.join(os.tmpdir(), sub_temp_dir, command.result_file);
+    let sub_temp_dir = os.platform() === 'darwin' ? 'TemporaryItems' : '';
+    let jsfile = path.join(os.tmpdir(), sub_temp_dir, command.result_file);
     results = require(jsfile);
     fs.unlink(jsfile);
     command.result_file = null;
@@ -126,7 +124,7 @@ function get_results(command) {
     return err;
   }
   if (is(results.logs, Array))
-    results.logs.forEach(log => console.log(log));
+    results.logs.forEach(log => process.stdout(log));
 
   return results;
 }
@@ -138,14 +136,14 @@ function get_results(command) {
 function execute(/*args*/) {
 
   let command = prepare_command(arguments);
-  ensure_executable(command)
+  ensure_executable(command);
   create_result_file_name(command);
 
   return platform.execute(command)
   //Handle Results
   .then(() => new Promise((resolve,reject) => {
 
-    var results = get_results(command);
+    let results = get_results(command);
     if (results == null)
       resolve();
 
@@ -153,7 +151,7 @@ function execute(/*args*/) {
       reject(Errors.NoResult);
 
     if (is(results.returned, Error))
-      reject(results.returned);
+      reject(new AfterEffectsError(results.returned.message));
     else
       resolve(results.returned);
   }));
@@ -162,11 +160,11 @@ function execute(/*args*/) {
 function executeSync(/*args*/) {
 
   let command = prepare_command(arguments);
-  ensure_executable(command)
+  ensure_executable(command);
   create_result_file_name(command);
 
   platform.executeSync(command);
-  var results = get_results(command);
+  let results = get_results(command);
 
   //Handle results
   if (results == null)
@@ -195,10 +193,10 @@ function create(funcOrCommand, scriptPath) {
       if (err)
         reject(err);
       else
-        console.log(`Script written to ${scriptPath}`);
+        process.stdout(`Script written to ${scriptPath}`);
         resolve(scriptPath);
     });
-  })
+  });
 }
 
 function createSync(funcOrCommand, scriptPath) {
@@ -211,7 +209,7 @@ function createSync(funcOrCommand, scriptPath) {
 
   fs.writeFileSync(scriptPath, command.toString(), 'utf-8');
 
-  console.log(`Script written to ${scriptPath}`);
+  process.stdout(`Script written to ${scriptPath}`);
   return scriptPath;
 }
 
@@ -221,19 +219,18 @@ function createSync(funcOrCommand, scriptPath) {
 
 module.exports = function() {
   return executeSync.apply(null, arguments);
-}
+};
 
 module.exports.execute = execute;
 module.exports.executeSync = executeSync;
 module.exports.create = create;
+module.exports.createSync = createSync;
 module.exports.options = options;
 module.exports.Command = Command;
 
 Object.defineProperty(module.exports, 'scriptsDir', {
-  get: () => {
-    //Pass in dummy command so we have access to the currently set program option, if one exists
-    return platform.scriptsDir({options: { program: module.exports.options.program }});
-  }
+  //Pass in dummy command so we have access to the currently set program option, if one exists
+  get: () => platform.scriptsDir({ options: { program: module.exports.options.program }})
 });
 Object.preventExtensions(module.exports);
 Object.preventExtensions(module.exports.options);
