@@ -124,7 +124,7 @@ function get_results(command) {
     return err;
   }
   if (is(results.logs, Array))
-    results.logs.forEach(log => process.stdout(log));
+    results.logs.forEach(log => process.stdout.write(log));
 
   return results;
 }
@@ -193,7 +193,7 @@ function create(funcOrCommand, scriptPath) {
       if (err)
         reject(err);
       else
-        process.stdout(`Script written to ${scriptPath}`);
+        process.stdout.write(`Script written to ${scriptPath}`);
         resolve(scriptPath);
     });
   });
@@ -209,7 +209,7 @@ function createSync(funcOrCommand, scriptPath) {
 
   fs.writeFileSync(scriptPath, command.toString(), 'utf-8');
 
-  process.stdout(`Script written to ${scriptPath}`);
+  process.stdout.write(`Script written to ${scriptPath}`);
   return scriptPath;
 }
 
