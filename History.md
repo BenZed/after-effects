@@ -1,3 +1,7 @@
+## [0.4.9]
+### Changes
+- Fixed a silly bug that I missed last commit.
+
 ## [0.4.8]
 ### Changes
 - Made a fix in osx that ensured the package couldn't execute if options.program was set to Adobe After Effects 15.3
