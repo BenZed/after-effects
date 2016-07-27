@@ -9,6 +9,7 @@
             "error",
             "unix"
         ],
+        "no-native-reassign": 2,
         "quotes": [
             "error",
             "single"
