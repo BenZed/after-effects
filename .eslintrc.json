@@ -4,19 +4,27 @@
         "node": true
     },
     "extends": "eslint:recommended",
+    "parserOptions": {
+        "sourceType": "module"
+    },
     "rules": {
+        "no-var": "error",
+        "no-extra-parens": "warn",
+        "indent": [
+            "error",
+            2
+        ],
         "linebreak-style": [
             "error",
             "unix"
         ],
-        "no-native-reassign": 2,
         "quotes": [
             "error",
             "single"
         ],
         "semi": [
             "error",
-            "always"
+            "never"
         ]
     }
 }

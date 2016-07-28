@@ -2,7 +2,7 @@
   "name": "after-effects",
   "version": "0.4.9",
   "description": "Send instructions to the After Effects scripting environment from node.js.",
-  "main": "index.js",
+  "main": "/lib",
   "scripts": {
   },
   "keywords": [
