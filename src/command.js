@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-import is from 'is-explicit'
 import uglify from 'uglify-js'
 import babel from 'babel-core'
 import { execute, executeSync } from './index'

@@ -1,7 +1,7 @@
+import './globals'
 import os from 'os'
 import fs from 'fs'
 import path from 'path'
-import is from 'is-explicit'
 import uuid from 'uuid'
 import Command from './command'
 
