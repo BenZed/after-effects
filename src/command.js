@@ -20,10 +20,20 @@ const BabelOptions = {
   sourceRoot: __dirname
 }
 
-
+//These compression options are to satisfy After Effect's old javascript engine.
 const CompressionOptions = {
   conditionals: false
 }
+
+/******************************************************************************/
+// Helpers
+/******************************************************************************/
+
+function babelify(){}
+
+function minify(){}
+
+function stringify(){}
 
 /******************************************************************************/
 // Exports
@@ -32,6 +42,24 @@ const CompressionOptions = {
 export default class Command {
 
   constructor(func, options) {
+    this.func = func
+    this.options = options
+    this.compile()
+  }
+
+  compile() {
+
+  }
+
+  toString() {
+    return stringify.call(this)
+  }
+
+  execute(...args) {
+
+  }
+
+  executeSync(...args) {
 
   }
 
