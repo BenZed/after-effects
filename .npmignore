@@ -1,3 +1,11 @@
 .DS_Store
 node_modules
 develop.js
+src
+
+.babelrc
+
+.eslintignore
+.eslint.json
+.gitignore
+.languagebabel

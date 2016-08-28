@@ -2,8 +2,9 @@
   "name": "after-effects",
   "version": "0.4.9",
   "description": "Send instructions to the After Effects scripting environment from node.js.",
-  "main": "index.js",
+  "main": "/lib",
   "scripts": {
+    "test": "mocha --compilers js:babel-register"
   },
   "keywords": [
     "after",
@@ -25,5 +26,10 @@
     "jsesc": "^1.2.0",
     "uglify-js": "^2.6.2",
     "uuid": "^2.0.1"
+  },
+  "devDependencies": {
+    "babel-preset-es2015-node": "^6.1.1",
+    "chai": "^3.5.0",
+    "mocha": "^3.0.2"
   }
 }
