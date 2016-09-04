@@ -7,7 +7,7 @@
 const os = 		  require('os'),
       fs =      require('fs'),
       path =    require('path'),
-      is =      require('is-explicit'),
+      is =      require('is-explicit').default,
       uuid = 		require('uuid'),
       Command = require('./lib/command');
 
