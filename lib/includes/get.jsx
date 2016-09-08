@@ -1,6 +1,7 @@
 /* globals $ AVLayer:false, ShapeLayer:false, TextLayer:false, CameraLayer:false, LightLayer:false,
 PropertyGroup:false, Property:false, FolderItem:false, CompItem:false, FootageItem:false, LayerCollection:false,
 ItemCollection:false, app:false*/
+/* eslint-disable no-var */
 
 
 if ($.global.is === undefined) {

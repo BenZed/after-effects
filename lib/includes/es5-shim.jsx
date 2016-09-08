@@ -4,6 +4,7 @@
 */
 
 /* globals $ */
+/* eslint-disable no-var */
 
 /****************************************************************/
 // Array Shims
@@ -243,7 +244,7 @@ Array.prototype.lastIndexOf = Array.prototype.lastIndexOf ? Array.prototype.last
     if (n != n) {
       n = 0;
     }
-    else if (n != 0 && n != (1 / 0) && n != -(1 / 0)) {
+    else if (n != 0 && n != (1 / 0) && n != -(1 / 0)) { //eslint-disable-line no-extra-parens
       n = (n > 0 || -1) * Math.floor(Math.abs(n));
     }
   }
@@ -492,7 +493,7 @@ if (!Object.keys) {
   Object.keys = (function() {
     'use strict';
     var hasOwnProperty = Object.prototype.hasOwnProperty,
-        hasDontEnumBug = !({ toString: null }).propertyIsEnumerable('toString'),
+        hasDontEnumBug = !({ toString: null }).propertyIsEnumerable('toString'), //eslint-disable-line no-extra-parens
         dontEnums = [
           'toString',
           'toLocaleString',
@@ -657,7 +658,7 @@ if (!Object.getOwnPropertyDescriptor || getOwnPropertyDescriptorFallback) {
 
   /* eslint-disable no-proto */
   Object.getOwnPropertyDescriptor = function getOwnPropertyDescriptor(object, property) {
-    if ((typeof object !== 'object' && typeof object !== 'function') || object === null) {
+    if (typeof object !== 'object' && typeof object !== 'function' || object === null) {
       throw new TypeError(ERR_NON_OBJECT + object);
     }
 
@@ -916,10 +917,10 @@ if (!Object.defineProperty || definePropertyFallback) {
   var ERR_ACCESSORS_NOT_SUPPORTED = 'getters & setters can not be defined on this javascript engine';
 
   Object.defineProperty = function defineProperty(object, property, descriptor) {
-    if ((typeof object !== 'object' && typeof object !== 'function') || object === null) {
+    if (typeof object !== 'object' && typeof object !== 'function' || object === null) {
       throw new TypeError(ERR_NON_OBJECT_TARGET + object);
     }
-    if ((typeof descriptor !== 'object' && typeof descriptor !== 'function') || descriptor === null) {
+    if (typeof descriptor !== 'object' && typeof descriptor !== 'function' || descriptor === null) {
       throw new TypeError(ERR_NON_OBJECT_DESCRIPTOR + descriptor);
     }
     // make a valiant attempt to use the real defineProperty
@@ -967,7 +968,7 @@ if (!Object.defineProperty || definePropertyFallback) {
         object[property] = descriptor.value;
       }
     } else {
-      if (!supportsAccessors && (('get' in descriptor) || ('set' in descriptor))) {
+      if (!supportsAccessors && ('get' in descriptor || 'set' in descriptor)) {
         throw new TypeError(ERR_ACCESSORS_NOT_SUPPORTED);
       }
       // If we got that far then getters and setters can be defined !!

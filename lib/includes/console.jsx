@@ -5,6 +5,7 @@
 /****************************************************************/
 
 /* globals $ */
+/* eslint-disable no-var */
 
 if (typeof console != 'object') {
 	$.global.console = (function(){
