@@ -2,36 +2,32 @@
 PropertyGroup:false, Property:false, FolderItem:false, CompItem:false, FootageItem:false, LayerCollection:false,
 ItemCollection:false, app:false*/
 
+
 if ($.global.is === undefined) {
 	$.global.is = (function() {
-		return function is(value) {
-
-			const ZeroArgumentsError = 'is() expects at least one value and optionally a variable number of type arguments';
-			const IncorrectTypeError = 'if a type is supplied, it is expected to be a non-anonymous Function definition.';
-			const IncorrectTypesError = 'types, if supplied, are expected to be non-anonymous Function definitions.';
-
-			var value_type = typeof value, i = 0;
+		return function is(value)
+		{
+			var i, type, types = Array.prototype.slice.call(arguments, 1);
 
 			//Validate value argument
-			if (arguments.length == 0)
-				throw new Error(ZeroArgumentsError);
-
-			//Type not supplied
-			if (arguments.length < 2) {
-				if (value_type === 'number' && isNaN(value))
-					return false;
-
-				return value !== undefined && value !== null;
-			}
+			if (arguments.length === 0)
+				throw new Error('is expects at least one value and optionally a variable number of type arguments');
 
 			//Validate type arguments
-			for (i = 1; i < arguments.length; i++)
-				if (typeof type !== 'function' || type.name.length === 0)
-					throw new Error(arguments.length == 1 ? IncorrectTypeError : IncorrectTypesError);
+			for (i = 0; i < types.length; i++) {
+				type = types[i];
+				if (typeof type !== 'function')
+					throw new Error('types, if supplied, are expected to be of type \'function\'');
+			}
+
+			//Type not supplied
+			if (types.length === 0)
+				return value !== undefined && value !== null && !isNaN(value);
 
 			//Test types
-			for (i = 1; i < arguments.length; i++) {
-				var type = arguments[i];
+			const value_type = typeof value;
+			for (i = 0; i < types.length; i++) {
+				type = types[i];
 
 				if (value_type === 'string' && type === String)
 					return true;
@@ -54,6 +50,7 @@ if ($.global.is === undefined) {
 		};
 	})();
 }
+
 
 if ($.global.get === undefined) {
 	$.global.get = (function(is){

@@ -9,6 +9,9 @@
             "error",
             "unix"
         ],
+        "no-var": "error",
+        "prefer-const": "error",
+        "no-extra-parens": "error",
         "no-native-reassign": 2,
         "quotes": [
             "error",

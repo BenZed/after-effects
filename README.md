@@ -88,9 +88,9 @@ The ae object has a couple of options:
 	ae.options.minify = false;
     ae.options.program = null;
 	ae.options.includes = [
-		'./node_modules/after-effects/lib/includes/console.js',
-		'./node_modules/after-effects/lib/includes/es5-shim.js',
-		'./node_modules/after-effects/lib/includes/get.js'
+		'./node_modules/after-effects/lib/includes/console.jsx',
+		'./node_modules/after-effects/lib/includes/es5-shim.jsx',
+		'./node_modules/after-effects/lib/includes/get.jsx'
 	]
 
 This would be how you set defaults.

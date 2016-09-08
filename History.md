@@ -1,3 +1,9 @@
+## [0.4.11]
+### Changes
+- Fixed an old problem with the get.js include
+- Includes are now .jsx files, instead of .js files, because they are ES3 and After-Effects compliant and don't need to be transformed.
+- Fixed a problem that stripped away babel-added functions, preventing usage of the class keyword.
+
 ## [0.4.9]
 ### Changes
 - Fixed a silly bug that I missed last commit.

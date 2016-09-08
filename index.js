@@ -19,16 +19,16 @@ const options = {
 	errorHandling: true,
 	minify: false,
   program: null,
-  includes : [
-		path.join(__dirname, '/lib/includes/console.js'),
-		path.join(__dirname, '/lib/includes/es5-shim.js'),
-		path.join(__dirname, '/lib/includes/get.js')
+  includes: [
+		path.join(__dirname, '/lib/includes/console.jsx'),
+		path.join(__dirname, '/lib/includes/es5-shim.jsx'),
+		path.join(__dirname, '/lib/includes/get.jsx')
 	]
 };
 
 const platform = (() => {
 
- let platform_name = os.platform();
+ const platform_name = os.platform();
  if (platform_name === 'darwin') //mac
    return require('./lib/platform-mac');
 
@@ -65,8 +65,8 @@ class AfterEffectsError extends Error {
 function prepare_command(input_args) {
 
   let command = null;
-  let args = Array.prototype.slice.call(input_args);
-  let funcOrCommand = args.shift();
+  const args = Array.prototype.slice.call(input_args);
+  const funcOrCommand = args.shift();
 
   if (is(funcOrCommand, Command))
     command = funcOrCommand;
@@ -113,8 +113,8 @@ function get_results(command) {
     //For macs, the javascript function inside After Effects that points toward
     //the operating systems temp folder is slightly different than os.tmpdir,
     //having a 'TemporaryItems' subfolder.
-    let sub_temp_dir = os.platform() === 'darwin' ? 'TemporaryItems' : '';
-    let jsfile = path.join(os.tmpdir(), sub_temp_dir, command.result_file);
+    const sub_temp_dir = os.platform() === 'darwin' ? 'TemporaryItems' : '';
+    const jsfile = path.join(os.tmpdir(), sub_temp_dir, command.result_file);
     results = require(jsfile);
     fs.unlink(jsfile);
     command.result_file = null;
@@ -135,7 +135,7 @@ function get_results(command) {
 
 function execute(/*args*/) {
 
-  let command = prepare_command(arguments);
+  const command = prepare_command(arguments);
   ensure_executable(command);
   create_result_file_name(command);
 
@@ -143,7 +143,7 @@ function execute(/*args*/) {
   //Handle Results
   .then(() => new Promise((resolve,reject) => {
 
-    let results = get_results(command);
+    const results = get_results(command);
     if (results == null)
       resolve();
 
@@ -159,12 +159,12 @@ function execute(/*args*/) {
 
 function executeSync(/*args*/) {
 
-  let command = prepare_command(arguments);
+  const command = prepare_command(arguments);
   ensure_executable(command);
   create_result_file_name(command);
 
   platform.executeSync(command);
-  let results = get_results(command);
+  const results = get_results(command);
 
   //Handle results
   if (results == null)
@@ -182,10 +182,10 @@ function executeSync(/*args*/) {
 function create(funcOrCommand, scriptPath) {
 
   //prepare command args shouldn't include scriptPath
-  let args = Array.prototype.slice.call(arguments, 2);
+  const args = Array.prototype.slice.call(arguments, 2);
   args.unshift(funcOrCommand);
 
-  let command = prepare_command(args);
+  const command = prepare_command(args);
   scriptPath = prepare_script_path(scriptPath, command);
 
   return new Promise((resolve, reject) => {
@@ -201,10 +201,10 @@ function create(funcOrCommand, scriptPath) {
 
 function createSync(funcOrCommand, scriptPath) {
   //prepare command args shouldn't include scriptPath
-  let args = Array.prototype.slice.call(arguments, 2);
+  const args = Array.prototype.slice.call(arguments, 2);
   args.unshift(funcOrCommand);
 
-  let command = prepare_command(args);
+  const command = prepare_command(args);
   scriptPath = prepare_script_path(scriptPath, command);
 
   fs.writeFileSync(scriptPath, command.toString(), 'utf-8');
