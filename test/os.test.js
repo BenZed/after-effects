@@ -5,5 +5,6 @@ import { assert } from 'chai'
 describe('operating system', ()=> {
 
   it('determins if AfterEffects can be installed on this system')
+  //and so on
 
 })

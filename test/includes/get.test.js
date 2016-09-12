@@ -2,9 +2,9 @@ import { assert } from 'chai'
 
 /* globals describe it */
 
-describe('AfterEffects', ()=> {
+describe('get selector', ()=> {
 
-  it('sends commands to AfterEffects')
+  it('Finds compositions')
   //and so on
 
 })

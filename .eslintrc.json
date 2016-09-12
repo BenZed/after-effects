@@ -7,11 +7,9 @@
     "parserOptions": {
         "sourceType": "module"
     },
-    "globals": {
-      "is": false
-    },
     "rules": {
         "no-var": "error",
+        "prefer-const": "error",
         "no-extra-parens": "warn",
         "indent": [
             "error",
