@@ -4,6 +4,7 @@ import babel from 'babel-core'
 import is from 'is-explicit'
 import isPath from 'is-valid-path'
 import settings from './settings'
+import platform from './platform'
 import { execute, executeSync } from './index'
 
 /******************************************************************************/
@@ -78,57 +79,106 @@ function tryParseJson(data) {
   return json
 }
 
+function babelify(str) {
+  return babel.transform(str, BabelOptions).code
+}
+
+function babelify_files(includes) {
+  if (!is(includes, Array)) return []
+
+  return includes.map(file => {
+
+    try {
+
+      fs.accessSync(path.resolve(file), fs.R_OK)
+
+    } catch (err) {
+
+      throw new Error(`Cannot include file at path ${file}, non-existent or can't be read.`)
+
+    }
+
+    let code = fs.readFileSync(file, { encoding: 'utf-8' })
+
+    //Do not babelify files if they are .jsx. See the README about After Effects .jsx file
+    //format and why it shouldn't be transformed
+    if (path.extname(file) !== '.jsx')
+      code = babelify(code)
+
+    return code
+
+  }).filter(inc => is(inc,String))
+}
+
 /******************************************************************************/
 // Command Class
 /******************************************************************************/
 
 //Symbols for "private" keys
-const compile = Symbol('compile'),
-  code        = Symbol('code'),
-  source      = Symbol('source'),
-  options     = Symbol('options')
+const _compile = Symbol('compile'),
+  _code        = Symbol('code'),
+  _source      = Symbol('source'),
+  _options     = Symbol('options')
 
 export default class Command {
 
   constructor(source, options) {
 
-    this[source] = parseSource(source)
-    this[compile](options)
+    this[_source] = parseSource(source)
+    this[_compile](options)
 
   }
 
   /**** "PRIVATE" API ****/
 
-  [compile](options) {
-    //if this[source] is an object, it means that parse input returned the results
+  [_compile](options) {
+    //if this[_source] is an object, it means that parse input returned the results
     //of a json file that represents a serialized command Object so we'll create
     //the command internals from that instead
-    if (is(this[source], Object)) {
-      const json = this[source]
-      this[code] = json.code
-      this[source] = json.source
-      this[options] = json.options
+    if (is(this[_source], Object)) {
+      const json = this[_source]
+      this[_code] = json.code
+      this[_source] = json.source
+      this[_options] = json.options
+
+      //if a json url was provided with options, they'll override the options
+      //stored in the json
+      if (is(options, Object))
+        this.setOptions(options)
 
       return
     }
 
+    //Apply Options
     if (!is(options, Object))
       options = {}
 
-    if (!options.includes)
-      options.includes = [...settings.includes]
+    this[_options] = Object.assign({}, settings, options)
 
-    this[options] = options
+    //Babelify Code
+    const babelified = babelify(this[_source])
+
+    //Isolate babelified code to just the function expression (remove any babelified includes and the final ;)
+    const funcStart = babelified.indexOf('(function')
+    const code = babelified.substring(funcStart, babelified.length - 1)
+
+    //Isolate funtions created by babel (without the "use strict" cause AE doesn't use it)
+    const babel_includes = babelified.substring('0', funcStart).replace('"use strict";\n', '')
+
+    //Babelify each of the files in the include options, and extract the code from them
+    const includes = babelify_files(this[_options].includes)
+
+    this[_code] = [...includes, babel_includes, code]
   }
 
   /**** MAIN API ****/
 
   get source() {
-    return this[source]
+    return this[_source]
   }
 
   get options() {
-    const options = Object.assign({}, this[options])
+    const options = Object.assign({}, this[_options])
     return Object.freeze(options)
   }
 
@@ -140,7 +190,7 @@ export default class Command {
     let needs_recompile = false
 
     const new_includes = value.includes ? value.includes.sort() : []
-    const curr_includes = (this[options].includes || settings.includes).sort()
+    const curr_includes = (this[_options].includes || settings.includes).sort()
 
     if (new_includes.length !== curr_includes.length)
       needs_recompile = true
@@ -153,9 +203,9 @@ export default class Command {
     }
 
     if (needs_recompile)
-      this[compile](value)
+      this[_compile](value)
     else
-      this[options] = Object.freeze(value)
+      this[_options] = value
 
   }
 

@@ -84,7 +84,7 @@ Array.prototype.forEach = Array.prototype.forEach || function(callback, thisArg)
   while (key < length) {
     if (key in obj) {
       const value = obj[key]
-      
+
       callback.call(thisArg, value, key, obj)
     }
     key++
