@@ -17,15 +17,15 @@
   "author": "Ben Gaumond",
   "license": "ISC",
   "dependencies": {
-    "babel-core": "^6.4.5",
+    "babel-core": "^6.14.0",
     "babel-plugin-transform-es3-member-expression-literals": "^6.8.0",
     "babel-plugin-transform-es3-property-literals": "^6.8.0",
     "babel-plugin-transform-es5-property-mutators": "^6.8.0",
     "babel-preset-es2015": "^6.3.13",
     "is-explicit": "^1.1.0",
-    "jsesc": "^1.2.0",
     "uuid": "^2.0.1",
-    "is-valid-path": "^0.1.1"
+    "is-valid-path": "^0.1.1",
+    "jsesc": "^2.2.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
