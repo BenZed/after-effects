@@ -1,3 +1,7 @@
+## [0.4.12]
+### Changes
+- Deprecation warning in new Node.js installs Fixed
+
 ## [0.4.11]
 ### Changes
 - Fixed an old problem with the get.js include
