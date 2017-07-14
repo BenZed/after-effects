@@ -1,12 +1,12 @@
 
-export function execute() {
+export function execute () {
 
 }
 
-export function executeSync() {
+export function executeSync () {
 
 }
 
-export function scriptsDir() {
+export function scriptsDir () {
 
 }

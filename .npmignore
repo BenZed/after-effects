@@ -1,9 +1,8 @@
 .DS_Store
 node_modules
 develop.js
-src
-
-.babelrc
+lib
+test
 
 .eslintignore
 .eslint.json

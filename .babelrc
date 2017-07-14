@@ -1,4 +1,10 @@
-
 {
-	"presets": ["es2015"]
+  "presets": [
+    ["env", {
+      "targets": {
+        "node": "current"
+      }
+    }]
+  ],
+  "plugins": [ "transform-function-bind", "transform-object-rest-spread" ]
 }

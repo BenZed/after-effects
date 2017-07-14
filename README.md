@@ -17,14 +17,30 @@ Additionally, in your After Effects preferences, enable:
 *Preferences -> General -> Allow Scripts to Write Files and Access Network*
 
 ___
+
+# Version 1
+
+Version 1 contains **breaking** changes to the API that embrace a more functional style.
+
+___
+
 ## Basic Usage
 
-    var ae = require("after-effects");
-_Ta Daaaa_. The rest of this readme assumes ae is the after effects module.
+```js
+
+import ae from 'after-effects'
+
+
+```
+
+_Ta Daaaa_. The rest of this **README** assumes ae is the after effects module.
 
 To execute some code in After Effects:
+```js
 
-    ae(() => alert("Hello!\nFrom node.js"));
+ae(() => alert('Hello!\nFrom node.js'))
+```
+
 
 _What fun!_
 
@@ -33,29 +49,35 @@ ___
 ## Scripting Considerations
 The After Effects scripting environment is a completely different engine than node.js. Node.js has no access to the After Effects environment, and vice versa:
 
-    var foo = "bar";
+```js
+const foo = 'bar'
 
-    //this will not work:
-    ae(() => alert(foo));
+//this will not work:
+ae(() => alert(foo));
+```
 
 If you'd like to send data from node.js to After Effects, you have to supply it as an argument along with the execute command:
 
-    var foo = "bar";
+```js
+const foo = "bar";
 
-    ae((foo_from_node) => alert(foo_from_node), foo);
+ae((foo_from_node) => alert(foo_from_node), foo)
+```
 
 What you're really doing when you use the execute method is converting the supplied function to a string and then sending it to After Effects to parse. As a result, whatever data you supply has to be convertible to JSON.
 
 You can also retrieve data from After Effects with the same restriction:
 
-    var project_name = ae(() => {
-        if (app.project.file)
-            return app.project.file.name;
-        else
-            return "(project not yet saved)";
-    });
+```js
+const projectName = ae(() => {
+  if (app.project.file)
+    return app.project.file.name;
+  else
+    return "(project not yet saved)";
+})
 
-    console.log(project_name);
+console.log(projectName);
+```
 
 Also see the [After Effects Scripting Guide](http://blogs.adobe.com/aftereffects/files/2012/06/After-Effects-CS6-Scripting-Guide.pdf) for information about the After Effects Javascript API.
 ___
@@ -63,30 +85,33 @@ ___
 
 The default shortcut function will run the code synchronously and block NodeJS until complete, however, you can also send code to After Effects asynchronously:
 
-    //execute sends code to after effects, returning a Promise
-    ae.execute(() => {
-      return app.project.activeItem.name;
-    })
-    .then(name => console.log(name))
-    .catch(err => console.log('No Active Item'));
+```js
+//execute sends code to after effects, returning a Promise
+ae.execute(() => {
+  return app.project.activeItem.name;
+})
+.then(name => console.log(name))
+.catch(err => console.log('No Active Item'));
+```
 
 The default shortcut function actually is just a shortcut to ae.executeSync:
 
-    function save_current_project() {
-      app.project.save();
-    }
+```js
+function save_current_project() {
+  app.project.save();
+}
 
-    ae.executeSync(save_current_project);
-    //is the same as
-    ae(save_current_project);
-
+ae.executeSync(save_current_project);
+//is the same as
+ae(save_current_project);
+```
 ___
 ## Options
 The ae object has a couple of options:
 
 	ae.options.errorHandling = true;
 	ae.options.minify = false;
-    ae.options.program = null;
+  ae.options.program = null;
 	ae.options.includes = [
 		'./node_modules/after-effects/lib/includes/console.js',
 		'./node_modules/after-effects/lib/includes/es5-shim.js',
