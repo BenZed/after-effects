@@ -1,3 +1,7 @@
+## [0.4.13]
+### Changes
+- Accidentally deleted index.js without realizing it last publish. Whoops.
+
 ## [0.4.12]
 ### Changes
 - Deprecation warning in new Node.js installs Fixed
