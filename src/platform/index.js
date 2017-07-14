@@ -1,5 +1,5 @@
-import os from './os'
-import ERRORS from '../errors'
+import os from 'os'
+import ERRORS from '../util/errors'
 
 const platformName = os.platform()
 const platform = platformName === 'darwin'
