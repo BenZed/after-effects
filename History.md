@@ -1,3 +1,7 @@
+## [0.4.14]
+### Changes
+- Missed a Deprecation warning.
+
 ## [0.4.13]
 ### Changes
 - Accidentally deleted index.js without realizing it last publish. Whoops.
