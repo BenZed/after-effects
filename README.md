@@ -18,12 +18,68 @@ Additionally, in your After Effects preferences, enable:
 
 ___
 
-# Version 1
+# Migration to Version 1
 
-Version 1 contains **breaking** changes to the API that embrace a more functional style.
+Version 1 contains **breaking** changes to the API that embrace a more functional, encapsulated style.
+
+## Option changes
+
+Options are no longer set on ae.options or along with commands. In order to change
+options, you instance a new AfterEffects runner:
+
+```js
+
+import { AfterEffects } from 'after-effects'
+
+// Any command run from this instance will be sent to the After Effects render engine,
+// rather than the regular UI mode.
+
+const ae = new AfterEffects({ renderEngine: true })
+
+```
+
+The default export is not just an instance of the AfterEffects runner with
+default options:
+
+```js
+
+import ae, { AfterEffects } from 'after-effects'
+
+// ae and aeCopy will behave identically
+const aeCopy = new AfterEffects()
+
+// Sending commands to ae2017 will ensure they run in CC 2017
+const ae2017 = new AfterEffects({
+  program: '/Applications/Adobe After Effects CC 2017'
+})
+
+// Sending commands to ae2017 will ensure they run in CS6
+const aeCS6 = new AfterEffects({
+  program: '/Applications/Adobe After Effects CS6'
+})
+
+```
+
+Get query selector removed, separated into it's own package. If you'd like to
+use it, you now have to
+
+`` npm install after-effects-get ``
+
+```js
+
+import path from 'path'
+import { AfterEffects } from 'after-effects'
+import get from 'after-effects-get'
+
+
+
+const ae = new AfterEffects({
+  includes: [ get ]
+})
+
+```
 
 ___
-
 ## Basic Usage
 
 ```js
@@ -40,7 +96,6 @@ To execute some code in After Effects:
 
 ae(() => alert('Hello!\nFrom node.js'))
 ```
-
 
 _What fun!_
 
