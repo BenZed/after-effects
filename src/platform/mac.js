@@ -207,17 +207,8 @@ function executeAppleScriptSync (scriptUrl, resultUrl) {
     throw checkForMissingAppHack(err)
   }
 
-  if (!resultUrl)
-    return null
+  return parseResults(resultUrl)
 
-  try {
-
-    const results = fs.readJsonSync(resultUrl)
-    return parseResults(results)
-
-  } catch (err) {
-    throw new NoResultError()
-  }
 }
 
 async function executeAppleScript (scriptUrl, resultUrl) {
@@ -225,26 +216,23 @@ async function executeAppleScript (scriptUrl, resultUrl) {
   try {
     await execPromise(`osascript ${scriptUrl}`)
   } catch (err) {
+    log.task(err)
     throw checkForMissingAppHack(err)
   }
 
-  if (!resultUrl) // There would be no resultUrl if command isn't a function expression
-    return null
-
-  try {
-
-    const results = await fs.readJson(resultUrl)
-    return parseResults(results)
-
-  } catch (err) {
-    throw new NoResultError()
-  }
+  return parseResults(resultUrl)
 }
 
-function parseResults (results) {
+function parseResults (resultUrl) {
 
-  if (results === null)
+  // Adobe doesn't have a JSON object, but it does have a function called 'toSource()'
+  // which returns an eval()ible string that describes a javascript obbject.
+  // as a result, we have to syncronously require() the results.
+
+  if (resultUrl === null)
     return null
+
+  const results = require(resultUrl)
 
   const { error, logs = [], result } = results
 
@@ -278,7 +266,7 @@ export function executeSync (source, ...args) {
 
 export async function execute (source, ...args) {
 
-  const { adobified, resultPath } = adobify(this.options, source, ...args)
+  const { adobified, resultUrl } = adobify(this.options, source, ...args)
   const { programDir, renderEngine } = this.options
 
   const aeUrl = await findAfterEffects(programDir, renderEngine)
@@ -287,7 +275,7 @@ export async function execute (source, ...args) {
 
   const scrptUrl = await writeAppleScript(adobified, aeUrl)
 
-  return executeAppleScript(scrptUrl, resultPath)
+  return executeAppleScript(scrptUrl, resultUrl)
 
 }
 

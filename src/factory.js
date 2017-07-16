@@ -98,7 +98,7 @@ export default function factory (options = {}) { // Factory
 
     const { shortcut: method } = AfterEffects.options
 
-    AfterEffects[method](...args)
+    return AfterEffects[method](...args)
 
   }
 

@@ -63,7 +63,7 @@ export function adobify (options = {}, source, ...args) {
   const { errorHandling } = options
 
   const resultUrl = isFunctionExpression || errorHandling
-    ? path.join(os.tmpdir(), `ae-result-${uuid.v4()}.json`)
+    ? path.join(os.tmpdir(), `ae-result-${uuid.v4()}.js`)
     : null
 
   const lines = []
@@ -159,7 +159,7 @@ export function adobify (options = {}, source, ...args) {
   if (isFunctionExpression || errorHandling) lines.push(
     `$.file = File('${resultUrl}');`,
     '$.file.open(\'w\');',
-    '$.file.write({',
+    '$.file.write(\'module.exports = \' + ({',
     '  error: $.result instanceof Error ? $.result.message : null,'
   )
 
@@ -169,7 +169,7 @@ export function adobify (options = {}, source, ...args) {
   )
 
   if (isFunctionExpression || errorHandling) lines.push(
-    '}.toSource());',
+    '}.toSource()));',
     '$.file.close();'
   )
 
