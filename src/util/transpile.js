@@ -82,7 +82,7 @@ export function adobify (options = {}, source, ...args) {
     'if (typeof console === \'undefined\') {',
     '  $.global.console = {',
     '    _cache: [],',
-    '    log: function() { this._cache.concat([].slice.call(arguments)); }',
+    '    log: function() { this._cache = this._cache.concat([].slice.call(arguments)); }',
     '  }',
     '};'
   )
