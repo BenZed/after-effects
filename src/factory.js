@@ -16,6 +16,7 @@ const DEFAULTS = freeze({
   errorHandling: true,
   renderEngine: false,
   programDir: null,
+  logger: console.log.bind(console),
   shortcut: 'executeSync',
   includes: DEFAULT_INCLUDES
 })
@@ -41,6 +42,17 @@ function validateBoolean (name, options) {
     throw new Error(`if defined, options.${name} must be true or false`)
 
   return isDefined ? value : DEFAULTS[name]
+}
+
+function validateFunction (name, options) {
+
+  const value = options[name]
+
+  if (is(value) && !is(value, Function))
+    throw new Error(`if defined, options.${name} must be true or false`)
+
+  return value || DEFAULTS[name]
+
 }
 
 function validateString (name, options, enums) {
@@ -78,7 +90,8 @@ function validateOptions (options = {}) {
     errorHandling: validateBoolean('errorHandling', options),
     renderEngine: validateBoolean('renderEngine', options),
     shortcut: validateString('shortcut', options, VALID_SHORTCUTS),
-    program: validateString('programDir', options),
+    programDir: validateString('programDir', options),
+    logger: validateFunction('logger', options),
     includes: validateArray('includes', options, String)
   })
 

@@ -199,7 +199,7 @@ async function writeAppleScript (adobified, aeUrl) {
   return scptUrl
 }
 
-function executeAppleScriptSync (scriptUrl, resultUrl) {
+function executeAppleScriptSync (scriptUrl, resultUrl, logger) {
 
   try {
     execSync(`osascript ${scriptUrl}`)
@@ -207,11 +207,11 @@ function executeAppleScriptSync (scriptUrl, resultUrl) {
     throw checkForMissingAppHack(err)
   }
 
-  return parseResults(resultUrl)
+  return parseResults(resultUrl, logger)
 
 }
 
-async function executeAppleScript (scriptUrl, resultUrl) {
+async function executeAppleScript (scriptUrl, resultUrl, logger) {
 
   try {
     await execPromise(`osascript ${scriptUrl}`)
@@ -220,10 +220,10 @@ async function executeAppleScript (scriptUrl, resultUrl) {
     throw checkForMissingAppHack(err)
   }
 
-  return parseResults(resultUrl)
+  return parseResults(resultUrl, logger)
 }
 
-function parseResults (resultUrl) {
+function parseResults (resultUrl, logger) {
 
   // Adobe doesn't have a JSON object, but it does have a function called 'toSource()'
   // which returns an eval()ible string that describes a javascript obbject.
@@ -232,12 +232,18 @@ function parseResults (resultUrl) {
   if (resultUrl === null)
     return null
 
-  const results = require(resultUrl)
+  let results
+
+  try {
+    results = require(resultUrl)
+  } catch (err) {
+    throw new NoResultError(err.message)
+  }
 
   const { error, logs = [], result } = results
 
   if (logs.length > 0)
-    console.log(...logs)
+    logger(...logs)
 
   if (error)
     throw new AfterEffectsScriptError(error)
@@ -252,7 +258,7 @@ function parseResults (resultUrl) {
 export function executeSync (source, ...args) {
 
   const { adobified, resultUrl } = adobify(this.options, source, ...args)
-  const { programDir, renderEngine } = this.options
+  const { programDir, renderEngine, logger } = this.options
 
   const aeUrl = findAfterEffectsSync(programDir, renderEngine)
   if (aeUrl === null)
@@ -260,14 +266,14 @@ export function executeSync (source, ...args) {
 
   const scrptUrl = writeAppleScriptSync(adobified, aeUrl)
 
-  return executeAppleScriptSync(scrptUrl, resultUrl)
+  return executeAppleScriptSync(scrptUrl, resultUrl, logger)
 
 }
 
 export async function execute (source, ...args) {
 
   const { adobified, resultUrl } = adobify(this.options, source, ...args)
-  const { programDir, renderEngine } = this.options
+  const { programDir, renderEngine, logger } = this.options
 
   const aeUrl = await findAfterEffects(programDir, renderEngine)
   if (aeUrl === null)
@@ -275,7 +281,7 @@ export async function execute (source, ...args) {
 
   const scrptUrl = await writeAppleScript(adobified, aeUrl)
 
-  return executeAppleScript(scrptUrl, resultUrl)
+  return executeAppleScript(scrptUrl, resultUrl, logger)
 
 }
 

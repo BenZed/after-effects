@@ -1,4 +1,4 @@
-import { adobify } from '../util/transpile'
+// import { adobify } from '../util/transpile'
 
 export function executeSync (source, ...args) {
   throw new Error('Not yet implemented in windows')
