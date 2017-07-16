@@ -1,14 +1,16 @@
 import os from 'os'
-import ERRORS from '../util/errors'
+
+import * as mac from './mac'
+import * as win from './win'
 
 const platformName = os.platform()
 const platform = platformName === 'darwin'
-  ? require('./mac')
+  ? mac
   : platformName.includes('win')
-    ? require('./win')
+    ? win
     : null
 
 if (platform === null)
-  throw new Error(ERRORS.UnsupportedPlatform)
+  throw new Error('Cannot run After Effects commands in an environment it can\'t be installed in.')
 
 export default platform

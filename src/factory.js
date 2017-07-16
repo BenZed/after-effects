@@ -1,16 +1,9 @@
-import os from 'os'
-// import fs from 'fs'
-import path from 'path'
-// import uuid from 'uuid'
-// import settings from './settings'
-import Command from './command'
-// import ERRORS from './errors'
+
 import is from 'is-explicit'
-import { CODE, RESULT } from './util/symbols'
-import uuid from 'uuid'
+import platform from './platform'
 
 /******************************************************************************/
-// Data
+// Defaults
 /******************************************************************************/
 
 const { freeze, defineProperty } = Object
@@ -22,114 +15,74 @@ const DEFAULT_INCLUDES = freeze([
 const DEFAULTS = freeze({
   errorHandling: true,
   renderEngine: false,
-  expectResult: true,
-  program: null,
+  programDir: null,
   shortcut: 'executeSync',
   includes: DEFAULT_INCLUDES
 })
+
+/******************************************************************************/
+// Validation
+/******************************************************************************/
 
 const VALID_SHORTCUTS = [
   'execute', 'executeSync', 'create', 'createSync'
 ]
 
-/******************************************************************************/
-// Helper
-/******************************************************************************/
+// Why define all these validator helper functions? Well, it makes the main
+// validate function look cleaner, and I'm not sure how many more options I'm going
+// to add.
+
+function validateBoolean (name, options) {
+
+  const value = options[name]
+
+  const isDefined = is(value)
+  if (isDefined && !is(value, Boolean))
+    throw new Error(`if defined, options.${name} must be true or false`)
+
+  return isDefined ? value : DEFAULTS[name]
+}
+
+function validateString (name, options, enums) {
+
+  const value = options[name]
+
+  const isValid = enums ? enums.includes(value) : true
+
+  if (is(value) && (!is(value, String) || !isValid))
+    throw new Error(`if defined, options.${name} must be ${enums ? 'one of ' + enums : 'a string'}`)
+
+  return value || DEFAULTS[name]
+
+}
+
+function validateArray (name, options, Type) {
+
+  const value = options[name]
+
+  const isDefined = is(value)
+  const isValid = is(value, Array) && (value.length === 0 || is.arrayOf(value, Type))
+
+  if (isDefined && !isValid)
+    throw new Error(`if defined, options.${name} must be an array of ${Type.name}s.`)
+
+  return isDefined ? [ ...value ] : [ ...DEFAULTS[name] ]
+}
 
 function validateOptions (options = {}) {
 
   if (!is.plainObject(options))
-    throw new Error('options must be a plain object.')
-
-  const { errorHandling, renderEngine, program, includes, shortcut } = options
-
-  const errorHandlingDefined = is(errorHandling)
-  if (errorHandlingDefined && !is(errorHandling, Boolean))
-    throw new Error('if defined, options.errorHandling must be true or false.')
-
-  const renderEngineDefined = is(renderEngine)
-  if (renderEngineDefined && !is(renderEngine, Boolean))
-    throw new Error('if defined, options.renderEngine must be true or false.')
-
-  if (is(program) && !is(program, String))
-    throw new Error('if defined, options.program must be a string.')
-
-  const includesDefined = is(includes)
-  const includesIsValidArray = is(includes, Array) && (includes.length === 0 || is.arrayOf(includes, String))
-
-  if (includesDefined && !includesIsValidArray)
-    throw new Error('if defined, options.include must be an array of strings.')
-
-  if (is(shortcut) && !VALID_SHORTCUTS.includes(shortcut))
-    throw new Error('if defined, options.shortcut must be one of ' + VALID_SHORTCUTS.map(shortcut => `'${shortcut}'`))
+    throw new Error('options, if defined, must be a plain object.')
 
   return Object.freeze({
-    errorHandling: errorHandlingDefined ? errorHandling : DEFAULTS.errorHandling,
-    renderEngine: renderEngineDefined ? renderEngine : DEFAULTS.renderEngine,
-    shortcut: shortcut || DEFAULTS.shortcut,
-    program: program || DEFAULTS.program,
-    includes: includesDefined ? [ ...includes ] : [ ...DEFAULTS.includes ]
+    errorHandling: validateBoolean('errorHandling', options),
+    renderEngine: validateBoolean('renderEngine', options),
+    shortcut: validateString('shortcut', options, VALID_SHORTCUTS),
+    program: validateString('programDir', options),
+    includes: validateArray('includes', options, String)
   })
 
 }
-
-function stringify (source, ...args) {
-
-  const command = Command.fromSource(source)
-  const [ prefixes, main ] = command[CODE]
-
-  const resultPath = path.join(os.tmpdir(), `ae-result-${uuid.v4()}.json`)
-
-  const { errorHandling } = this.options
-
-  const lines = [
-    prefixes
-  ]
-
-  if (errorHandling) lines.push(
-    'app.beginSuppressDialogs();',
-    'try {'
-  )
-
-  lines.push(
-    '$.result = ' + main + '.apply(this'
-  )
-
-  if (args.length > 0)
-    lines.push(',' + JSON.stringify(args))
-
-  lines.push(
-    ');'
-  )
-
-  if (errorHandling) lines.push(
-    '} catch (err) {',
-    '  $.result = err',
-    '}',
-    'app.endSuppressDialogs(false);'
-  )
-
-
-  const string = lines.join('\n')
-
-  return [ string, resultPath]
-}
-
-/******************************************************************************/
-// Main
-/******************************************************************************/
-
-function executeSync (source, ...args) {
-
-  const string = this::stringify(source, ...args)
-
-}
-
-function createSync (source, ...args) { console.log('createSync') }
-
-async function execute (source, ...args) { console.log('execute') }
-
-async function create (source, ...args) { console.log('create') }
 
 /******************************************************************************/
 // Exports
@@ -144,21 +97,19 @@ export default function factory (options = {}) { // Factory
   function AfterEffects (...args) { // Instance
 
     const { shortcut: method } = AfterEffects.options
+
     AfterEffects[method](...args)
 
   }
 
   AfterEffects.options = validateOptions(options)
 
-  AfterEffects.execute = AfterEffects::execute
-  AfterEffects.create = AfterEffects::create
+  const { getScriptsDir, ...funcs } = platform
 
-  AfterEffects.executeSync = AfterEffects::executeSync
-  AfterEffects.createSync = AfterEffects::createSync
+  for (const key in funcs)
+    AfterEffects[key] = AfterEffects::funcs[key]
 
-  defineProperty(AfterEffects, 'scriptsDir', {
-    get () { throw new Error('get scriptsDir not yet implemented.') }
-  })
+  defineProperty(AfterEffects, 'scriptsDir', { get: getScriptsDir })
 
   return AfterEffects
 }

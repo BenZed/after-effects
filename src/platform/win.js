@@ -1,12 +1,17 @@
+import { adobify } from '../util/transpile'
 
-export function execute () {
-
+export function executeSync (source, ...args) {
+  throw new Error('Not yet implemented in windows')
 }
 
-export function executeSync () {
-
+export function createSync (source, ...args) {
+  throw new Error('Not yet implemented in windows')
 }
 
-export function scriptsDir () {
+export async function execute (source, ...args) {
+  throw new Error('Not yet implemented in windows')
+}
 
+export async function create (source, ...args) {
+  throw new Error('Not yet implemented in windows')
 }
