@@ -107,11 +107,11 @@ function autoDetectFunctionExpression (source) {
 
 export default class Command {
 
-  static fromSource (source) {
+  static fromSource (source, isFunctionExpression) {
 
     return is(source, Command)
       ? source
-      : new Command(source)
+      : new Command(source, isFunctionExpression)
 
   }
 

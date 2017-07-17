@@ -13,9 +13,10 @@ const DEFAULT_INCLUDES = freeze([
 ])
 
 const DEFAULTS = freeze({
-  errorHandling: true,
+  handleErrors: true,
+  writeResults: true,
   renderEngine: false,
-  programDir: null,
+  programDir: undefined,
   logger: console.log.bind(console),
   shortcut: 'executeSync',
   includes: DEFAULT_INCLUDES
@@ -87,7 +88,8 @@ function validateOptions (options = {}) {
     throw new Error('options, if defined, must be a plain object.')
 
   return Object.freeze({
-    errorHandling: validateBoolean('errorHandling', options),
+    handleErrors: validateBoolean('handleErrors', options),
+    writeResults: validateBoolean('writeResults', options),
     renderEngine: validateBoolean('renderEngine', options),
     shortcut: validateString('shortcut', options, VALID_SHORTCUTS),
     programDir: validateString('programDir', options),
@@ -122,7 +124,7 @@ export default function factory (options = {}) { // Factory
   for (const key in funcs)
     AfterEffects[key] = AfterEffects::funcs[key]
 
-  defineProperty(AfterEffects, 'scriptsDir', { get: getScriptsDir })
+  defineProperty(AfterEffects, 'scriptsDir', { get: AfterEffects::getScriptsDir })
 
   return AfterEffects
 }

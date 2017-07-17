@@ -1,16 +1,15 @@
-import { adobify } from '../util/transpile'
 import os from 'os'
 import path from 'path'
 import uuid from 'uuid'
 import jsesc from 'jsesc'
-
+import fs from 'fs-extra'
 import { exec, execSync } from 'child_process'
 
-import fs from 'fs-extra'
-
+import { adobify } from '../util/transpile'
 import { isAccessibleDirSync, isAccessibleDir } from '../util/fs-util'
 
 import { AfterEffectsMissingError, NoResultError, AfterEffectsScriptError } from './errors'
+import Command from '../command'
 
 /******************************************************************************/
 // Data
@@ -252,12 +251,45 @@ function parseResults (resultUrl, logger) {
 }
 
 /******************************************************************************/
+// Creating Scripts
+/******************************************************************************/
+
+function prepareJsx (source, url, options, ...args) {
+
+  const command = Command.fromSource(source)
+
+  const createOptions = { ...options,
+    handleErrors: false,
+    writeResults: false
+  }
+
+  console.log(createOptions)
+
+  const { adobified } = adobify(command, createOptions, ...args)
+
+  // Add .jsx if an extension wasn't provided
+  if (!path.extname(url))
+    url += '.jsx'
+
+  const jsxUrl = path.isAbsolute(url)
+    ? url
+    : path.resolve(getScriptsDir(createOptions), url)
+
+  return {
+    adobified,
+    jsxUrl
+  }
+
+}
+/******************************************************************************/
 // Exports
 /******************************************************************************/
 
 export function executeSync (source, ...args) {
 
-  const { adobified, resultUrl } = adobify(this.options, source, ...args)
+  const command = Command.fromSource(source)
+
+  const { adobified, resultUrl } = adobify(command, this.options, ...args)
   const { programDir, renderEngine, logger } = this.options
 
   const aeUrl = findAfterEffectsSync(programDir, renderEngine)
@@ -272,7 +304,9 @@ export function executeSync (source, ...args) {
 
 export async function execute (source, ...args) {
 
-  const { adobified, resultUrl } = adobify(this.options, source, ...args)
+  const command = Command.fromSource(source)
+
+  const { adobified, resultUrl } = adobify(command, this.options, ...args)
   const { programDir, renderEngine, logger } = this.options
 
   const aeUrl = await findAfterEffects(programDir, renderEngine)
@@ -285,6 +319,35 @@ export async function execute (source, ...args) {
 
 }
 
-export function createSync (source, ...args) { console.log('createSync', source, ...args) }
+export function createSync (source, url, ...args) {
 
-export async function create (source, ...args) { console.log('create', source, ...args) }
+  const { jsxUrl, adobified } = prepareJsx(source, url, this.options, ...args)
+
+  fs.writeFileSync(jsxUrl, adobified)
+
+  return jsxUrl
+}
+
+export async function create (source, url, ...args) {
+
+  const { jsxUrl, adobified } = prepareJsx(source, url, this.options, ...args)
+
+  await fs.writeFile(jsxUrl, adobified)
+
+  return jsxUrl
+
+}
+
+export function getScriptsDir (options) {
+
+  const { programDir } = options || this.options
+
+  const aeUrl = findAfterEffectsSync(programDir)
+  if (aeUrl === null)
+    return null
+
+  const aeDir = path.dirname(aeUrl)
+
+  return path.join(aeDir, 'Scripts')
+
+}

@@ -164,7 +164,7 @@ ___
 ## Options
 The ae object has a couple of options:
 
-	ae.options.errorHandling = true;
+	ae.options.handleErrors = true;
 	ae.options.minify = false;
   ae.options.program = null;
 	ae.options.includes = [
@@ -175,16 +175,16 @@ The ae object has a couple of options:
 
 This would be how you set defaults.
 
-### errorHandling
-With errorHandling enabled, errors thrown in After Effects will be suppressed and returned in the promise result:
+### handleErrors
+With handleErrors enabled, errors thrown in After Effects will be suppressed and returned in the promise result:
 
-    ae.options.errorHandling = true;
+    ae.options.handleErrors = true;
 
     ae.execute(() => throw new Error("FooBar got FooBarred all the way to FooBar."))
     .then(result => console.log(result)) // empty
     .catch(err => console.log(err)); // contains error
 
-With errorHandling disabled, After Effects will create a popup and prevent further code execution until it is dealt with.
+With handleErrors disabled, After Effects will create a popup and prevent further code execution until it is dealt with.
 
 ### minify
 If true, the code will be minified before being sent to After Effects. This is disabled by default, which is different from previous versions of this package. I feel there's little point in spending the extra time to minify code that isn't going over a network. Still, you can set minify to true if you're into that sort of thing.
@@ -295,12 +295,12 @@ Commands have their own set of options. By default, they are the same as the opt
 
 Command options cannot be changed:
 
-    ae.options.errorHandling = false;
+    ae.options.handleErrors = false;
     var breakForFun = new ae.Command(() => throw("This is MY house."));
 
-    ae.options.errorHandling = true;
+    ae.options.handleErrors = true;
     breakForFun.executeSync(); // will still alert inside in AE
-    breakForFun.errorHandling = true; //throws error
+    breakForFun.handleErrors = true; //throws error
 
 You can create commands with their own options:
 

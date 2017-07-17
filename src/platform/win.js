@@ -15,3 +15,7 @@ export async function execute (source, ...args) {
 export async function create (source, ...args) {
   throw new Error('Not yet implemented in windows')
 }
+
+export function getScriptsDir () {
+  throw new Error('getScriptsDir not yet implemented')
+}

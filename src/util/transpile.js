@@ -4,7 +4,6 @@ import path from 'path'
 
 import { transform } from 'babel-core'
 
-import Command from '../command'
 import { CODE } from './symbols'
 
 /******************************************************************************/
@@ -53,16 +52,18 @@ export function babelify (str) {
 // If you're not familiar with the Adobe scripting environment.
 // TODO Comment in greater detail.
 
-export function adobify (options = {}, source, ...args) {
+export function adobify (command, options = {}, ...args) {
 
-  const command = Command.fromSource(source)
   const [ prefixes, babelified ] = command[CODE]
 
   const { isFunctionExpression } = command
 
-  const { errorHandling } = options
+  const { handleErrors, writeResults } = options
 
-  const resultUrl = isFunctionExpression || errorHandling
+  const doErrorHandling = handleErrors
+  const doResultWriting = isFunctionExpression && writeResults
+
+  const resultUrl = doResultWriting || doErrorHandling
     ? path.join(os.tmpdir(), `ae-result-${uuid.v4()}.js`)
     : null
 
@@ -87,18 +88,18 @@ export function adobify (options = {}, source, ...args) {
     '};'
   )
 
-  if (errorHandling || isFunctionExpression) lines.push(
+  if (doErrorHandling || doResultWriting) lines.push(
     '',
     '$.sfns = app.preferences.getPrefAsLong(\'Main Pref Section\', \'Pref_SCRIPTING_FILE_NETWORK_SECURITY\') === 1;'
   )
 
-  if (errorHandling) lines.push(
+  if (doErrorHandling) lines.push(
     '',
     'if ($.sfns)',
     '  app.beginSuppressDialogs();'
   )
 
-  if (errorHandling) lines.push(
+  if (doErrorHandling) lines.push(
     '',
     'try {'
   )
@@ -107,27 +108,27 @@ export function adobify (options = {}, source, ...args) {
     prefixes
   )
 
-  if (errorHandling && !isFunctionExpression)
+  if (doErrorHandling && !doResultWriting)
     lines.push(
       `$.result = null;`
     )
 
   if (isFunctionExpression) {
-    const strArg = args.length > 0 ? ',' + JSON.stringify(args) : ''
+    const strArg = JSON.stringify(args)
     lines.push(
-      `$.result = ${babelified}.apply(this${strArg});`
+      `${doResultWriting ? '$.result = ' : ''}${babelified}.apply(this,${strArg});`
     )
   } else
     lines.push(
       babelified
     )
 
-  if (errorHandling) lines.push(
+  if (doErrorHandling) lines.push(
     '',
     '} catch (err) {'
   )
 
-  if (errorHandling) lines.push(
+  if (doErrorHandling) lines.push(
     '',
     '  if ($.sfns)',
     '    $.result = err;',
@@ -135,14 +136,14 @@ export function adobify (options = {}, source, ...args) {
     '    throw new Error(\'Node.js cannot handle errors in After Effects unless "Allow Scripts to Write Files and Access Network" is enabled in "General" settings.\');'
   )
 
-  if (errorHandling) lines.push(
+  if (doErrorHandling) lines.push(
     '}',
     '',
     'if ($.sfns)',
     '  app.endSuppressDialogs(false);'
   )
 
-  if (isFunctionExpression) lines.push(
+  if (doResultWriting) lines.push(
     '',
     'if ($.result !== undefined && !$.sfns)',
     '  throw new Error(\'Node.js cannot get a response from After Effects unless "Allow Scripts to Write Files and Access Network" is enabled in "General" settings.\');',
@@ -150,35 +151,35 @@ export function adobify (options = {}, source, ...args) {
     '$.cache = typeof console === \'object\' && console._cache instanceof Array && console._cache || [];'
   )
 
-  if (!isFunctionExpression && errorHandling) lines.push(
+  if (!doResultWriting && doErrorHandling) lines.push(
     '',
     'if ($.result) {',
     ''
   )
 
-  if (isFunctionExpression || errorHandling) lines.push(
+  if (doResultWriting || doErrorHandling) lines.push(
     `$.file = File('${resultUrl}');`,
     '$.file.open(\'w\');',
     '$.file.write(\'module.exports = \' + ({',
     '  error: $.result instanceof Error ? $.result.message : null,'
   )
 
-  if (isFunctionExpression) lines.push(
+  if (doResultWriting) lines.push(
     '  logs: $.cache.splice(0, $.cache.length),',
     '  result: $.result instanceof Error ? null : $.result'
   )
 
-  if (isFunctionExpression || errorHandling) lines.push(
+  if (doResultWriting || doErrorHandling) lines.push(
     '}.toSource()));',
     '$.file.close();'
   )
 
-  if (!isFunctionExpression && errorHandling) lines.push(
+  if (!doResultWriting && doErrorHandling) lines.push(
     '',
     '}'
   )
 
-  if (isFunctionExpression || errorHandling) lines.push(
+  if (doResultWriting || doErrorHandling) lines.push(
     '',
     'delete $.cache;',
     'delete $.file;',
