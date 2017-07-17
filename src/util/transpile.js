@@ -70,18 +70,18 @@ export function adobify (command, options = {}, ...args) {
   const lines = []
 
   // There's probably a better way to do this, but we'll only ensure the global shortcut
-  // exists if the babelified code includes the word 'global.'
-  if (/global\./.test(babelified)) lines.push(
+  // exists if the babelified code includes the word 'global'
+  if (/global/.test(babelified)) lines.push(
     '',
     'if (typeof global === \'undefined\')',
     '  global = $.global;'
   )
   // There's probably a better way to do this, but we'll only ensure the node-console
-  // object exists if the babelified code includes the word 'console.'
-  if (/console\./.test(babelified)) lines.push(
+  // object exists if the babelified code includes the word 'console'
+  if (/console/.test(babelified)) lines.push(
     '',
     'if (typeof console === \'undefined\') {',
-    '  $.global.console = {',
+    '  console = {',
     '    _cache: [],',
     '    log: function() { this._cache = this._cache.concat([].slice.call(arguments)); }',
     '  }',

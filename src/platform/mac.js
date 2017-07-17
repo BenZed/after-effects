@@ -241,8 +241,8 @@ function parseResults (resultUrl, logger) {
 
   const { error, logs = [], result } = results
 
-  if (logs.length > 0)
-    logger(...logs)
+  for (const log of logs)
+    logger(log)
 
   if (error)
     throw new AfterEffectsScriptError(error)
@@ -262,8 +262,6 @@ function prepareJsx (source, url, options, ...args) {
     handleErrors: false,
     writeResults: false
   }
-
-  console.log(createOptions)
 
   const { adobified } = adobify(command, createOptions, ...args)
 
