@@ -83,7 +83,7 @@ export function adobify (command, options = {}, ...args) {
     'if (typeof console === \'undefined\') {',
     '  console = {',
     '    _cache: [],',
-    '    log: function() { this._cache = this._cache.concat([].slice.call(arguments)); }',
+    '    log: function() { this._cache.push([].slice.call(arguments)); }',
     '  }',
     '};'
   )
@@ -165,7 +165,7 @@ export function adobify (command, options = {}, ...args) {
   )
 
   if (doResultWriting) lines.push(
-    '  logs: $.cache.splice(0, $.cache.length),',
+    '  logs: $.cache.splice(0, $.cache.length),', // splice so that the console.log._cache is cleared
     '  result: $.result instanceof Error ? null : $.result'
   )
 

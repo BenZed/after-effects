@@ -242,7 +242,7 @@ function parseResults (resultUrl, logger) {
   const { error, logs = [], result } = results
 
   for (const log of logs)
-    logger(log)
+    logger(...log) // each log will be an array
 
   if (error)
     throw new AfterEffectsScriptError(error)
