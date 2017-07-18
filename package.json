@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha --require babel-register --require babel-polyfill 'test/**/*test.js'",
     "test:watch": "mocha --require babel-register --watch --require babel-polyfill 'test/**/*test.js'",
-    "build": "rm -rf lib; mkdir lib; ./node_modules/.bin/babel src --out-dir lib",
+    "build": "rm -rf lib && babel src --out-dir lib",
     "build:dev": "npm run build -- --watch",
     "prepublishOnly": "npm run build",
     "postinstall": "npm run build && rm -rf src"
@@ -47,6 +47,7 @@
     "eslint-plugin-node": "^5.1.0",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
-    "mocha": "^3.4.2"
+    "mocha": "^3.4.2",
+    "shx": "^0.2.2"
   }
 }
