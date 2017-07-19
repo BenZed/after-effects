@@ -8,7 +8,7 @@
     "test:watch": "shx mocha --require babel-register --watch --require babel-polyfill 'test/**/*test.js'",
     "build": "shx rm -rf lib && babel src --out-dir lib",
     "build:dev": "npm run build -- --watch",
-    "prepublishOnly": "shx npm run build"
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "after",
