@@ -1,8 +1,8 @@
 {
   "name": "after-effects",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "Send instructions to the After Effects scripting environment from node.js.",
-  "main": "/lib",
+  "main": "lib/index.js",
   "scripts": {
     "test": "shx mocha --require babel-register --require babel-polyfill 'test/**/*test.js'",
     "test:watch": "shx mocha --require babel-register --watch --require babel-polyfill 'test/**/*test.js'",
