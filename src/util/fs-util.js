@@ -78,10 +78,10 @@ export async function isAccessibleFile (url, withExt) {
   return value
 }
 
-export function write (url, txt) {
+export async function write (url, txt) {
 
   try {
-    writeSync(url, txt)
+    await fs.writeFile(url, txt)
   } catch (err) {
     throw new NodeJsWritePermissionError(url)
   }
@@ -91,7 +91,7 @@ export function write (url, txt) {
 export function writeSync (url, txt) {
 
   try {
-    writeSync(url, txt)
+    fs.writeFileSync(url, txt)
   } catch (err) {
     throw new NodeJsWritePermissionError(url)
   }
