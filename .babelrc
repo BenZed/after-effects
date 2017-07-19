@@ -1,10 +1,4 @@
 {
-  "presets": [
-    ["env", {
-      "targets": {
-        "node": "current"
-      }
-    }]
-  ],
+  "presets": ["env"],
   "plugins": [ "transform-function-bind", "transform-object-rest-spread", "transform-runtime" ]
 }

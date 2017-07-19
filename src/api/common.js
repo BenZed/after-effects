@@ -19,9 +19,9 @@ export const execPromise = (...args) => new Promise((resolve, reject) => {
   })
 })
 
-export const CMD_RES_DIR = path.join(process.cwd(), 'cmd-res-test')
+// export const CMD_RES_DIR = path.join(process.cwd(), 'cmd-res-test')
 // Switch these comments when testings
-// export const CMD_RES_DIR = os.tmpdir()
+export const CMD_RES_DIR = os.tmpdir()
 
 /******************************************************************************/
 // Errors

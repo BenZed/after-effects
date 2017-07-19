@@ -1,8 +1,8 @@
 .DS_Store
 node_modules
 develop.js
-lib
 test
+src
 
 .eslintignore
 .eslint.json
