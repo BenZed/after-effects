@@ -1,10 +1,11 @@
-import os from 'os'
 import uuid from 'uuid'
 import path from 'path'
 
 import { transform } from 'babel-core'
 
 import { CODE } from './symbols'
+
+import { CMD_RES_DIR } from '../api/common'
 
 /******************************************************************************/
 // Data
@@ -64,7 +65,7 @@ export function adobify (command, options = {}, ...args) {
   const doResultWriting = isFunctionExpression && writeResults
 
   const resultUrl = doResultWriting || doErrorHandling
-    ? path.join(os.tmpdir(), `ae-result-${uuid.v4()}.js`)
+    ? path.join(CMD_RES_DIR, `ae-result-${uuid.v4()}.js`)
     : null
 
   const lines = []

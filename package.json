@@ -4,12 +4,12 @@
   "description": "Send instructions to the After Effects scripting environment from node.js.",
   "main": "/lib",
   "scripts": {
-    "test": "mocha --require babel-register --require babel-polyfill 'test/**/*test.js'",
-    "test:watch": "mocha --require babel-register --watch --require babel-polyfill 'test/**/*test.js'",
-    "build": "rm -rf lib && babel src --out-dir lib",
+    "test": "shx mocha --require babel-register --require babel-polyfill 'test/**/*test.js'",
+    "test:watch": "shx mocha --require babel-register --watch --require babel-polyfill 'test/**/*test.js'",
+    "build": "shx rm -rf lib && babel src --out-dir lib",
     "build:dev": "npm run build -- --watch",
-    "prepublishOnly": "npm run build",
-    "postinstall": "npm run build && rm -rf src"
+    "prepublishOnly": "shx npm run build",
+    "postinstall": "shx npm run build && rm -rf src"
   },
   "keywords": [
     "after",

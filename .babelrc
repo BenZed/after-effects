@@ -6,5 +6,5 @@
       }
     }]
   ],
-  "plugins": [ "transform-function-bind", "transform-object-rest-spread" ]
+  "plugins": [ "transform-function-bind", "transform-object-rest-spread", "transform-runtime" ]
 }

@@ -1,6 +1,22 @@
 import fs from 'fs-extra'
 import path from 'path'
 
+/******************************************************************************/
+// Helper
+/******************************************************************************/
+
+export class NodeJsWritePermissionError extends Error {
+  constructor (url) {
+    super('NodeJs could not write a file needed by the after-effects package.' +
+    ' Ensure that NodeJs has permission to write to directory: ' + path.dirname(url))
+    this.name = 'NodeJsWritePermissionError'
+  }
+}
+
+/******************************************************************************/
+// Exports
+/******************************************************************************/
+
 export function isAccessibleDirSync (url) {
 
   let value
@@ -45,7 +61,7 @@ export function isAccessibleFileSync (url, withExt) {
   return value
 }
 
-export async function isAccessibleFileDir (url, withExt) {
+export async function isAccessibleFile (url, withExt) {
 
   if (withExt && path.extname(url) !== withExt)
     return false
@@ -60,4 +76,42 @@ export async function isAccessibleFileDir (url, withExt) {
   }
 
   return value
+}
+
+export function write (url, txt) {
+
+  try {
+    writeSync(url, txt)
+  } catch (err) {
+    throw new NodeJsWritePermissionError(url)
+  }
+
+}
+
+export function writeSync (url, txt) {
+
+  try {
+    writeSync(url, txt)
+  } catch (err) {
+    throw new NodeJsWritePermissionError(url)
+  }
+
+}
+
+export function tryUnlinkSync (url) {
+
+  try {
+    fs.unlinkSync(url)
+  } catch (err) {
+  }
+
+}
+
+export async function tryUnlink (url) {
+
+  try {
+    await fs.unlink(url)
+  } catch (err) {
+  }
+
 }

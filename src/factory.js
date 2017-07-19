@@ -1,6 +1,6 @@
 
 import is from 'is-explicit'
-import platform from './platform'
+import * as api from './api'
 
 /******************************************************************************/
 // Defaults
@@ -15,7 +15,7 @@ const DEFAULT_INCLUDES = freeze([
 const DEFAULTS = freeze({
   handleErrors: true,
   writeResults: true,
-  renderEngine: false,
+  // renderEngine: false,
   programDir: undefined,
   logger: console.log.bind(console),
   shortcut: 'executeSync',
@@ -34,7 +34,7 @@ const VALID_SHORTCUTS = [
 // validate function look cleaner, and I'm not sure how many more options I'm going
 // to add.
 
-function validateBoolean (name, options) {
+function validateBoolean (name, options, defs) {
 
   const value = options[name]
 
@@ -42,21 +42,21 @@ function validateBoolean (name, options) {
   if (isDefined && !is(value, Boolean))
     throw new Error(`if defined, options.${name} must be true or false`)
 
-  return isDefined ? value : DEFAULTS[name]
+  return isDefined ? value : defs[name]
 }
 
-function validateFunction (name, options) {
+function validateFunction (name, options, defs) {
 
   const value = options[name]
 
   if (is(value) && !is(value, Function))
     throw new Error(`if defined, options.${name} must be true or false`)
 
-  return value || DEFAULTS[name]
+  return value || defs[name]
 
 }
 
-function validateString (name, options, enums) {
+function validateString (name, options, enums, defs) {
 
   const value = options[name]
 
@@ -65,11 +65,11 @@ function validateString (name, options, enums) {
   if (is(value) && (!is(value, String) || !isValid))
     throw new Error(`if defined, options.${name} must be ${enums ? 'one of ' + enums : 'a string'}`)
 
-  return value || DEFAULTS[name]
+  return value || defs[name]
 
 }
 
-function validateArray (name, options, Type) {
+function validateArray (name, options, Type, defs) {
 
   const value = options[name]
 
@@ -79,22 +79,24 @@ function validateArray (name, options, Type) {
   if (isDefined && !isValid)
     throw new Error(`if defined, options.${name} must be an array of ${Type.name}s.`)
 
-  return isDefined ? [ ...value ] : [ ...DEFAULTS[name] ]
+  return isDefined ? [ ...value ] : [ ...defs.includes ]
 }
 
-function validateOptions (options = {}) {
+function validateOptions (options = {}, defs = DEFAULTS) {
+
+  defs = { ...defs } // Rewrap to prevent future setOptions calls from mutating past options
 
   if (!is.plainObject(options))
     throw new Error('options, if defined, must be a plain object.')
 
   return Object.freeze({
-    handleErrors: validateBoolean('handleErrors', options),
-    writeResults: validateBoolean('writeResults', options),
-    renderEngine: validateBoolean('renderEngine', options),
-    shortcut: validateString('shortcut', options, VALID_SHORTCUTS),
-    programDir: validateString('programDir', options),
-    logger: validateFunction('logger', options),
-    includes: validateArray('includes', options, String)
+    handleErrors: validateBoolean('handleErrors', options, defs),
+    writeResults: validateBoolean('writeResults', options, defs),
+    // renderEngine: validateBoolean('renderEngine', options), // TODO enable render Engine
+    shortcut: validateString('shortcut', options, VALID_SHORTCUTS, defs),
+    programDir: validateString('programDir', options, null, defs),
+    logger: validateFunction('logger', options, defs),
+    includes: validateArray('includes', options, String, defs)
   })
 
 }
@@ -118,13 +120,12 @@ export default function factory (options = {}) { // Factory
   }
 
   AfterEffects.options = validateOptions(options)
+  AfterEffects.setOptions = options => validateOptions(options, AfterEffects.options)
 
-  const { getScriptsDir, ...funcs } = platform
+  defineProperty(AfterEffects, 'scriptsDir', { get: AfterEffects::api.getScriptsDirSync })
 
-  for (const key in funcs)
-    AfterEffects[key] = AfterEffects::funcs[key]
-
-  defineProperty(AfterEffects, 'scriptsDir', { get: AfterEffects::getScriptsDir })
+  for (const key in api)
+    AfterEffects[key] = AfterEffects::api[key]
 
   return AfterEffects
 }
