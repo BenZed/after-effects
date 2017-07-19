@@ -1,6 +1,6 @@
 {
   "name": "after-effects",
-  "version": "0.5.0",
+  "version": "1.0.0-alpha.1",
   "description": "Send instructions to the After Effects scripting environment from node.js.",
   "main": "/lib",
   "scripts": {

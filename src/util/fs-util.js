@@ -78,6 +78,24 @@ export async function isAccessibleFile (url, withExt) {
   return value
 }
 
+export function readSync (url) {
+
+  try {
+    return fs.readFileSync(url, 'utf-8')
+  } catch (err) {
+    throw new NodeJsWritePermissionError(url)
+  }
+}
+
+export async function read (url) {
+
+  try {
+    return await fs.readFile(url, 'utf-8')
+  } catch (err) {
+    throw new NodeJsWritePermissionError(url)
+  }
+}
+
 export async function write (url, txt) {
 
   try {

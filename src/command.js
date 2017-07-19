@@ -1,24 +1,13 @@
-import fs from 'fs'
 import is from 'is-explicit'
 import isPath from 'is-valid-path'
 
 import { CODE, SOURCE } from './util/symbols'
-
+import { readSync } from './util/fs-util'
 import { babelify } from './util/transpile'
 
 /******************************************************************************/
 // Helper
 /******************************************************************************/
-
-function tryReadFile (url) {
-
-  try {
-    return fs.readFileSync(url, 'utf-8')
-  } catch (err) {
-    // Prettier error than ENONENT or whatever
-    throw new Error(`Could not read ${url}. Ensure it that it is a valid file url and that you have permissions.`)
-  }
-}
 
 function inputToSource (input) {
 
@@ -29,15 +18,15 @@ function inputToSource (input) {
 
   // Dunno why the fuck someone would want to create a command
   // from an existing command, but whatever
-  if (is(input, Command))
+  else if (is(input, Command))
     source = input[SOURCE]
 
   // If string is a path, try and read the file it's a path to.
-  if (isPath(input))
-    source = tryReadFile(input)
+  else if (isPath(input))
+    source = readSync(input)
 
   // whatever other string it is better be valid code
-  if (is(input, String))
+  else if (is(input, String))
     source = input
 
   if (source === null)
