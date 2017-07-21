@@ -109,7 +109,6 @@ async function executeAppleScript (scriptUrl, resultUrl, logger) {
   try {
     await execPromise(`osascript ${scriptUrl}`)
   } catch (err) {
-    log.task(err)
     throw checkForMissingAppHack(err)
   }
 
