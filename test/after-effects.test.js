@@ -2,9 +2,7 @@ import { assert } from 'chai'
 
 /* globals describe it */
 
-describe('AfterEffects', ()=> {
-
+describe('AfterEffects', () => {
   it('sends commands to AfterEffects')
-  //and so on
-
+  // and so on
 })

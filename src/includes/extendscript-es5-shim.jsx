@@ -5,37 +5,37 @@
   specifically written to work in the after effects environment.
 */
 
-
-Array.isArray = Array.isArray || function(obj) {
+Array.isArray = Array.isArray || function (obj) {
   return obj instanceof Array
 }
 
-Array.prototype.every = Array.prototype.every || function(testFunc, thisArg) {
-  if (this == null)
+Array.prototype.every = Array.prototype.every || function (testFunc, thisArg) {
+  if (this == null) {
     throw new TypeError('this is null or undefined')
+  }
 
-  if (typeof testFunc !== 'function')
+  if (typeof testFunc !== 'function') {
     throw new TypeError()
-
-  //ensure this is an object in case some wiseass does
-  //Array.prototype.every.call("string", ...) or some shit
+  }
+  // ensure this is an object in case some wiseass does
+  // Array.prototype.every.call("string", ...) or some shit
   const obj = Object(this)
 
-  //cast obj.length to integer
+  // cast obj.length to integer
   const length = obj.length >>> 0
 
   let key = 0
   while (key < length) {
-
-    //using key in obj rather than obj[key], so
-    //that this function will still work casted to objects or strings
-    //or whatever
+    // using key in obj rather than obj[key], so
+    // that this function will still work casted to objects or strings
+    // or whatever
     if (key in obj) {
       const value = obj[key]
       const pass = testFunc.call(thisArg, value, key, obj)
 
-      if (!pass)
+      if (!pass) {
         return false
+      }
     }
 
     key++
@@ -43,13 +43,15 @@ Array.prototype.every = Array.prototype.every || function(testFunc, thisArg) {
   return true
 }
 
-Array.prototype.filter = Array.prototype.filter || function(testFunc, thisArg) {
+Array.prototype.filter = Array.prototype.filter || function (testFunc, thisArg) {
 
-  if (this == null)
+  if (this == null) {
     throw new TypeError('this is null or undefined')
+  }
 
-  if (typeof testFunc !== 'function')
+  if (typeof testFunc !== 'function') {
     throw new TypeError()
+  }
 
   const obj = Object(this)
   const length = obj.length >>> 0
@@ -61,20 +63,23 @@ Array.prototype.filter = Array.prototype.filter || function(testFunc, thisArg) {
       const value = obj[key]
 
       const pass = testFunc.call(thisArg, value, key, obj)
-      if (pass)
+      if (pass) {
         result.push(value)
+      }
     }
     key++
   }
 }
 
-Array.prototype.forEach = Array.prototype.forEach || function(callback, thisArg) {
+Array.prototype.forEach = Array.prototype.forEach || function (callback, thisArg) {
 
-  if (this == null)
+  if (this == null) {
     throw new TypeError('this is null or undefined')
+  }
 
-  if (typeof callback !== 'function')
+  if (typeof callback !== 'function') {
     throw new TypeError()
+  }
 
   const obj = Object(this)
   const length = obj.length >>> 0

@@ -20,12 +20,12 @@ export default function (source, ...args) {
   executeSync(source, ...args)
 }
 
-export function execute(source, ...args) { }
+export function execute (source, ...args) { }
 
-export function executeSync(source, ...args) { }
+export function executeSync (source, ...args) { }
 
-export function create(source, ...args) { }
+export function create (source, ...args) { }
 
-export function createSync(source, ...args) { }
+export function createSync (source, ...args) { }
 
 export { options, Command }

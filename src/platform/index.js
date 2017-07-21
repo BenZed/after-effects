@@ -2,17 +2,14 @@ import os from './os'
 import Errors from '../errors'
 
 const platform = (() => {
-
-  const platform_name = os.platform()
-  if (platform_name === 'darwin') //mac
+  const platformName = os.platform()
+  if (platformName === 'darwin') { // mac
     return require('./mac')
-
-  else if (platform_name.includes('win')) { //windows 32 or 64
+  } else if (platformName.includes('win')) { // windows 32 or 64
     return require('./win')
-
-  } else
+  } else {
     throw new Error(Errors.UnsupportedPlatform)
-
+  }
 })()
 
 export default platform
