@@ -48,7 +48,7 @@ function prepareExec (source, options, ...args) {
   const command = Command.fromSource(source)
 
   const { adobified, resultUrl } = adobify(command, options, ...args)
-  const { programDir = PROGRAM_DIR, logger } = options
+  const { programDir, logger } = options
 
   return { programDir, adobified, resultUrl, logger }
 }
@@ -73,7 +73,7 @@ function prepareCreate (source, options, ...args) {
 /******************************************************************************/
 
 export function executeSync (source, ...args) {
-  const { programDir, adobified, resultUrl, logger } =
+  const { programDir = PROGRAM_DIR, adobified, resultUrl, logger } =
     prepareExec(source, this.options, ...args)
 
   const aeUrl = findAfterEffectsSync(programDir, isMac)
@@ -84,7 +84,7 @@ export function executeSync (source, ...args) {
 }
 
 export async function execute (source, ...args) {
-  const { programDir, adobified, resultUrl, logger } =
+  const { programDir = PROGRAM_DIR, adobified, resultUrl, logger } =
     prepareExec(source, this.options, ...args)
 
   const aeUrl = await findAfterEffects(programDir, isMac)
@@ -119,7 +119,7 @@ export async function create (source, url, ...args) {
 }
 
 export function getScriptsDirSync (options) {
-  const { programDir } = options || this.options
+  const { programDir = PROGRAM_DIR } = options || this.options
 
   const aeUrl = findAfterEffectsSync(programDir, isMac)
   if (aeUrl === null)
@@ -131,7 +131,7 @@ export function getScriptsDirSync (options) {
 }
 
 export async function getScriptsDir (options) {
-  const { programDir } = options || this.options
+  const { programDir = PROGRAM_DIR } = options || this.options
 
   const aeUrl = await findAfterEffects(programDir, isMac)
   if (aeUrl === null)
