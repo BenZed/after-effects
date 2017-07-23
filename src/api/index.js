@@ -25,7 +25,7 @@ if (!isMac && !isWin)
 
 const PROGRAM_DIR = isMac
   ? path.resolve('/Applications')
-  : path.resolve('C:/Progam Files/Adobe')
+  : path.resolve('C:/Program Files/Adobe')
 
 const SCRIPT_SUBPATH = isMac
   ? 'Scripts'
