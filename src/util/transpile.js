@@ -5,7 +5,7 @@ import { transform } from 'babel-core'
 
 import { CODE } from './symbols'
 
-import { CMD_RES_DIR } from '../api/common'
+import { CMD_RES_DIR, escaped } from '../api/common'
 
 /******************************************************************************/
 // Data
@@ -70,6 +70,20 @@ export function adobify (command, options = {}, ...args) {
 
   const lines = []
 
+  if (doErrorHandling || doResultWriting) lines.push(
+    '$.nodeJS = {',
+    '  sfns: app.preferences.getPrefAsLong(\'Main Pref Section\', \'Pref_SCRIPTING_FILE_NETWORK_SECURITY\') === 1,',
+    '};'
+  )
+
+  if (doErrorHandling) lines.push(
+    '',
+    'if ($.nodeJS.sfns)',
+    '  app.beginSuppressDialogs();',
+    '',
+    'try {'
+  )
+
   // There's probably a better way to do this, but we'll only ensure the global shortcut
   // exists if the babelified code includes the word 'global'
   if (/global/.test(babelified)) lines.push(
@@ -89,35 +103,14 @@ export function adobify (command, options = {}, ...args) {
     '};'
   )
 
-  if (doErrorHandling || doResultWriting) lines.push(
-    '',
-    '$.sfns = app.preferences.getPrefAsLong(\'Main Pref Section\', \'Pref_SCRIPTING_FILE_NETWORK_SECURITY\') === 1;'
-  )
-
-  if (doErrorHandling) lines.push(
-    '',
-    'if ($.sfns)',
-    '  app.beginSuppressDialogs();'
-  )
-
-  if (doErrorHandling) lines.push(
-    '',
-    'try {'
-  )
-
   lines.push(
     prefixes
   )
 
-  if (doErrorHandling && !doResultWriting)
-    lines.push(
-      `$.result = null;`
-    )
-
   if (isFunctionExpression) {
     const strArg = JSON.stringify(args)
     lines.push(
-      `${doResultWriting ? '$.result = ' : ''}${babelified}.apply(this,${strArg});`
+      `${doResultWriting ? '$.nodeJS.result = ' : ''}${babelified}.apply(this,${strArg});`
     )
   } else
     lines.push(
@@ -126,66 +119,49 @@ export function adobify (command, options = {}, ...args) {
 
   if (doErrorHandling) lines.push(
     '',
-    '} catch (err) {'
-  )
-
-  if (doErrorHandling) lines.push(
-    '',
-    '  if ($.sfns)',
-    '    $.result = err;',
-    '  else',
-    '    throw new Error(\'Node.js cannot handle errors in After Effects unless "Allow Scripts to Write Files and Access Network" is enabled in "General" settings.\');'
-  )
-
-  if (doErrorHandling) lines.push(
+    '} catch (err) {',
+    '  $.nodeJS.result = err;',
     '}',
     '',
-    'if ($.sfns)',
+    'if ($.nodeJS.sfns)',
     '  app.endSuppressDialogs(false);'
   )
 
-  if (doResultWriting) lines.push(
+  if (doResultWriting || doErrorHandling) lines.push(
     '',
-    'if ($.result !== undefined && !$.sfns)',
-    '  throw new Error(\'Node.js cannot get a response from After Effects unless "Allow Scripts to Write Files and Access Network" is enabled in "General" settings.\');',
-    '',
-    '$.cache = typeof console === \'object\' && console._cache instanceof Array && console._cache || [];'
-  )
-
-  if (!doResultWriting && doErrorHandling) lines.push(
-    '',
-    'if ($.result) {',
+    'if ($.nodeJS.sfns) {',
     ''
   )
 
+  if (doResultWriting) lines.push(
+    '  $.nodeJS.logs = typeof console === \'object\' && console._cache instanceof Array && console._cache || [];'
+  )
+
   if (doResultWriting || doErrorHandling) lines.push(
-    `$.file = File('${resultUrl}');`,
-    '$.file.open(\'w\');',
-    '$.file.write(\'module.exports = \' + ({',
-    '  error: $.result instanceof Error ? $.result.message : null,'
+    `  $.nodeJS.file = File('${resultUrl::escaped()}');`,
+    '  $.nodeJS.file.open(\'w\');',
+    '  $.nodeJS.file.write(\'module.exports = \' + ({',
+    '    error: $.result instanceof Error ? { message: $.nodeJS.result.message, stack: $.nodeJS.result.stack } : null,'
   )
 
   if (doResultWriting) lines.push(
-    '  logs: $.cache.splice(0, $.cache.length),', // splice so that the console.log._cache is cleared
-    '  result: $.result instanceof Error ? null : $.result'
+    '    logs: $.nodeJS.logs.splice(0, $.nodeJS.logs.length),', // splice so that the console.log._cache is cleared
+    '    result: $.nodeJS.result instanceof Error ? null : $.nodeJS.result'
   )
+
+  const errDescription = (doResultWriting ? 'get results' : '') +
+    (doResultWriting && doErrorHandling ? ' or ' : '') +
+    (doErrorHandling ? 'handle errors' : '')
 
   if (doResultWriting || doErrorHandling) lines.push(
-    '}.toSource()));',
-    '$.file.close();'
-  )
-
-  if (!doResultWriting && doErrorHandling) lines.push(
+    '  }.toSource()));',
+    '  $.nodeJS.file.close();',
     '',
-    '}'
-  )
-
-  if (doResultWriting || doErrorHandling) lines.push(
+    `} else alert('NodeJS Error\\nCannot ${errDescription} from ` +
+            'After Effects unless "Preferences" > "General" > "Allow Scripts' +
+            ' to Write Files and Access Network" is enabled.\')',
     '',
-    'delete $.cache;',
-    'delete $.file;',
-    'delete $.result;',
-    'delete $.sfns;'
+    'delete $.nodeJS;'
   )
 
   const adobified = lines.join('\n').trim()

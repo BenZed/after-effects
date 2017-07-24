@@ -2,6 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import { exec } from 'child_process'
 import os from 'os'
+import jsesc from 'jsesc'
 
 import { isAccessibleDirSync, isAccessibleDir, isAccessibleFileSync, isAccessibleFile }
   from '../util/fs-util'
@@ -18,6 +19,10 @@ export const execPromise = (...args) => new Promise((resolve, reject) => {
       resolve(result)
   })
 })
+
+export function escaped (quotes = 'double') {
+  return jsesc(this, { quotes })
+}
 
 // Command & Response Directory
 

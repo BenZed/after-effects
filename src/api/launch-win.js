@@ -10,9 +10,12 @@ import { parseResults, execPromise, CMD_RES_DIR } from './common'
 /******************************************************************************/
 
 // -r run a script
+// -ro ??
 // -s run code provided as string
+// -so ??
+// -m import file
+// -re render engine
 // -noui don't show the ui
-//
 
 /******************************************************************************/
 // Data
@@ -24,16 +27,40 @@ const STDIO = []
 // Helper
 /******************************************************************************/
 
-function execOptions (jsxUrl, aeUrl) {
+function execSetup (jsxUrl, aeUrl, renderEngine) {
 
+  const reArg = renderEngine ? ' -re' : ''
   const aeDir = path.dirname(aeUrl)
+  // Okay, so what's going on here?
+
+  // Well, if after effects is already open afterfx.com -r seems to work fine.
+  //
+  // If if after effects isn't already open, afterfx.com -r can sometimes crash
+  // and after effects closes immediatly once the script is complete.
+  //
+  // afterfx.exe -r always returns an error, regardless of weather one occured or not
+  //
+  // so the hack solution I've come up with is to run two commands: afterfx.exe to
+  // ensure that ae is open, and afterfx.com to actually run the command. This way
+  // it doesn't crash and stays open, making the behaviour consistent with Mac
+
+  // Just sending after.exe with no arguments opens it.
+  const openCmd = `afterfx.exe${reArg}`
 
   // Use .com instead of .exe to prevent it from erroring all the time
-  const cmd = `afterfx.com -r "${jsxUrl}"`
+  const runCmd = `afterfx.com -r "${jsxUrl}"`
 
-  const cwd = path.join(aeDir, 'Support Files')
+  const runOptions = {
+    cwd: path.join(aeDir, 'Support Files'),
+    stdio: STDIO
+  }
 
-  return [ cmd, { cwd, stdio: STDIO } ]
+  const openOptions = {
+    ...runOptions,
+    timeout: 10000 // 10 seconds to let After Effects open
+  }
+
+  return { openCmd, runCmd, runOptions, openOptions }
 
 }
 
@@ -46,7 +73,6 @@ function writeJsxSync (jsxTxt) {
 }
 
 async function writeJsx (jsxTxt) {
-
   const jsxUrl = path.join(CMD_RES_DIR, `ae-command-${uuid.v4()}.jsx`)
 
   await write(jsxUrl, jsxTxt)
@@ -54,28 +80,42 @@ async function writeJsx (jsxTxt) {
   return jsxUrl
 }
 
-function executeJsxSync (jsxUrl, aeUrl, resultUrl, logger) {
+function executeJsxSync (jsxUrl, aeUrl, resultUrl, logger, renderEngine) {
 
-  const options = execOptions(jsxUrl, aeUrl)
+  const { openCmd, runCmd, runOptions, openOptions } = execSetup(jsxUrl, aeUrl, renderEngine)
 
-  execSync(...options)
+  try {
+    execSync(openCmd, openOptions)
+  } catch (err) {
+    // If after effects IS open, the open command will do nothing and close right away.
 
-  const results = parseResults(resultUrl, logger)
+    // If after effects is NOT open, the open command will open after effects
+    // and not close until after effects closes.
+
+    // So, we have to send a timeout command along with execSync in order for
+    // node to run the actual script command. A timeout will result in an error,
+    // which is what we want, so we swallow it.
+  }
+  execSync(runCmd, runOptions)
 
   tryUnlinkSync(jsxUrl)
-  tryUnlinkSync(resultUrl)
+
+  const results = parseResults(resultUrl, logger)
 
   return results
 
 }
 
-async function executeJsx (jsxUrl, aeUrl, resultUrl, logger) {
+async function executeJsx (jsxUrl, aeUrl, resultUrl, logger, renderEngine) {
 
-  console.log(jsxUrl, '\n' + resultUrl)
+  const { openCmd, runCmd, runOptions, openOptions } = execSetup(jsxUrl, aeUrl, renderEngine)
 
-  const options = execOptions(jsxUrl, aeUrl)
-
-  await execPromise(...options)
+  try {
+    await execPromise(openCmd, openOptions)
+  } catch (err) {
+    // See above
+  }
+  await execPromise(runCmd, runOptions)
 
   const results = parseResults(resultUrl, logger)
 
@@ -90,18 +130,18 @@ async function executeJsx (jsxUrl, aeUrl, resultUrl, logger) {
 // Exports
 /******************************************************************************/
 
-export function launchWinSync (adobified, aeUrl, resultUrl, logger) {
+export function launchWinSync (adobified, aeUrl, resultUrl, logger, renderEngine) {
 
   const jsxUrl = writeJsxSync(adobified)
 
-  return executeJsxSync(jsxUrl, aeUrl, resultUrl, logger)
+  return executeJsxSync(jsxUrl, aeUrl, resultUrl, logger, renderEngine)
 
 }
 
-export async function launchWin (adobified, aeUrl, resultUrl, logger) {
+export async function launchWin (adobified, aeUrl, resultUrl, logger, renderEngine) {
 
   const jsxUrl = await writeJsx(adobified)
 
-  return executeJsx(jsxUrl, aeUrl, resultUrl, logger)
+  return executeJsx(jsxUrl, aeUrl, resultUrl, logger, renderEngine)
 
 }

@@ -15,7 +15,7 @@ const DEFAULT_INCLUDES = freeze([
 const DEFAULTS = freeze({
   handleErrors: true,
   writeResults: true,
-  // renderEngine: false,
+  renderEngine: false,
   programDir: undefined,
   logger: console.log.bind(console),
   shortcut: 'executeSync',
@@ -92,7 +92,7 @@ function validateOptions (options = {}, defs = DEFAULTS) {
   return Object.freeze({
     handleErrors: validateBoolean('handleErrors', options, defs),
     writeResults: validateBoolean('writeResults', options, defs),
-    // renderEngine: validateBoolean('renderEngine', options), // TODO enable render Engine
+    renderEngine: validateBoolean('renderEngine', options, defs),
     shortcut: validateString('shortcut', options, VALID_SHORTCUTS, defs),
     programDir: validateString('programDir', options, null, defs),
     logger: validateFunction('logger', options, defs),

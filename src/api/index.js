@@ -48,9 +48,9 @@ function prepareExec (source, options, ...args) {
   const command = Command.fromSource(source)
 
   const { adobified, resultUrl } = adobify(command, options, ...args)
-  const { programDir, logger } = options
+  const { programDir, logger, renderEngine } = options
 
-  return { programDir, adobified, resultUrl, logger }
+  return { programDir, adobified, resultUrl, logger, renderEngine }
 }
 
 function prepareCreate (source, options, ...args) {
@@ -73,25 +73,25 @@ function prepareCreate (source, options, ...args) {
 /******************************************************************************/
 
 export function executeSync (source, ...args) {
-  const { programDir = PROGRAM_DIR, adobified, resultUrl, logger } =
+  const { programDir = PROGRAM_DIR, adobified, resultUrl, logger, renderEngine } =
     prepareExec(source, this.options, ...args)
 
   const aeUrl = findAfterEffectsSync(programDir, isMac)
   if (aeUrl === null)
     throw new AfterEffectsMissingError()
 
-  return launchSync(adobified, aeUrl, resultUrl, logger)
+  return launchSync(adobified, aeUrl, resultUrl, logger, renderEngine)
 }
 
 export async function execute (source, ...args) {
-  const { programDir = PROGRAM_DIR, adobified, resultUrl, logger } =
+  const { programDir = PROGRAM_DIR, adobified, resultUrl, logger, renderEngine } =
     prepareExec(source, this.options, ...args)
 
   const aeUrl = await findAfterEffects(programDir, isMac)
   if (aeUrl === null)
     throw new AfterEffectsMissingError()
 
-  return launch(adobified, aeUrl, resultUrl, logger)
+  return launch(adobified, aeUrl, resultUrl, logger, renderEngine)
 }
 
 export function createSync (source, url, ...args) {

@@ -5,8 +5,7 @@ import uuid from 'uuid'
 import { execSync } from 'child_process'
 import { write, writeSync, tryUnlink, tryUnlinkSync } from '../util/fs-util'
 
-import { AfterEffectsMissingError, parseResults, execPromise, CMD_RES_DIR } from './common'
-import jsesc from 'jsesc'
+import { AfterEffectsMissingError, parseResults, execPromise, escaped, CMD_RES_DIR } from './common'
 
 /******************************************************************************/
 // Helper
@@ -33,8 +32,12 @@ function checkForMissingAppHack (error) {
 
 }
 
-function escaped (quotes = 'double') {
-  return jsesc(this, { quotes })
+function tryStartRenderEngine () {
+
+}
+
+function tryStartRenderEngineSync () {
+
 }
 
 /******************************************************************************/
@@ -91,16 +94,21 @@ function executeAppleScriptSync (scriptUrl, resultUrl, logger) {
 
   try {
     execSync(`osascript ${scriptUrl}`)
+
+    const results = parseResults(resultUrl, logger)
+
+    tryUnlinkSync(scriptUrl)
+    tryUnlinkSync(resultUrl)
+
+    return results
+
   } catch (err) {
+
+    tryUnlinkSync(scriptUrl)
+    tryUnlinkSync(resultUrl)
+
     throw checkForMissingAppHack(err)
   }
-
-  const results = parseResults(resultUrl, logger)
-
-  tryUnlinkSync(scriptUrl)
-  tryUnlinkSync(resultUrl)
-
-  return results
 
 }
 
@@ -108,23 +116,31 @@ async function executeAppleScript (scriptUrl, resultUrl, logger) {
 
   try {
     await execPromise(`osascript ${scriptUrl}`)
+
+    const results = parseResults(resultUrl, logger)
+
+    await tryUnlink(scriptUrl)
+    await tryUnlink(resultUrl)
+
+    return results
+
   } catch (err) {
+
+    await tryUnlink(scriptUrl)
+    await tryUnlink(resultUrl)
+
     throw checkForMissingAppHack(err)
   }
-
-  const results = parseResults(resultUrl, logger)
-
-  await tryUnlink(scriptUrl)
-  await tryUnlink(resultUrl)
-
-  return results
 }
 
 /******************************************************************************/
 // Exports
 /******************************************************************************/
 
-export function launchMacSync (adobified, aeUrl, resultUrl, logger) {
+export function launchMacSync (adobified, aeUrl, resultUrl, logger, renderEngine) {
+
+  if (renderEngine)
+    tryStartRenderEngineSync()
 
   const scrptUrl = writeAppleScriptSync(adobified, aeUrl)
 
@@ -132,7 +148,10 @@ export function launchMacSync (adobified, aeUrl, resultUrl, logger) {
 
 }
 
-export async function launchMac (adobified, aeUrl, resultUrl, logger) {
+export async function launchMac (adobified, aeUrl, resultUrl, logger, renderEngine) {
+
+  if (renderEngine)
+    await tryStartRenderEngine()
 
   const scrptUrl = await writeAppleScript(adobified, aeUrl)
 
