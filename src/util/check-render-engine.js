@@ -77,7 +77,7 @@ export function checkRenderEngineSync (ae) {
   // another command runs the risk of it failure.
   waitTwoSecondsSync()
 
-  ae.excuteSync(restartCommand)
+  ae.executeSync(restartCommand)
 
   return requiresRestart
 

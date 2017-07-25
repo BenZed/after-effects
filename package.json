@@ -1,6 +1,6 @@
 {
   "name": "after-effects",
-  "version": "1.0.0-alpha.5",
+  "version": "1.0.0-alpha.6",
   "description": "Send instructions to the After Effects scripting environment from node.js.",
   "main": "lib/index.js",
   "scripts": {
@@ -26,6 +26,7 @@
     "babel-plugin-transform-es3-property-literals": "^6.22.0",
     "babel-plugin-transform-es5-property-mutators": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
+    "extendscript-es5-shim": "^0.1.3",
     "fs-extra": "^4.0.0",
     "is-explicit": "^1.2.2",
     "is-valid-path": "^0.1.1",

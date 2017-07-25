@@ -4,7 +4,6 @@ import path from 'path'
 import { transform } from 'babel-core'
 
 import { CODE } from './symbols'
-
 import { CMD_RES_DIR, escaped } from '../api/common'
 
 /******************************************************************************/
@@ -53,7 +52,7 @@ export function babelify (str) {
 // If you're not familiar with the Adobe scripting environment.
 // TODO Comment in greater detail.
 
-export function adobify (command, options = {}, ...args) {
+export function adobify (command, includes, options = {}, ...args) {
 
   const [ prefixes, babelified ] = command[CODE]
 
@@ -104,7 +103,8 @@ export function adobify (command, options = {}, ...args) {
   )
 
   lines.push(
-    prefixes
+    prefixes,
+    ...includes
   )
 
   if (isFunctionExpression) {

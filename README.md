@@ -1,7 +1,7 @@
 # after-effects
 ___
 
-## Why?
+# Why?
 * You're running a node.js server with After Effects installed, and you'd like to run render commands server-side.
 
 * You use node.js locally, and prefer not to run AE scripts with the ExtendScript toolkit.
@@ -17,64 +17,7 @@ Additionally, in your After Effects preferences, enable:
 *Preferences -> General -> Allow Scripts to Write Files and Access Network*
 
 ___
-
-# Migration to Version 1
-
-Version 1 contains **breaking** changes to the API that embrace a more functional, encapsulated style.
-
-## Option changes
-
-Options are no longer set on ae.options or along with commands. In order to change
-options, you instance a new AfterEffects runner:
-
-```js
-
-import { AfterEffects } from 'after-effects'
-
-// Any command run from this instance will be sent to the After Effects render engine,
-// rather than the regular UI mode.
-
-const ae = new AfterEffects({ renderEngine: true })
-
-```
-
-The default export is not just an instance of the AfterEffects runner with
-default options:
-
-```js
-
-import ae, { AfterEffects } from 'after-effects'
-
-// ae and aeCopy will behave identically
-const aeCopy = new AfterEffects()
-
-// Sending commands to ae2017 will ensure they run in CC 2017
-const ae2017 = new AfterEffects({
-  program: '/Applications/Adobe After Effects CC 2017'
-})
-
-// Sending commands to ae2017 will ensure they run in CS6
-const aeCS6 = new AfterEffects({
-  program: '/Applications/Adobe After Effects CS6'
-})
-
-```
-
-## Includes
-
-### ```es5-shim```
-es5-shim has been split into it's own module. As of ```after-effects @1.0.0-alpha.1```
-it is not included.
-
-### ```get```
-Query selector has been removed. Eventually it will be given it's own repo
-and you'll be able to include it.
-
-For now if you need the get functionality, use the older after-effects package,
-or add the script to your After Effects StartUp folder manually.
-
-___
-## Basic Usage
+# Basic Usage
 
 ```js
 
@@ -93,10 +36,11 @@ ae(() => alert('Hello!\nFrom node.js'))
 _What fun!_
 
 Provided that After Effects is installed in your Applications/Program directory, and that you haven't renamed any of the folders or something, this will work.
+
 ___
 
-## Scripting Considerations
-The After Effects scripting environment is a completely different engine than node.js. Node.js has no access to the After Effects environment, and vice versa:
+# Scripting Considerations
+The After Effects scripting environment is a completely different engine than Node.js. Node.js has no access to the After Effects environment, and vice versa:
 
 ```js
 const foo = 'bar'
@@ -131,81 +75,122 @@ console.log(projectName)
 Also see the [After Effects Scripting Guide](http://blogs.adobe.com/aftereffects/files/2012/06/After-Effects-CS6-Scripting-Guide.pdf) for information about the After Effects Javascript API.
 ___
 
-## Sync vs Async
+#### _Sync vs Async_
 
 The default shortcut function will run the code synchronously and block NodeJS until complete, however, you can also send code to After Effects asynchronously:
 
 ```js
 //execute sends code to after effects, returning a Promise
-ae.execute(() => {
-  return app.project.activeItem.name
-})
-.then(name => console.log(name))
-.catch(err => console.log('No Active Item'))
+
+void async function main () {
+  try {
+    const name = await ae.execute(() => app.project.activeItem.name)
+    console.log(name)
+
+  } catch (err) {
+    console.log('No Active Item')
+  }
+}()
 ```
 
 The default shortcut function actually is just a shortcut to ```ae.executeSync```:
 
 ```js
-function save_current_project() {
+function saveCurrentProject() {
   app.project.save()
 }
 
-ae.executeSync(save_current_project)
+ae.executeSync(saveCurrentProject)
 //is the same as
-ae(save_current_project)
+ae(saveCurrentProject)
 ```
-___
+
 
 #### _Persistent Environment_
 The scripting environment inside After Effects persists between executions, unless
-you manually reset it or restart After Effects.
+you manually reset it from the ExtendScript application or by restarting After Effects.
 
 You have access to the After Effects global namespace, through ```global```:
 ```js
 ae(() => global.whoKilledKenny = "you bastards")
 
-var who = ae(() => global.whoKilledKenny)
+const who = ae(() => global.whoKilledKenny)
 console.log(who) //you bastards
 ```
-#### _Scripts directory_
 
-There is a convenience method to get the scripts directory associated with the current After Effects install:
+---
+# Advanced Usage
+
+## Inputs
+
+In addition to supplying ``ae`` with ``function(){}``s, you can also supply:
 ```js
-console.log(ae.scriptsDir)
+// Strings
+ae('alert("A string of code.")')
+
+// File Paths
+ae('./path/to/file.js')
 ```
 
-This will throw an error if After Effects can't be found. This is useful if you want to include any scripts in the Scripts Directory that might exist.
+``ae`` will parse the contents use that instead.
 
-#### _Startup Folder_
-Alternatively, You can copy the scripts provided in the lib folder to the After Scripts/Startup folder inside your After Effects installation. Then will be run and added to the global namespace when After Effects is starting, and will not have to be included while executing commands from ae.
+## Commands
 
-___
-## Advanced Usage
+By default, when you supply a function to ``ae``, it gets transpiled by *babel*
+to ensure that modern javascript will work in the aging After Effects scripting
+engine.
+
+If you're running a server and are going to be sending the same instructions frequently,
+you can use commands. Once created, a command doesn't have to be transpiled again.
 
 ```js
-// Rewrite the details about commands
+
+import ae, { Command } from 'after-effects'
+
+const renderCommand = new Command(() => app.project.renderQueue.render())
+
 ```
+
+Commands, after transpiled, can still receive different arguments.
+
+```js
+
+const renameActiveItem = new Command(name => app.project.activeItem.name = name)
+
+ae(renameActiveItem, 'Larry')
+ae(renameActiveItem, 'Steve')
+
+```
+
 ___
-## Creating Scripts
+# Creating Scripts
 Rather than executing code, you can create scripts for use in After Effects:
 
 ```js
-ae.create(() => {
 
-  alert(app.project.activeItem.name)
+void async function main () {
 
-}, 'AlertActiveItemName.jsx')
+  await ae.create(() => {
+
+    alert(app.project.activeItem.name)
+
+  }, 'AlertActiveItemName.jsx')
+
+}()
 ```
 
 This script will be available for After Effects to use in it's scripts folder. The filename provided will be treated as a relative URI, so if you want to create a script in the Scripts/Startup folder:
 
 ```js
-ae.create(() => {
+void async function main () {
 
-  alert('After Effects totally just started.')
+  await ae.create(() => {
 
-}, 'Startup/SayHello.jsx')
+    alert('After Effects totally just started.')
+
+  }, 'Startup/SayHello.jsx')
+
+}()
 ```
 
 If you'd like to place scripts somewhere other than the scripts folder, you can pass an absolute path:
@@ -223,8 +208,105 @@ const renameActiveItem = new ae.Command( name => app.project.activeItem.name = n
 ae.create(renameActiveItem, 'RenameActiveItemLarry.jsx', 'Larry')
 ```
 
-If you don't provide a filetype exstension scripts will be created as .jsx by default. After Effects doesn't care what the filetype extension is, but you might as well leave it as .jsx by convention.
+If you don't provide a filetype exstension scripts will be created as ```.jsx``` by default. After Effects doesn't care what the filetype extension is, but you might as well leave it as ```.jsx``` by convention.
 
-You can also create scripts syncronously with ae.createSync()
+You can also create scripts *syncronously* with ```ae.createSync()```
 
 ___
+
+# Version 1 Changes
+
+Version 1 contains **breaking** changes to the API that embrace a more functional, encapsulated style.
+
+## Option changes
+
+Options are no longer set on ```ae.options``` or along with commands. In order to change
+options, you instance a new AfterEffects runner:
+
+```js
+
+import { AfterEffects } from 'after-effects'
+
+// Any command run from this instance will be sent to the After Effects render engine,
+// rather than the regular UI mode.
+
+const aer = new AfterEffects({ renderEngine: true })
+
+```
+
+The default export is not just an instance of the AfterEffects runner with
+default options:
+
+```js
+
+import ae, { AfterEffects } from 'after-effects'
+
+// ae and aeCopy will behave identically
+const aeCopy = new AfterEffects()
+
+// Sending commands to ae2017 will ensure they run in CC 2017
+const ae2017 = new AfterEffects({
+  program: '/Applications/Adobe After Effects CC 2017'
+})
+
+// Sending commands to ae2017 will ensure they run in CS6
+const aeCS6 = new AfterEffects({
+  program: '/Applications/Adobe After Effects CS6'
+})
+
+```
+
+## Includes
+
+Default includes have been removed.
+
+You can still add includes that will be compiled into commands, but this is only
+recommended if you are intending to create scripts that will be distributed to others.
+If you are only scripting for your own environment, it's recommended you put the
+includes in your After Effects scripts Startup folder either manually or by:
+```js
+  // es5 shim will load any time after effects starts.
+  ae.createSync('./node_modules/extendscript-es5-shim/index.js', 'Startup/es5-shim.jsx')
+```
+
+### ```extendscript-es5-shim```
+Speaking of which, the shim that was in the previous version has been abandoned,
+favouring a community package in order to take advantage of the ```extendscript-es5-shim```,
+you can now install it as a peer dependency:
+```
+npm install extendscript-es5-shim
+```
+
+And then set it as an include:
+```js
+  import { AfterEffects } from 'after-effects'
+
+  const ae = new AfterEffects({
+    includes: [
+      './node_modules/extendscript-es5-shim/index.js', // files can be included
+      '$.global.FAVOURITE_COLOR = "blue"',             // or strings of code
+      function foo () { alert('bar')}                  // or functions
+    ]
+  })
+```
+
+Or copy it as detailed above.
+
+### ```get```
+Query selector has been removed, in favour of a superior solution. Once completed,
+it will be given its own repo and includable as mentioned.
+
+---
+
+# Not yet Documented:
+- options:
+  - handleErrors
+  - writeResults
+  - renderEngine
+  - programDir
+  - logger
+  - shortcut
+  - includes
+- function expressions vs regular code
+- .jsx
+- checkRenderEngine helpers

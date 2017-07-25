@@ -32,11 +32,11 @@ function checkForMissingAppHack (error) {
 
 }
 
-function tryStartRenderEngine () {
+function getRenderEngineUrl (aeUrl) {
+  const aeDir = path.dirname(aeUrl)
+  const reUrl = path.join(aeDir, 'Adobe After Effects Render Engine.app')
 
-}
-
-function tryStartRenderEngineSync () {
+  return reUrl
 
 }
 
@@ -44,29 +44,37 @@ function tryStartRenderEngineSync () {
 // Apple Scripts
 /******************************************************************************/
 
-function prepareAppleScript (adobified, aeUrl) {
+function prepareAppleScript (adobified, aeUrl, renderEngine) {
 
   const scptUrl = path.join(CMD_RES_DIR, `ae-command-${uuid.v4()}.scpt`)
 
-  if (aeUrl.includes('Render Engine.app'))
-    throw new Error('Activating the Render Engine for Mac needs to be rethought.' +
-    ' It cannot be given tells from applescript like the regular app can. We need' +
-    ' to come up with a way to detect if the render engine is running, and switch to it' +
-    ' if it is not.')
+  const scptTxt = []
 
-  const scptTxt = [
+  if (renderEngine) {
+    // Only way to get it to work is to run the render engine command if After Effects
+    // isn't already running.
+    const cmdUrl = getRenderEngineUrl(aeUrl)
+    scptTxt.push(
+      `if application "${aeUrl}" is not running then`,
+      `  tell application "${cmdUrl}" to activate`,
+      `  delay 8`,
+      'end if'
+    )
+  }
+
+  scptTxt.push(
     `tell application "${aeUrl}"`,
     `  DoScript "${adobified::escaped()}"`,
     'end tell'
-  ].join('\n')
+  )
 
-  return [ scptUrl, scptTxt ]
+  return [ scptUrl, scptTxt.join('\n') ]
 
 }
 
-function writeAppleScriptSync (adobified, aeUrl) {
+function writeAppleScriptSync (adobified, aeUrl, renderEngine) {
 
-  const [ scptUrl, scptTxt ] = prepareAppleScript(adobified, aeUrl)
+  const [ scptUrl, scptTxt ] = prepareAppleScript(adobified, aeUrl, renderEngine)
 
   try {
     writeSync(scptUrl, scptTxt)
@@ -77,9 +85,9 @@ function writeAppleScriptSync (adobified, aeUrl) {
   return scptUrl
 }
 
-async function writeAppleScript (adobified, aeUrl) {
+async function writeAppleScript (adobified, aeUrl, renderEngine) {
 
-  const [ scptUrl, scptTxt ] = prepareAppleScript(adobified, aeUrl)
+  const [ scptUrl, scptTxt ] = prepareAppleScript(adobified, aeUrl, renderEngine)
 
   try {
     await write(scptUrl, scptTxt)
@@ -139,21 +147,15 @@ async function executeAppleScript (scriptUrl, resultUrl, logger) {
 
 export function launchMacSync (adobified, aeUrl, resultUrl, logger, renderEngine) {
 
-  if (renderEngine)
-    tryStartRenderEngineSync()
+  const scrptUrl = writeAppleScriptSync(adobified, aeUrl, renderEngine)
 
-  const scrptUrl = writeAppleScriptSync(adobified, aeUrl)
-
-  return executeAppleScriptSync(scrptUrl, resultUrl, logger)
+  return executeAppleScriptSync(scrptUrl, resultUrl, logger, renderEngine)
 
 }
 
 export async function launchMac (adobified, aeUrl, resultUrl, logger, renderEngine) {
 
-  if (renderEngine)
-    await tryStartRenderEngine()
-
-  const scrptUrl = await writeAppleScript(adobified, aeUrl)
+  const scrptUrl = await writeAppleScript(adobified, aeUrl, renderEngine)
 
   return executeAppleScript(scrptUrl, resultUrl, logger)
 

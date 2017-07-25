@@ -2,6 +2,10 @@
 import is from 'is-explicit'
 import * as api from './api'
 
+import { CODE } from './util/symbols'
+import { babelify } from './util/transpile'
+import { inputToSource } from './command'
+
 /******************************************************************************/
 // Defaults
 /******************************************************************************/
@@ -9,7 +13,6 @@ import * as api from './api'
 const { freeze, defineProperty } = Object
 
 const DEFAULT_INCLUDES = freeze([
-
 ])
 
 const DEFAULTS = freeze({
@@ -82,14 +85,14 @@ function validateArray (name, options, Type, defs) {
   return isDefined ? [ ...value ] : [ ...defs.includes ]
 }
 
-function validateOptions (options = {}, defs = DEFAULTS) {
+function validateOptionsAndTranspileIncludes (options = {}, defs = DEFAULTS) {
 
   defs = { ...defs } // Rewrap to prevent future setOptions calls from mutating past options
 
   if (!is.plainObject(options))
     throw new Error('options, if defined, must be a plain object.')
 
-  return Object.freeze({
+  this.options = Object.freeze({
     handleErrors: validateBoolean('handleErrors', options, defs),
     writeResults: validateBoolean('writeResults', options, defs),
     renderEngine: validateBoolean('renderEngine', options, defs),
@@ -99,6 +102,8 @@ function validateOptions (options = {}, defs = DEFAULTS) {
     includes: validateArray('includes', options, String, defs)
   })
 
+  // Codify Includes
+  this[CODE] = this.options.includes.map(inputToSource).map(babelify)
 }
 
 /******************************************************************************/
@@ -119,8 +124,10 @@ export default function factory (options = {}) { // Factory
 
   }
 
-  AfterEffects.options = validateOptions(options)
-  AfterEffects.setOptions = options => validateOptions(options, AfterEffects.options)
+  AfterEffects::validateOptionsAndTranspileIncludes(options)
+
+  // No set options for now
+  // AfterEffects.setOptions = options => AfterEffects::validateOptionsAndTranspileIncludes(options, AfterEffects.options)
 
   defineProperty(AfterEffects, 'scriptsDir', { get: AfterEffects::api.getScriptsDirSync })
 

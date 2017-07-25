@@ -2,22 +2,20 @@ import is from 'is-explicit'
 import isPath from 'is-valid-path'
 
 import { CODE, SOURCE } from './util/symbols'
-import { readSync } from './util/fs-util'
 import { babelify } from './util/transpile'
+import { readSync } from './util/fs-util'
 
 /******************************************************************************/
 // Helper
 /******************************************************************************/
 
-function inputToSource (input) {
+export function inputToSource (input) {
 
   let source = null
 
   if (is(input, Function))
     source = input.toString()
 
-  // Dunno why the fuck someone would want to create a command
-  // from an existing command, but whatever
   else if (is(input, Command))
     source = input[SOURCE]
 
@@ -30,13 +28,13 @@ function inputToSource (input) {
     source = input
 
   if (source === null)
-    throw new Error('Commands must be created with functions, urls to code files or blobs of code as a string')
+    throw new Error('must be created with functions, urls to code files or blobs of code as a string')
 
   // If we're trying to use a js file that exports a single function as a source
   // we'll remove the export default so it doesn't break.
   // TODO there are probably a lot of cases this regeex doesn't support, such
   // as module.exports
-  source = source.replace(/^\s?export\s+default/, '')
+  source = source.replace(/^(\s+)?export\s+default/, '')
 
   return source
 

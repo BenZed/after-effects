@@ -2,7 +2,7 @@ import os from 'os'
 import path from 'path'
 
 import { adobify } from '../util/transpile'
-
+import { CODE } from '../util/symbols'
 import { write, writeSync } from '../util/fs-util'
 
 import { AfterEffectsMissingError, findAfterEffects, findAfterEffectsSync } from './common'
@@ -43,17 +43,17 @@ const launchSync = isMac
 // Perperation common to sync and async
 /******************************************************************************/
 
-function prepareExec (source, options, ...args) {
+function prepareExec (source, includes, options, ...args) {
 
   const command = Command.fromSource(source)
 
-  const { adobified, resultUrl } = adobify(command, options, ...args)
+  const { adobified, resultUrl } = adobify(command, includes, options, ...args)
   const { programDir, logger, renderEngine } = options
 
   return { programDir, adobified, resultUrl, logger, renderEngine }
 }
 
-function prepareCreate (source, options, ...args) {
+function prepareCreate (source, includes, options, ...args) {
 
   const command = Command.fromSource(source)
 
@@ -63,7 +63,7 @@ function prepareCreate (source, options, ...args) {
     writeResults: false
   }
 
-  const { adobified } = adobify(command, createOptions, ...args)
+  const { adobified } = adobify(command, includes, createOptions, ...args)
 
   return { options: createOptions, adobified }
 }
@@ -74,7 +74,7 @@ function prepareCreate (source, options, ...args) {
 
 export function executeSync (source, ...args) {
   const { programDir = PROGRAM_DIR, adobified, resultUrl, logger, renderEngine } =
-    prepareExec(source, this.options, ...args)
+    prepareExec(source, this[CODE], this.options, ...args)
 
   const aeUrl = findAfterEffectsSync(programDir, isMac)
   if (aeUrl === null)
@@ -85,7 +85,7 @@ export function executeSync (source, ...args) {
 
 export async function execute (source, ...args) {
   const { programDir = PROGRAM_DIR, adobified, resultUrl, logger, renderEngine } =
-    prepareExec(source, this.options, ...args)
+    prepareExec(source, this[CODE], this.options, ...args)
 
   const aeUrl = await findAfterEffects(programDir, isMac)
   if (aeUrl === null)
@@ -95,7 +95,7 @@ export async function execute (source, ...args) {
 }
 
 export function createSync (source, url, ...args) {
-  const { options, adobified } = prepareCreate(source, this.options, ...args)
+  const { options, adobified } = prepareCreate(source, this[CODE], this.options, ...args)
 
   const jsxUrl = path.isAbsolute(url)
     ? url
@@ -107,7 +107,7 @@ export function createSync (source, url, ...args) {
 }
 
 export async function create (source, url, ...args) {
-  const { options, adobified } = prepareCreate(source, this.options, ...args)
+  const { options, adobified } = prepareCreate(source, this[CODE], this.options, ...args)
 
   const jsxUrl = path.isAbsolute(url)
     ? url
