@@ -141,7 +141,7 @@ export function adobify (command, includes, options = {}, ...args) {
     `  $.nodeJS.file = File('${resultUrl::escaped()}');`,
     '  $.nodeJS.file.open(\'w\');',
     '  $.nodeJS.file.write(\'module.exports = \' + ({',
-    '    error: $.result instanceof Error ? { message: $.nodeJS.result.message, stack: $.nodeJS.result.stack } : null,'
+    '    error: $.nodeJS.result instanceof Error ? { message: $.nodeJS.result.message, stack: $.nodeJS.result.stack } : null,'
   )
 
   if (doResultWriting) lines.push(
