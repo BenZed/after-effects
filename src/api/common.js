@@ -53,9 +53,10 @@ export class NoResultError extends Error {
 }
 
 export class AfterEffectsScriptError extends Error {
-  constructor (message) {
-    super('Script execution error inside of After Effects' + (message ? ': ' + message : '.'))
+  constructor (err) {
+    super('Script execution error inside of After Effects' + (err.message ? ': ' + err.message : '.'))
     this.name = 'AfterEffectsScriptError'
+    this.stack = err.stack
   }
 }
 
