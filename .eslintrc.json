@@ -13,9 +13,5 @@
     "prefer-const": "error",
     "padded-blocks": "off",
     "curly": ["error", "multi"]
-  },
-  "globals": {
-    "log": false,
-    "is": false
   }
 }
