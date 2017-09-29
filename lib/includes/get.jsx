@@ -1,8 +1,8 @@
 /* globals $ AVLayer:false, ShapeLayer:false, TextLayer:false, CameraLayer:false, LightLayer:false,
 PropertyGroup:false, Property:false, FolderItem:false, CompItem:false, FootageItem:false, LayerCollection:false,
 ItemCollection:false, app:false*/
-/* eslint-disable no-var */
 
+/* eslint-disable no-var */
 
 if ($.global.is === undefined) {
 	$.global.is = (function() {
@@ -80,7 +80,7 @@ if ($.global.get === undefined) {
 
 		function arg_is_type(arg)
 		{
-			for(var i = 0; i < Types.length; i++) {
+			for (var i = 0; i < Types.length; i++) {
 				if (arg === Types[i])
 					return true;
 			}
@@ -146,7 +146,7 @@ if ($.global.get === undefined) {
 		{
 			for (var i = 0; i < types.length; i++) {
 				var type = types[i];
-				if (type === FolderItem || type === CompItem || type === FolderItem)
+				if (type === FolderItem || type === CompItem || type === FootageItem)
 					return true;
 			}
 
