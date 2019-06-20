@@ -2,3 +2,5 @@
 node_modules
 develop.js
 *.temp.js
+.idea/
+*.iml
