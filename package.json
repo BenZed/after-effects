@@ -24,6 +24,8 @@
     "is-explicit": "^1.0.1",
     "jsesc": "^1.2.0",
     "uglify-js": "^2.6.2",
-    "uuid": "^2.0.1"
+    "uuid": "^2.0.1", 
+	"ts-node": "^8.3.0",
+    "types-for-adobe": "^1.5.0",
   }
 }
