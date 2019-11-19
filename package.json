@@ -3,7 +3,7 @@
   "version": "0.4.15",
   "description": "Send instructions to the After Effects scripting environment from node.js.",
   "main": "index.js",
-  "scripts": {},
+  "scripts": { "test" : "node_modules/.bin/jasmine-ts " },
   "keywords": [
     "after",
     "effects"
@@ -23,6 +23,17 @@
     "escape-string-applescript": "^2.0.0",
     "is-explicit": "^1.2.2",
     "uglify-js": "^2.6.2",
-    "uuid": "^2.0.1"
+    "uuid": "^2.0.1",
+    "types-for-adobe": "^1.5.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.5",
+    "@types/jasmine": "^3.4.6",
+    "@types/node": "^12.7.5",
+    "chai": "^4.2.0",
+    "jasmine": "^3.5.0",
+    "jasmine-ts": "^0.3.0",
+    "ts-node": "^8.5.2",
+    "typescript": "^3.7.2"
   }
 }
