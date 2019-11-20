@@ -5,13 +5,17 @@ type allTypes = CompItem|FootageItem|FolderItem|AVLayer| ShapeLayer| TextLayer| 
 type allCollectionTypes = CompItem[]|FootageItem[]|FolderItem[]|AVLayer[]| ShapeLayer[]| TextLayer[]| LightLayer[]| CameraLayer[]|Property[]|PropertyGroup[];
 type layerTypes = AVLayer| ShapeLayer|TextLayer| LightLayer| CameraLayer
 type allSelectorTypes = string|RegExp | Function | Number
-type allContexts = ItemCollection|LayerCollection|Query|[]
+type allContexts = ItemCollection|LayerCollection|[]
 
 declare type ES3Object= Object 
-export declare module ae {
 
-    
-    interface options { 
+ 
+
+
+
+
+  export type ae = any 
+  export  interface options {
       /**
        * @description If true, the code will be minified before being sent to After Effects. This is disabled by default, which is different from previous versions of this package. I feel there's little point in spending the extra time to minify code that isn't going over a network. Still, you can set minify to true if you're into that sort of thing.
        */
@@ -37,140 +41,32 @@ export declare module ae {
      testing : boolean 
      commandSavePath : string
     }
-    let   options:options
+    
    // function execute<T,R>( fn:(args:T) => void    ) :Promise<void>  
-    function executeSync<T>( fn:(args:T) => void   ) :void 
-    function execute<T,E>(fn:(param:T)=> E , param:T):Promise<E>  
-    function compile(fn :()=> any):string 
-    function create<T>(fn :()=> any , path : string):Promise<T>
-    function createSync(fn:()=> any,path:string) :void 
-    
-    class  Command  {
+     export  function executeSync<T>( fn:(args:T) => void   ) :void 
+     export function execute<T,E>(fn:(param:T)=> E , param:T):Promise<E> 
+     export  function execute(fn:()=>void):void  
+     export function compile(fn :()=> any):string 
+     export  function create<T>(fn :()=> any , path : string):Promise<T>
+     export  function createSync(fn:()=> any,path:string) :void 
+     export  class  Command  {
 
-      /**
-       * 
-       * @param name of the script  
-       */
-      constructor( fn:(name:string)=>void)
+        /**
+         * 
+         * @param name of the script  
+         */
+        constructor( fn:(name:string)=>void)
+   
+      }
+
+
+    
+
+   
+
  
-    }
-
-    // get api 
-   
-    export function execute(fn:()=>void):void 
-
-}
-export declare class Query {
-    /**
-     * 
-     * @param callback apply function to iterate over query result  
-     * 
-     */
-    each<T extends allTypes>(callback:(item:T ,index:number)=>void):Query 
-    set<T>(prop:String , value : T ) : void 
-    /**
-     * 
-     * @param index get item from collection 
-     */
-    selection(index:number) :allTypes; 
-    children() : Query; 
-    /**
-     * 
-     * @param prop string  
-     */
-
-    get<T>(prop:string) : T;
-
-   
-    
-}
- /**
-  * 
-  * @param value 
-  * @param checkCls  
-  */
-export declare function is(value : any , ...checkCls: any  ) : boolean
-/**
- * general get module 
- */
-export declare module  get { 
-    
-   
-   /**
-         * @description selects CompItem from a project 
-         * @param item
-         * @param context 
-         * @param selector 
-         * @returns Query 
-         */
-    function   comps(  selector?:allSelectorTypes):Query 
-        
-        /**
-         * 
-         * @param item 
-         * @param context 
-         * @param selector 
-         * @returns Query 
-         */
-      function   items( selector?:allSelectorTypes):Query 
-        /**
-         * 
-         * @param item 
-         * @param context 
-         * @param selector
-         * @returns Query  
-         */
-        function      sources( selector?:allSelectorTypes):Query 
-        /**
-         * 
-         * @param item 
-         * @param context 
-         * @param selector
-         * @returns Query  
-         */
-      function   folders(  selector?:allSelectorTypes):Query 
-        
-
-        /**
-         * 
-         * @param item 
-         * @param context 
-         * @param selector
-         * @returns Query  
-         */
-          function  footage( selector?:allSelectorTypes):Query 
-
-        /**
-         * 
-         * @param item 
-         * @param context 
-         * @param selector
-         * @return Query  
-         */
-       function   layers( context?:LayerCollection, selector?:allSelectorTypes):Query 
-        /**
-         * 
-         * @param item 
-         * @param context 
-         * @param selector
-         * returns Query  
-         */
-        function  props(  context?:AVLayer  | TextLayer  , selector?:allSelectorTypes):Query 
-       /**
-        * 
-        * @param selector 
-        * @returns Query 
-        */
-       function  root(selector?:allSelectorTypes):Query
-
-        
-}
-/**
- * @returns all items in the project 
- */
-export declare function get() :Query 
+ 
 
  
 
 
- 
