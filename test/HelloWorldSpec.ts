@@ -1,14 +1,19 @@
 
 import  * as ae from ".." 
+import {options } from ".."
 import {expect} from "chai"
- 
+import { dirname } from "path"
+import path from "path" 
 describe("Basic Tests", ()=>{
 
 
  it("Memory should gt 0 " , async () => {
     
     
-    console.log(ae)
+    let file = path.resolve(dirname(__filename) , ".." , "Program" , "AfterEffects" , "App" , "Ae"  , "Support Files" ) 
+
+    ae.options.program = file 
+    
     let mem = await   ae.execute<string,number>(() => {
         
         
