@@ -10,15 +10,16 @@ describe("Basic Tests", ()=>{
  it("Memory should gt 0 " , async () => {
     
     
-    let file = path.resolve(dirname(__filename) , ".." , "Program" , "AfterEffects" , "App" , "Ae"  , "Support Files" ) 
+    //let file = path.resolve(dirname(__filename) , ".." , "Program" , "AfterEffects" , "App" , "Ae"  , "Support Files" ) 
 
-    ae.options.program = file 
-    
+    // ae.options.program = file 
+     
     let mem = await   ae.execute<string,number>(() => {
         
-        
+      
         return app.memoryInUse 
-    }, "test") 
+    }, "test")  
+     
     expect(mem).to.greaterThan(0,"memory should be greater than 0 ") 
 
  })

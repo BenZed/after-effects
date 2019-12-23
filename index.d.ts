@@ -1,11 +1,11 @@
 /// <reference types="types-for-adobe/AfterEffects/2018"  />
  
  
-type allTypes = CompItem|FootageItem|FolderItem|AVLayer| ShapeLayer| TextLayer| LightLayer| CameraLayer|Property|PropertyGroup;
-type allCollectionTypes = CompItem[]|FootageItem[]|FolderItem[]|AVLayer[]| ShapeLayer[]| TextLayer[]| LightLayer[]| CameraLayer[]|Property[]|PropertyGroup[];
-type layerTypes = AVLayer| ShapeLayer|TextLayer| LightLayer| CameraLayer
-type allSelectorTypes = string|RegExp | Function | Number
-type allContexts = ItemCollection|LayerCollection|[]
+export type allTypes = CompItem|FootageItem|FolderItem|AVLayer| ShapeLayer| TextLayer| LightLayer| CameraLayer|Property|PropertyGroup;
+export type allCollectionTypes = CompItem[]|FootageItem[]|FolderItem[]|AVLayer[]| ShapeLayer[]| TextLayer[]| LightLayer[]| CameraLayer[]|Property[]|PropertyGroup[];
+export type layerTypes = AVLayer| ShapeLayer|TextLayer| LightLayer| CameraLayer
+export type allSelectorTypes = string|RegExp | Function | Number
+export type allContexts = ItemCollection|LayerCollection|[]
 
 declare type ES3Object= Object 
 
