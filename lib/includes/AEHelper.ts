@@ -1,7 +1,7 @@
  import path from "path"
- import {Query,get} from "../lib/includes/get"
-import  * as ae from ".." 
-import {allTypes} from ".."
+ import {Query,get} from "./get"
+import  * as ae from "../.." 
+import {allTypes} from "../.."
 export default  interface AEHelper {
     convertPath(path:string) : string 
     getFile(path:string): File

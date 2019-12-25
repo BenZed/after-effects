@@ -4,7 +4,8 @@
   "description": "Send instructions to the After Effects scripting environment from node.js.",
   "main": "index.js",
   "scripts": {
-    "test": "node_modules/.bin/jasmine-ts "
+    "test": "node_modules/.bin/jasmine-ts " ,
+    "build:AEHelpers" : "node_modules/.bin/ts-node lib/includes/AEHelper.ts"
   },
   "keywords": [
     "after",

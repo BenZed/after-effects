@@ -23,4 +23,20 @@ describe("Basic Tests", ()=>{
     expect(mem).to.greaterThan(0,"memory should be greater than 0 ") 
 
  })
+ it("AE Helper should convert appropriate file to after Effects engine" , () => {
+
+    let executionContext = { 
+        file : path.resolve("." , "ae-templates", "sample-project.aep")   
+    }
+    ae.execute((context)  => {
+
+        
+    } , executionContext )
+ })
+
+ it("Get Method Has returns positive items " , ()=>{ 
+
+
+     
+ }) 
 })
