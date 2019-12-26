@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node_modules/.bin/jasmine-ts " ,
-    "build:AEHelpers" : "node_modules/.bin/ts-node lib/includes/AEHelper.ts"
+    "build:AEHelpers" : "ts-node lib/includes/AEHelper.ts"
   },
   "keywords": [
     "after",
