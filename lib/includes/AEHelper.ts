@@ -16,7 +16,7 @@ export default  interface AEHelper {
    
     toArray( collection : Collection | PropertyGroup   ) :   [] 
 }
-
+ae.options.includes = []
  
 ae.createSync(() => {
     enum AETypes {
@@ -158,4 +158,4 @@ ae.createSync(() => {
     }
    let  _AEHelper = new AEHelperImpl()
     _AEHelper.addToGlobal("AEHelper",_AEHelper)
-}, path.resolve("./AEHelper.jsx"))
+}, path.resolve(__dirname , "AEHelper.jsx"))

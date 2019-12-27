@@ -1,15 +1,15 @@
-"use strict";
-exports.__esModule = true;
-var path_1 = require("path");
-var get_1 = require("./get");
-var ae = require("../..");
-ae.createSync(function () {
+
+
+app.beginSuppressDialogs();
+try {
+
+(function () {
     var AETypes;
     (function (AETypes) {
         AETypes["CompItem"] = "CompItem";
         AETypes["FolderItem"] = "FolderItem";
     })(AETypes || (AETypes = {}));
-    var AEHelperImpl = /** @class */ (function () {
+    var AEHelperImpl = /** @class */function () {
         function AEHelperImpl() {
             this.globalRegistry = [];
         }
@@ -19,7 +19,9 @@ ae.createSync(function () {
             for (var _i = 0; _i < arguments.length; _i++) {
                 paths[_i] = arguments[_i];
             }
-            paths.map(function (path) { return _this.convertPath(path); });
+            paths.map(function (path) {
+                return _this.convertPath(path);
+            });
             return this.getFile(paths.join("/"));
         };
         AEHelperImpl.prototype.convertPath = function (path) {
@@ -36,7 +38,9 @@ ae.createSync(function () {
             return file;
         };
         AEHelperImpl.prototype.addToGlobal = function (id, object) {
-            if (this.globalRegistry.filter(function (it) { return it == id; }).length > 0) {
+            if (this.globalRegistry.filter(function (it) {
+                return it == id;
+            }).length > 0) {
                 throw new Error("Cannot add " + id + " , because before already registered to globals ");
             }
             this.globalRegistry.push(id);
@@ -79,15 +83,14 @@ ae.createSync(function () {
         AEHelperImpl.prototype.getFromLayers = function (remainChar, context) {
             var newContext = null;
             if (context == null) {
-                newContext = get_1.get.layers(undefined, remainChar).selection(0);
-            }
-            else if (context instanceof CompItem) {
-                newContext = get_1.get.layers(context.layers, remainChar).selection(0);
+                newContext = __1.get.layers(undefined, remainChar).selection(0);
+            } else if (context instanceof CompItem) {
+                newContext = __1.get.layers(context.layers, remainChar).selection(0);
             }
             return newContext;
         };
         AEHelperImpl.prototype.getFromComps = function (remainChar, context) {
-            var newContext = get_1.get.comps(remainChar).selection(0);
+            var newContext = __1.get.comps(remainChar).selection(0);
             return newContext;
         };
         AEHelperImpl.prototype.toArray = function (collection) {
@@ -111,7 +114,12 @@ ae.createSync(function () {
             });
         };
         return AEHelperImpl;
-    }());
+    }();
     var _AEHelper = new AEHelperImpl();
     _AEHelper.addToGlobal("AEHelper", _AEHelper);
-}, path_1["default"].resolve("./AEHelper.jsx"));
+}).apply(this);
+
+} catch (err) {
+
+}
+app.endSuppressDialogs(false);
