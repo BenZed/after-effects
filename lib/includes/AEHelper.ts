@@ -43,8 +43,8 @@ ae.createSync(() => {
 
             let regexStart = new RegExp(/^([C-Z]):/m)
         
-            var replacedString = path.replace(regexStart,  (match,$1)=>{
-                  return "/"+$1;
+            var replacedString = path.replace(regexStart,  (match,_1)=>{
+                  return "/"+_1;
             }) ;
 
             return replacedString;

@@ -7,7 +7,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch via NPM",
+            "name": "Test",
             "runtimeExecutable": "npm",
             "runtimeArgs": [
                 "run",

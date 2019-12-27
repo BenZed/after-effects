@@ -1,4 +1,5 @@
 'use strict';
+ 
 
 /*******************************************************************/
 // DEPENDENCIES
@@ -42,7 +43,9 @@ const options = {
 		path.join(__dirname, '/lib/includes/es5-shim.jsx'),
     path.join(__dirname, '/lib/includes/get.jsx'),
     path.join(__dirname, '/lib/includes/AEHelper.jsx')
-	]
+  ] , 
+  noui : false ,  
+  multi : false 
 };
 
 const platform = (() => {
@@ -184,9 +187,15 @@ function executeSync(/*args*/) {
   else
     return results.returned;
 }
+/** clean string that cause conflict */
+function cleanCommand(command) {
 
+  let cmdStr = command.toString() 
+  return cmdStr.replace(/\/\/ ?@ts-ignore/g, '');
+
+}
 function create(funcOrCommand, scriptPath) {
-
+   
   //prepare command args shouldn't include scriptPath
   const args = Array.prototype.slice.call(arguments, 2);
   args.unshift(funcOrCommand);
@@ -195,7 +204,10 @@ function create(funcOrCommand, scriptPath) {
   scriptPath = prepare_script_path(scriptPath, command);
 
   return new Promise((resolve, reject) => {
-    fs.writeFile(scriptPath, command.toString(), 'utf-8', (err) => {
+    // we need to remove // @ts-ignore  @ cause problem 
+    let cleanedCommand = cleanCommand(command) ;
+    
+    fs.writeFile(scriptPath, cleanedCommand, 'utf-8', (err) => {
       if (err)
         reject(err);
       else
@@ -206,14 +218,15 @@ function create(funcOrCommand, scriptPath) {
 }
 
 function createSync(funcOrCommand, scriptPath) {
+ 
   //prepare command args shouldn't include scriptPath
   const args = Array.prototype.slice.call(arguments, 2);
   args.unshift(funcOrCommand);
 
   const command = prepare_command(args);
   scriptPath = prepare_script_path(scriptPath, command);
-
-  fs.writeFileSync(scriptPath, command.toString(), 'utf-8');
+  let cleanedCommand = cleanCommand(command) ;
+  fs.writeFileSync(scriptPath, cleanedCommand, 'utf-8');
 
   process.stdout.write(`Script written to ${scriptPath}\n`);
   return scriptPath;

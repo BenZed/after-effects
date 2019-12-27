@@ -26,14 +26,14 @@ try {
         };
         AEHelperImpl.prototype.convertPath = function (path) {
             var regexStart = new RegExp(/^([C-Z]):/m);
-            var replacedString = path.replace(regexStart, function (match, $1) {
-                return "/" + $1;
+            var replacedString = path.replace(regexStart, function (match, _1) {
+                return "/" + _1;
             });
             return replacedString;
         };
         AEHelperImpl.prototype.getFile = function (path) {
             path = this.convertPath(path);
-            // @ts-ignore
+            
             var file = new File(path);
             return file;
         };
@@ -95,19 +95,19 @@ try {
         };
         AEHelperImpl.prototype.toArray = function (collection) {
             var array = [];
-            // @ts-ignore
+            
             var length = collection.hasOwnProperty("numProperties") ? collection.numProperties : collection.length;
             for (var i = 1; i != length + 1; i++) {
                 var reflection = void 0;
-                // @ts-ignore
+                
                 array.push(collection[i].name);
             }
             return array;
         };
         AEHelperImpl.prototype.filter = function (array, by, type) {
-            // @ts-ignore
+            
             array.map(function (value) {
-                //@ts-ignore
+                
                 var xml = value.reflect.toXML();
                 //<Reflection>value.reflect).to 
                 return value;
