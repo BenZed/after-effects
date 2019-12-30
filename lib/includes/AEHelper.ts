@@ -5,7 +5,7 @@
 import  * as ae from "../.." 
 import { Query  , get ,allTypes  } from "../.."
  
-export default  interface AEHelper {
+interface AEHelperInterface  {
     convertPath(path:string) : string 
     getFile(path:string): File
 
@@ -16,6 +16,8 @@ export default  interface AEHelper {
    
     toArray( collection : Collection | PropertyGroup   ) :   [] 
 }
+
+export default   <AEHelperInterface> {}
 ae.options.includes = []
  
 ae.createSync(() => {
@@ -24,7 +26,7 @@ ae.createSync(() => {
         CompItem  = "CompItem"   , 
         FolderItem = "FolderItem"
     }
-      class AEHelperImpl implements AEHelper {
+      class AEHelperImpl implements AEHelperInterface {
         private globalRegistry:Array<String>  = []
         constructor(){
          
