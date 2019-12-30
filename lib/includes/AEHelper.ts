@@ -4,7 +4,7 @@
  
 import  * as ae from "../.." 
 import { Query  , get ,allTypes  } from "../.."
- 
+export const File : FileConstructor = <FileConstructor>{}
 interface AEHelperInterface  {
     convertPath(path:string) : string 
     getFile(path:string): File
