@@ -160,4 +160,4 @@ ae.createSync(() => {
     }
    let  _AEHelper = new AEHelperImpl()
     _AEHelper.addToGlobal("AEHelper",_AEHelper)
-}, path.resolve(__dirname , "AEHelper.jsx"))
+}, path.resolve(__dirname,".." , ".." ,   "lib" , "includes"  , "AEHelper.jsx"))

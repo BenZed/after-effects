@@ -34,7 +34,7 @@ try {
         AEHelperImpl.prototype.getFile = function (path) {
             path = this.convertPath(path);
             
-            var file = new File(path);
+            var file = new exports.File(path);
             return file;
         };
         AEHelperImpl.prototype.addToGlobal = function (id, object) {
