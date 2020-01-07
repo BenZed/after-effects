@@ -1,11 +1,13 @@
 {
   "name": "after-effects",
-  "version": "1.0.3",
+  "version": "1.0.1b",
   "description": "Send instructions to the After Effects scripting environment from node.js. ",
   "main": "index.js",
   "scripts": {
     "test": "node_modules/.bin/jasmine-ts " ,
-    "build:AEHelpers" : "ts-node lib/includes/AEHelper.ts"
+    "build:AEHelpers" : "node_modules/.bin/ts-node lib/includes/AEHelper.ts" ,
+    "compile:AEHelpers" : "node_modules/.bin/tsc lib/includes/AEHelper.ts "
+    ,"build" : "npm run compile:AEHelpers &   npm run build:AEHelpers && npm pack"
   },
   "keywords": [
     "after",
@@ -14,7 +16,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/BenZed/after-effects"
-  },
+  }, 
   "author": "Ben Gaumond",
   "license": "ISC",
   "dependencies": {

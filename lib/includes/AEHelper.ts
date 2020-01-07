@@ -1,6 +1,6 @@
  
  
-import path from "path"; 
+import * as  path from "path"; 
  
 import  * as ae from "../.." 
 import { Query  , get ,allTypes  } from "../.."
