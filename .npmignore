@@ -1,14 +1,4 @@
 .DS_Store
 node_modules
 develop.js
-<<<<<<< HEAD
-test
-src
-
-.eslintignore
-.eslint.json
-.gitignore
-.languagebabel
-=======
 *.tgz
->>>>>>> master

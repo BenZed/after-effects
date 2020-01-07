@@ -174,9 +174,20 @@ export declare module  get {
 export declare function get(selector? : allSelectorTypes) :Query 
    
 
- 
- 
+ // 
+ export interface AEHelper   {
+  convertPath(path:string) : string 
+  getFile(path:string): File
 
+  
+  addToGlobal(id: string, object: any) : void
+  getItem(query: string ) : Query
+  joinPath(...paths:string[]) : File  
  
+  toArray( collection : Collection | PropertyGroup   ) :   [] 
+}
+ 
+export type File = FileConstructor
+
 
 
