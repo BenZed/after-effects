@@ -1,15 +1,17 @@
-
-
-app.beginSuppressDialogs();
-try {
-
-(function () {
+"use strict";
+exports.__esModule = true;
+var path_1 = require("path");
+var ae = require("../..");
+var __1 = require("../..");
+var File = {};
+ae.options.includes = [];
+ae.createSync(function () {
     var AETypes;
     (function (AETypes) {
         AETypes["CompItem"] = "CompItem";
         AETypes["FolderItem"] = "FolderItem";
     })(AETypes || (AETypes = {}));
-    var AEHelperImpl = /** @class */function () {
+    var AEHelperImpl = /** @class */ (function () {
         function AEHelperImpl() {
             this.globalRegistry = [];
         }
@@ -19,9 +21,7 @@ try {
             for (var _i = 0; _i < arguments.length; _i++) {
                 paths[_i] = arguments[_i];
             }
-            paths.map(function (path) {
-                return _this.convertPath(path);
-            });
+            paths.map(function (path) { return _this.convertPath(path); });
             return this.getFile(paths.join("/"));
         };
         AEHelperImpl.prototype.convertPath = function (path) {
@@ -40,9 +40,7 @@ try {
             return file;
         };
         AEHelperImpl.prototype.addToGlobal = function (id, object) {
-            if (this.globalRegistry.filter(function (it) {
-                return it == id;
-            }).length > 0) {
+            if (this.globalRegistry.filter(function (it) { return it == id; }).length > 0) {
                 throw new Error("Cannot add " + id + " , because before already registered to globals ");
             }
             this.globalRegistry.push(id);
@@ -86,7 +84,8 @@ try {
             var newContext = null;
             if (context == null) {
                 newContext = __1.get.layers(undefined, remainChar).selection(0);
-            } else if (context instanceof CompItem) {
+            }
+            else if (context instanceof CompItem) {
                 newContext = __1.get.layers(context.layers, remainChar).selection(0);
             }
             return newContext;
@@ -97,31 +96,26 @@ try {
         };
         AEHelperImpl.prototype.toArray = function (collection) {
             var array = [];
-            
+            // @ts-ignore
             var length = collection.hasOwnProperty("numProperties") ? collection.numProperties : collection.length;
             for (var i = 1; i != length + 1; i++) {
                 var reflection = void 0;
-                
+                // @ts-ignore
                 array.push(collection[i].name);
             }
             return array;
         };
         AEHelperImpl.prototype.filter = function (array, by, type) {
-            
+            // @ts-ignore
             array.map(function (value) {
-                
+                //@ts-ignore
                 var xml = value.reflect.toXML();
                 //<Reflection>value.reflect).to 
                 return value;
             });
         };
         return AEHelperImpl;
-    }();
+    }());
     var _AEHelper = new AEHelperImpl();
     _AEHelper.addToGlobal("AEHelper", _AEHelper);
-}).apply(this);
-
-} catch (err) {
-
-}
-app.endSuppressDialogs(false);
+}, path_1.resolve(__dirname, "..", "..", "lib", "includes", "AEHelper.jsx"));

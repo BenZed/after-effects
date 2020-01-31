@@ -174,7 +174,7 @@ export declare module  get {
 export declare function get(selector? : allSelectorTypes) :Query 
    
 
- // 
+ /*
  export interface AEHelper   {
   convertPath(path:string) : string 
   getFile(path:string): File
@@ -186,7 +186,7 @@ export declare function get(selector? : allSelectorTypes) :Query
  
   toArray( collection : Collection | PropertyGroup   ) :   [] 
 }
- 
+*/ 
 export type File = FileConstructor
 
 

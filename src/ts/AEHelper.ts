@@ -1,15 +1,15 @@
  
  
-import * as  path from "path"; 
+import {resolve} from "path"; 
  
 import  * as ae from "../.." 
 import { Query  , get ,allTypes  } from "../.."
-export const File : FileConstructor = <FileConstructor>{}
-interface AEHelperInterface  {
+const File : FileConstructor = <FileConstructor>{}
+export default interface AEHelperInterface  {
     convertPath(path:string) : string 
     getFile(path:string): File
 
-    
+    File(path:string) : File 
     addToGlobal(id: string, object: any) : void
     getItem(query: string ) : Query
     joinPath(...paths:string[]) : File  
@@ -17,7 +17,7 @@ interface AEHelperInterface  {
     toArray( collection : Collection | PropertyGroup   ) :   [] 
 }
 
-export default   <AEHelperInterface> {}
+ 
 ae.options.includes = []
  
 ae.createSync(() => {
@@ -51,10 +51,13 @@ ae.createSync(() => {
 
             return replacedString;
         }
+        File(path:string ){
+            return this.getFile(path)
+        } 
         getFile(path:string   ){
 
             path = this.convertPath(path)
-           // @ts-ignore
+            
             let file = new File(path) 
 
             return file ;  
@@ -160,4 +163,6 @@ ae.createSync(() => {
     }
    let  _AEHelper = new AEHelperImpl()
     _AEHelper.addToGlobal("AEHelper",_AEHelper)
-}, path.resolve(__dirname,".." , ".." ,   "lib" , "includes"  , "AEHelper.jsx"))
+}, resolve(__dirname,".." , ".." ,   "lib" , "includes"  , "AEHelper.jsx"))
+
+ 
