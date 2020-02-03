@@ -63,7 +63,7 @@ declare type ES3Object= Object
     
 /** jsx helpers */
 /** get api  */
-export declare class Query {
+export declare class Query extends Array {
   /**
    * 
    * @param callback apply function to iterate over query result  
@@ -106,7 +106,7 @@ export declare module  get {
        * @param selector 
        * @returns Query 
        */
-  function   comps(  selector?:allSelectorTypes):Query 
+  function   comps(  selector?:allSelectorTypes):Query  
       
       /**
        * 
@@ -115,7 +115,7 @@ export declare module  get {
        * @param selector 
        * @returns Query 
        */
-    function   items( selector?:allSelectorTypes):Query 
+    function   items( selector?:allSelectorTypes):Query  
       /**
        * 
        * @param item 
@@ -123,7 +123,7 @@ export declare module  get {
        * @param selector
        * @returns Query  
        */
-      function      sources( selector?:allSelectorTypes):Query 
+      function      sources( selector?:allSelectorTypes):Query   
       /**
        * 
        * @param item 
@@ -141,7 +141,7 @@ export declare module  get {
        * @param selector
        * @returns Query  
        */
-        function  footage( selector?:allSelectorTypes):Query 
+        function  footage( selector?:allSelectorTypes):Query  
 
       /**
        * 
@@ -150,28 +150,28 @@ export declare module  get {
        * @param selector
        * @return Query  
        */
-     function   layers( context?:LayerCollection, selector?:allSelectorTypes):Query 
-      /**
-       * 
+     function   layers( context?:LayerCollection, selector?:allSelectorTypes):Query  
+       /** 
+
        * @param item 
        * @param context 
        * @param selector
        * returns Query  
        */
-      function  props(  context?:AVLayer  | TextLayer  , selector?:allSelectorTypes):Query 
+      function  props(  context?:AVLayer  | TextLayer  , selector?:allSelectorTypes):Query  
      /**
       * 
       * @param selector 
       * @returns Query 
       */
-     function  root(selector?:allSelectorTypes):Query
+     function  root(selector?:allSelectorTypes):Query   
 
       
 }
 /**
 * @returns all items in the project 
 */
-export declare function get(selector? : allSelectorTypes) :Query 
+export declare function get(selector? : allSelectorTypes) :Query   
    
 
  /*

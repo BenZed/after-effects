@@ -85,15 +85,17 @@ try {
         AEHelperImpl.prototype.getFromLayers = function (remainChar, context) {
             var newContext = null;
             if (context == null) {
-                newContext = __1.get.layers(undefined, remainChar).selection(0);
+                newContext = __1.get.layers(undefined, remainChar);
+                return newContext.selection(0);
             } else if (context instanceof CompItem) {
-                newContext = __1.get.layers(context.layers, remainChar).selection(0);
+                newContext = __1.get.layers(context.layers, remainChar);
+                return newContext.selection(0);
             }
             return newContext;
         };
         AEHelperImpl.prototype.getFromComps = function (remainChar, context) {
-            var newContext = __1.get.comps(remainChar).selection(0);
-            return newContext;
+            var comps = __1.get.comps(remainChar);
+            return comps.selection(0);
         };
         AEHelperImpl.prototype.toArray = function (collection) {
             var array = [];

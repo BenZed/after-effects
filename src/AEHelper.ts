@@ -2,16 +2,20 @@
  
 import {resolve} from "path"; 
  
-import  * as ae from "../.." 
-import { Query  , get ,allTypes  } from "../.."
+import  * as ae from ".." 
+import { Query  , get ,allTypes  } from ".."
 const File : FileConstructor = <FileConstructor>{}
+
+export interface QueryParams {
+    multi : boolean
+}
 export default interface AEHelperInterface  {
     convertPath(path:string) : string 
     getFile(path:string): File
 
     File(path:string) : File 
     addToGlobal(id: string, object: any) : void
-    getItem(query: string ) : Query
+    getItem(query: string , params : QueryParams ) : Query
     joinPath(...paths:string[]) : File  
    
     toArray( collection : Collection | PropertyGroup   ) :   [] 
@@ -69,8 +73,8 @@ ae.createSync(() => {
             this.globalRegistry.push(id) 
             $.global[id] = object 
         } 
-
-        getItem<T>(query: string ) : T {
+            
+        getItem<T>(query: string , params : QueryParams) : T {
 
              let  returnType : T  
             let splited = query.split(".") 
@@ -119,18 +123,21 @@ ae.createSync(() => {
           getFromLayers(remainChar: string , context: any) {
             let newContext = null 
             if(context == null) {
-               newContext  =  get.layers( undefined, remainChar).selection(0)
+               newContext  =  get.layers( undefined, remainChar) as Query; 
+               return newContext.selection(0)
 
             }else if(context instanceof CompItem) {
-              newContext  = get.layers((context as CompItem).layers,remainChar).selection(0)
+              newContext  = get.layers((context as CompItem).layers,remainChar) as Query
+              return newContext.selection(0)
             }
             
             return newContext
           }
           getFromComps(remainChar: string, context: any) : allTypes {
               
-                let newContext = get.comps(remainChar).selection(0)
-                return newContext
+                let comps : Query = get.comps(remainChar) as Query;
+                return comps.selection(0)     
+            
 
           }
         
