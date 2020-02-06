@@ -4,6 +4,8 @@ var path_1 = require("path");
 var ae = require("..");
 var __1 = require("..");
 var File = {};
+//@ts-ignore
+var get = __1.get.bind(null);
 ae.options.includes = [];
 ae.createSync(function () {
     var AETypes;
@@ -46,7 +48,7 @@ ae.createSync(function () {
             this.globalRegistry.push(id);
             $.global[id] = object;
         };
-        AEHelperImpl.prototype.getItem = function (query) {
+        AEHelperImpl.prototype.getItem = function (query, params) {
             var _this = this;
             var returnType;
             var splited = query.split(".");
@@ -83,17 +85,17 @@ ae.createSync(function () {
         AEHelperImpl.prototype.getFromLayers = function (remainChar, context) {
             var newContext = null;
             if (context == null) {
-                newContext = __1.get.layers(undefined, remainChar);
+                newContext = get.layers(undefined, remainChar);
                 return newContext.selection(0);
             }
             else if (context instanceof CompItem) {
-                newContext = __1.get.layers(context.layers, remainChar);
+                newContext = get.layers(context.layers, remainChar);
                 return newContext.selection(0);
             }
             return newContext;
         };
         AEHelperImpl.prototype.getFromComps = function (remainChar, context) {
-            var comps = __1.get.comps(remainChar);
+            var comps = get.comps(remainChar);
             return comps.selection(0);
         };
         AEHelperImpl.prototype.toArray = function (collection) {

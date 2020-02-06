@@ -3,7 +3,7 @@
 import {resolve} from "path"; 
  
 import  * as ae from ".." 
-import { Query  , get ,allTypes  } from ".."
+import { Query  , get as getType ,allTypes  } from ".."
 const File : FileConstructor = <FileConstructor>{}
 
 export interface QueryParams {
@@ -19,9 +19,9 @@ export default interface AEHelperInterface  {
     joinPath(...paths:string[]) : File  
    
     toArray( collection : Collection | PropertyGroup   ) :   [] 
-}
-
- 
+} 
+//@ts-ignore
+const get   = getType.bind(null)
 ae.options.includes = []
  
 ae.createSync(() => {

@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node_modules/.bin/jasmine-ts " ,
-    "compile:AEHelpers" : "node_modules/.bin/tsc src/ts/AEHelper.ts || exit 0 ", 
-    "build:AEHelpers" : "node_modules/.bin/ts-node src/ts/AEHelper.ts" 
+    "compile:AEHelpers" : "node_modules/.bin/tsc  src/AEHelper.ts   || exit 0 ", 
+    "build:AEHelpers" : "node src/AEHelper.js" 
      
     ,"build" : "npm run    compile:AEHelpers   && npm run  build:AEHelpers &&npm pack"
   },
