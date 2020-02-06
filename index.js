@@ -38,6 +38,7 @@ const options = {
 	errorHandling: true,
 	minify: false,
   program: null,
+  debug:false ,
   includes: [
 		path.join(__dirname, '/lib/includes/console.jsx'),
 		path.join(__dirname, '/lib/includes/es5-shim.jsx'),

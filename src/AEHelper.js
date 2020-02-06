@@ -1,8 +1,8 @@
 "use strict";
 exports.__esModule = true;
 var path_1 = require("path");
-var ae = require("../..");
-var __1 = require("../..");
+var ae = require("..");
+var __1 = require("..");
 var File = {};
 ae.options.includes = [];
 ae.createSync(function () {
