@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "node_modules/.bin/jasmine-ts " ,
-    "compile:AEHelpers" : "node_modules/.bin/tsc  src/AEHelper.ts   || exit 0 ", 
+    "::error:compile" : "node_modules/.bin/tsc  src/lib/Error.ts   || exit 0 ", 
+    "::error:build" : "node src/lib/Error.js", 
+    "::info:compile" :"node_modules/.bin/tsc  src/lib/Info.ts   || exit 0 " , 
+    "::info:build": "node src/lib/Error.js", 
+    "compile:AEHelp ers" : "node_modules/.bin/tsc  src/AEHelper.ts   || exit 0 ", 
     "build:AEHelpers" : "node src/AEHelper.js" 
      
     ,"build" : "npm run    compile:AEHelpers   && npm run  build:AEHelpers &&npm pack"

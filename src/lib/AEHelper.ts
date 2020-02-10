@@ -3,7 +3,7 @@
 import {resolve} from "path"; 
  
 import  * as ae from ".." 
-import { Query  , get as getType ,allTypes  } from ".."
+import { Query  , get as getT   ,allTypes  } from ".."
 const File : FileConstructor = <FileConstructor>{}
 
 export interface QueryParams {
@@ -20,8 +20,8 @@ export default interface AEHelperInterface  {
    
     toArray( collection : Collection | PropertyGroup   ) :   [] 
 } 
-//@ts-ignore
-const get   = getType.bind(null)
+ 
+const get   : getT   = {} as getT 
 ae.options.includes = []
  
 ae.createSync(() => {
@@ -134,7 +134,7 @@ ae.createSync(() => {
             return newContext
           }
           getFromComps(remainChar: string, context: any) : allTypes {
-              
+              get.comps
                 let comps : Query = get.comps(remainChar) as Query;
                 return comps.selection(0)     
             

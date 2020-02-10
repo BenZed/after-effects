@@ -174,7 +174,7 @@ export declare module  get {
 /**
 * @returns all items in the project 
 */
-export declare function get(selector? : allSelectorTypes) :Query   
+export declare type  get = (selector? : allSelectorTypes) =>  Query  | get 
    
 
  /*
