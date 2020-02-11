@@ -3,10 +3,12 @@
     
         function getLayer(compName , layername){ 
                 var comp = null 
-                 for(var i in app.project.items){ 
+                 for(var i =  1 ; i != app.project.items.length + 1   ;  i++){ 
                      
-                            var  item = app.project.items[i]
-                             if(item.name = compName) { 
+                            var  item = app.project.item(i)
+                            var name =  item.name 
+                            var is = (name == compName)
+                             if(item.name == compName) { 
                                   comp = item 
                                         break 
                                  }
@@ -14,8 +16,8 @@
                     
                     if(comp != null){ 
                         
-                           for( var i in comp.layers){
-                                    var layer = comp.layers[i]  
+                        for(var i =  1 ; i != comp.layers.length + 1   ;  i++){ 
+                                    var layer = comp.layer(i)  
                                     if(layer.name == layername){
                                             return layer 
                                         }
@@ -36,8 +38,11 @@ var itemRef = app.project.items.reflect
             $.println(i) 
         }
     
-    var layer1  = getLayer ("Comp1", "testlayer")
-     var description= itemRef.description 
+    var layer1  = getLayer ("Comp 1", "testlayer")
+     var methods = layer1.reflect.methods  
+     
+     var props = layer1.reflect.properties
+     $.writeln(layer1.reflect.toXML())
 var a=1
         
     })()
