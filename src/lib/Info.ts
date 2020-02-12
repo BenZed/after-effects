@@ -33,9 +33,10 @@ ae.execute(()=>{
             }
             
         }
+        
         toArray( item :  any     ) :   []{
-
-           let itemReflection : ReflectionInfo =  item.reflect  
+ 
+            let itemReflection : ReflectionInfo =  item.reflect  
            if(! itemReflection.isCollection ){
                throw new Error(ErrorEnum.IS_NOT_COLLECTION)
            }

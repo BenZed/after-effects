@@ -24,8 +24,14 @@ ae.createSync(() => {
 
     class GetImplementation implements GetInterface{
          
-        comps(name : string  , first? : boolean ) { 
+        comps(name : string | callbackType   , first? : boolean ) { 
 
+             if(typeof name == "string" ){
+
+
+                
+                app.project.items.filter 
+             }
 
         } 
     }

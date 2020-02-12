@@ -10,8 +10,8 @@ export interface QueryParams {
  
 
 export default interface  get2  {
-     byComp(name : string ) : [] 
-     byLayer(context : CompItem, name : string) : []      
+     comps(name : string ) : [] 
+     layers( name : string , context : CompItem | null ) : []      
 
 } 
  

@@ -39,6 +39,12 @@ var itemRef = app.project.items.reflect
         }
     
     var layer1  = getLayer ("Comp 1", "testlayer")
+    var xml = null 
+    try {
+            xml = layer1.reflect.toXML() 
+        }catch(e){
+            }
+    $.writeln(xml) 
      var methods = layer1.reflect.methods  
      
      var props = layer1.reflect.properties

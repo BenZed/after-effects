@@ -2,8 +2,8 @@
  
 import {resolve} from "path"; 
  
-import  * as ae from ".." 
-import { Query  , get as getT   ,allTypes  } from ".."
+import  * as ae from "../.." 
+import { Query  , get as getT   ,allTypes  } from "../.."
 const File : FileConstructor = <FileConstructor>{}
 
 export interface QueryParams {
@@ -123,6 +123,7 @@ ae.createSync(() => {
           getFromLayers(remainChar: string , context: any) {
             let newContext = null 
             if(context == null) {
+                (get() as Query).
                newContext  =  get.layers( undefined, remainChar) as Query; 
                return newContext.selection(0)
 
