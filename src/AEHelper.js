@@ -1,8 +1,8 @@
 "use strict";
 exports.__esModule = true;
 var path = require("path");
-var ae = require("../..");
-var __1 = require("../..");
+var ae = require("..");
+var __1 = require("..");
 exports.File = {};
 exports["default"] = {};
 ae.options.includes = [];
@@ -117,4 +117,4 @@ ae.createSync(function () {
     }());
     var _AEHelper = new AEHelperImpl();
     _AEHelper.addToGlobal("AEHelper", _AEHelper);
-}, path.resolve(__dirname, "AEHelper.jsx"));
+}, path.resolve(__dirname, "..", "lib", "includes", "AEHelper.jsx"));

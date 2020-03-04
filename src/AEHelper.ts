@@ -2,8 +2,8 @@
  
 import * as  path from "path"; 
  
-import  * as ae from "../.." 
-import { Query  , get ,allTypes  } from "../.."
+import  * as ae from ".." 
+import { Query  , get ,allTypes  } from ".."
 export const File : FileConstructor = <FileConstructor>{}
 interface AEHelperInterface  {
     convertPath(path:string) : string 
@@ -160,4 +160,4 @@ ae.createSync(() => {
     }
    let  _AEHelper = new AEHelperImpl()
     _AEHelper.addToGlobal("AEHelper",_AEHelper)
-}, path.resolve(__dirname,".." , ".." ,   "lib" , "includes"  , "AEHelper.jsx"))
+}, path.resolve(__dirname,".."   ,   "lib" , "includes"  , "AEHelper.jsx"))
