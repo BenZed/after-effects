@@ -1,10 +1,9 @@
 "use strict";
 exports.__esModule = true;
-var path = require("path");
+var path_1 = require("path");
 var ae = require("..");
-var __1 = require("..");
-exports.File = {};
-exports["default"] = {};
+var File = {};
+var get = {};
 ae.options.includes = [];
 ae.createSync(function () {
     var AETypes;
@@ -32,19 +31,12 @@ ae.createSync(function () {
             });
             return replacedString;
         };
-<<<<<<< HEAD
-        AEHelperImpl.prototype.getFile = function (path) {
-            path = this.convertPath(path);
-            // @ts-ignore
-            var file = new exports.File(path);
-=======
         AEHelperImpl.prototype.File = function (path) {
             return this.getFile(path);
         };
         AEHelperImpl.prototype.getFile = function (path) {
             path = this.convertPath(path);
             var file = new File(path);
->>>>>>> refs/remotes/origin/develop
             return file;
         };
         AEHelperImpl.prototype.addToGlobal = function (id, object) {
@@ -54,11 +46,7 @@ ae.createSync(function () {
             this.globalRegistry.push(id);
             $.global[id] = object;
         };
-<<<<<<< HEAD
-        AEHelperImpl.prototype.getItem = function (query) {
-=======
         AEHelperImpl.prototype.getItem = function (query, params) {
->>>>>>> refs/remotes/origin/develop
             var _this = this;
             var returnType;
             var splited = query.split(".");
@@ -68,10 +56,10 @@ ae.createSync(function () {
                 var remainChar = it.slice(1, it.length);
                 switch (firstChar) {
                     case "#":
-                        context = _this.getFromComps(remainChar, context);
+                        //   context =  this.getFromComps(remainChar,context)
                         break;
                     case "!":
-                        context = _this.getFromLayers(remainChar, context);
+                        // context =  this.getFromLayers(remainChar,context) 
                         break;
                     case "&":
                         context = _this.getFromEffects(remainChar, context);
@@ -91,34 +79,6 @@ ae.createSync(function () {
         };
         AEHelperImpl.prototype.getFromItems = function (remainChar, context) {
             throw new Error("Method not implemented.");
-        };
-        AEHelperImpl.prototype.getFromLayers = function (remainChar, context) {
-            var newContext = null;
-            if (context == null) {
-<<<<<<< HEAD
-                newContext = __1.get.layers(undefined, remainChar).selection(0);
-            }
-            else if (context instanceof CompItem) {
-                newContext = __1.get.layers(context.layers, remainChar).selection(0);
-=======
-                newContext = get.layers(undefined, remainChar);
-                return newContext.selection(0);
-            }
-            else if (context instanceof CompItem) {
-                newContext = get.layers(context.layers, remainChar);
-                return newContext.selection(0);
->>>>>>> refs/remotes/origin/develop
-            }
-            return newContext;
-        };
-        AEHelperImpl.prototype.getFromComps = function (remainChar, context) {
-<<<<<<< HEAD
-            var newContext = __1.get.comps(remainChar).selection(0);
-            return newContext;
-=======
-            var comps = get.comps(remainChar);
-            return comps.selection(0);
->>>>>>> refs/remotes/origin/develop
         };
         AEHelperImpl.prototype.toArray = function (collection) {
             var array = [];
@@ -144,8 +104,4 @@ ae.createSync(function () {
     }());
     var _AEHelper = new AEHelperImpl();
     _AEHelper.addToGlobal("AEHelper", _AEHelper);
-<<<<<<< HEAD
-}, path.resolve(__dirname, "..", "lib", "includes", "AEHelper.jsx"));
-=======
-}, path_1.resolve(__dirname, "..", "..", "lib", "includes", "AEHelper.jsx"));
->>>>>>> refs/remotes/origin/develop
+}, path_1.resolve(__dirname, "..", "lib", "includes", "AEHelper.jsx"));

@@ -87,7 +87,8 @@ export declare class Query extends Array {
 
   get<T>(prop:string) : T;
 
- 
+ count(): number ; 
+ types():string[]
   
 }
 /**
@@ -99,7 +100,7 @@ export declare function is(value : any , ...checkCls: any  ) : boolean
 /**
 * general get module 
 */
-export declare module  get { 
+export declare interface   getType { 
   
  
  /**
@@ -109,7 +110,7 @@ export declare module  get {
        * @param selector 
        * @returns Query 
        */
-  function   comps(  selector?:allSelectorTypes):Query  
+     comps(  selector?:allSelectorTypes):Query  
       
       /**
        * 
@@ -118,7 +119,7 @@ export declare module  get {
        * @param selector 
        * @returns Query 
        */
-    function   items( selector?:allSelectorTypes):Query  
+    items( selector?:allSelectorTypes):Query  
       /**
        * 
        * @param item 
@@ -126,7 +127,7 @@ export declare module  get {
        * @param selector
        * @returns Query  
        */
-      function      sources( selector?:allSelectorTypes):Query   
+         sources( selector?:allSelectorTypes):Query   
       /**
        * 
        * @param item 
@@ -134,7 +135,7 @@ export declare module  get {
        * @param selector
        * @returns Query  
        */
-    function   folders(  selector?:allSelectorTypes):Query 
+     folders(  selector?:allSelectorTypes):Query 
       
 
       /**
@@ -144,7 +145,7 @@ export declare module  get {
        * @param selector
        * @returns Query  
        */
-        function  footage( selector?:allSelectorTypes):Query  
+         footage( selector?:allSelectorTypes):Query  
 
       /**
        * 
@@ -153,7 +154,7 @@ export declare module  get {
        * @param selector
        * @return Query  
        */
-     function   layers( context?:LayerCollection, selector?:allSelectorTypes):Query  
+        layers( context?:LayerCollection, selector?:allSelectorTypes):Query  
        /** 
 
        * @param item 
@@ -161,20 +162,20 @@ export declare module  get {
        * @param selector
        * returns Query  
        */
-      function  props(  context?:AVLayer  | TextLayer  , selector?:allSelectorTypes):Query  
+       props(  context?:AVLayer  | TextLayer  , selector?:allSelectorTypes):Query  
      /**
       * 
       * @param selector 
       * @returns Query 
       */
-     function  root(selector?:allSelectorTypes):Query   
+     root(selector?:allSelectorTypes):Query   
 
       
 }
 /**
 * @returns all items in the project 
 */
-export declare type  get = (selector? : allSelectorTypes) =>  Query  | get 
+export declare type  getFn = (selector? : allSelectorTypes) =>  Query  | getType
    
 
  /*

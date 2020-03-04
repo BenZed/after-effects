@@ -1,25 +1,13 @@
 {
   "name": "after-effects",
-  "version": "1.0.1a4",
+  "version": "1.0.1a7",
   "description": "Send instructions to the After Effects scripting environment from node.js. ",
   "main": "index.js",
   "scripts": {
-<<<<<<< HEAD
     "test": "node_modules/.bin/jasmine-ts ",
     "build:AEHelpers": "node src/AEHelper.js",
     "compile:AEHelpers": "node_modules/.bin/tsc src/AEHelper.ts ",
     "build": "npm run compile:AEHelpers &   npm run build:AEHelpers && npm pack"
-=======
-    "test": "node_modules/.bin/jasmine-ts " ,
-    "::error:compile" : "node_modules/.bin/tsc  src/lib/Error.ts   || exit 0 ", 
-    "::error:build" : "node src/lib/Error.js", 
-    "::info:compile" :"node_modules/.bin/tsc  src/lib/Info.ts   || exit 0 " , 
-    "::info:build": "node src/lib/Error.js", 
-    "compile:AEHelp ers" : "node_modules/.bin/tsc  src/AEHelper.ts   || exit 0 ", 
-    "build:AEHelpers" : "node src/AEHelper.js" 
-     
-    ,"build" : "npm run    compile:AEHelpers   && npm run  build:AEHelpers &&npm pack"
->>>>>>> refs/remotes/origin/develop
   },
   "keywords": [
     "after",

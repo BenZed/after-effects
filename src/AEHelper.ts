@@ -2,21 +2,14 @@
  
 import {resolve} from "path"; 
  
-<<<<<<< HEAD:src/AEHelper.ts
 import  * as ae from ".." 
-import { Query  , get ,allTypes  } from ".."
-export const File : FileConstructor = <FileConstructor>{}
-interface AEHelperInterface  {
-=======
-import  * as ae from "../.." 
-import { Query  , get as getT   ,allTypes  } from "../.."
+import { Query  , getType  ,allTypes  } from ".."
 const File : FileConstructor = <FileConstructor>{}
 
 export interface QueryParams {
     multi : boolean
 }
 export default interface AEHelperInterface  {
->>>>>>> refs/remotes/origin/develop:src/lib/AEHelper.ts
     convertPath(path:string) : string 
     getFile(path:string): File
 
@@ -28,7 +21,7 @@ export default interface AEHelperInterface  {
     toArray( collection : Collection | PropertyGroup   ) :   [] 
 } 
  
-const get   : getT   = {} as getT 
+const get   : getType  = {} as getType  
 ae.options.includes = []
  
 ae.createSync(() => {
@@ -94,10 +87,10 @@ ae.createSync(() => {
                 let remainChar = it.slice(1,it.length)
                 switch(firstChar){
                     case "#" : 
-                       context =  this.getFromComps(remainChar,context)
+                    //   context =  this.getFromComps(remainChar,context)
                         break  
                     case "!" : 
-                       context =  this.getFromLayers(remainChar,context) 
+                      // context =  this.getFromLayers(remainChar,context) 
                         break 
                     case "&" : 
                         context = this.getFromEffects(remainChar,context) 
@@ -127,28 +120,7 @@ ae.createSync(() => {
           getFromItems(remainChar: string, context: any): any {
               throw new Error("Method not implemented.");
           }
-          getFromLayers(remainChar: string , context: any) {
-            let newContext = null 
-            if(context == null) {
-                (get() as Query).
-               newContext  =  get.layers( undefined, remainChar) as Query; 
-               return newContext.selection(0)
-
-            }else if(context instanceof CompItem) {
-              newContext  = get.layers((context as CompItem).layers,remainChar) as Query
-              return newContext.selection(0)
-            }
-            
-            return newContext
-          }
-          getFromComps(remainChar: string, context: any) : allTypes {
-              get.comps
-                let comps : Query = get.comps(remainChar) as Query;
-                return comps.selection(0)     
-            
-
-          }
-        
+         
           
           toArray( collection : Collection | PropertyGroup    ) :   []{
 
@@ -178,10 +150,4 @@ ae.createSync(() => {
     }
    let  _AEHelper = new AEHelperImpl()
     _AEHelper.addToGlobal("AEHelper",_AEHelper)
-<<<<<<< HEAD:src/AEHelper.ts
-}, path.resolve(__dirname,".."   ,   "lib" , "includes"  , "AEHelper.jsx"))
-=======
-}, resolve(__dirname,".." , ".." ,   "lib" , "includes"  , "AEHelper.jsx"))
-
- 
->>>>>>> refs/remotes/origin/develop:src/lib/AEHelper.ts
+},  resolve(__dirname,".."   ,   "lib" , "includes"  , "AEHelper.jsx"))

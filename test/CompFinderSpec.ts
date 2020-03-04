@@ -1,6 +1,7 @@
+ 
 import  * as ae from ".."
 import {resolve} from "path"
-import AEHelperInterface from "../src/lib/AEHelper"
+import AEHelperInterface from "../src/AEHelper"
 import {expect} from "chai"
 
 ae.options.debug = true 

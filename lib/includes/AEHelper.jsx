@@ -48,7 +48,7 @@ try {
             this.globalRegistry.push(id);
             $.global[id] = object;
         };
-        AEHelperImpl.prototype.getItem = function (query) {
+        AEHelperImpl.prototype.getItem = function (query, params) {
             var _this = this;
             var returnType;
             var splited = query.split(".");
@@ -58,10 +58,10 @@ try {
                 var remainChar = it.slice(1, it.length);
                 switch (firstChar) {
                     case "#":
-                        context = _this.getFromComps(remainChar, context);
+                        //   context =  this.getFromComps(remainChar,context)
                         break;
                     case "!":
-                        context = _this.getFromLayers(remainChar, context);
+                        // context =  this.getFromLayers(remainChar,context) 
                         break;
                     case "&":
                         context = _this.getFromEffects(remainChar, context);
@@ -81,21 +81,6 @@ try {
         };
         AEHelperImpl.prototype.getFromItems = function (remainChar, context) {
             throw new Error("Method not implemented.");
-        };
-        AEHelperImpl.prototype.getFromLayers = function (remainChar, context) {
-            var newContext = null;
-            if (context == null) {
-                newContext = __1.get.layers(undefined, remainChar);
-                return newContext.selection(0);
-            } else if (context instanceof CompItem) {
-                newContext = __1.get.layers(context.layers, remainChar);
-                return newContext.selection(0);
-            }
-            return newContext;
-        };
-        AEHelperImpl.prototype.getFromComps = function (remainChar, context) {
-            var comps = __1.get.comps(remainChar);
-            return comps.selection(0);
         };
         AEHelperImpl.prototype.toArray = function (collection) {
             var array = [];
