@@ -16,7 +16,10 @@ declare type ES3Object= Object
 
  
  export   interface  options {
-      /**
+      
+    debug?: boolean , 
+    /**
+       * 
        * @description If true, the code will be minified before being sent to After Effects. This is disabled by default, which is different from previous versions of this package. I feel there's little point in spending the extra time to minify code that isn't going over a network. Still, you can set minify to true if you're into that sort of thing.
        */
       multi? : boolean , 
@@ -63,7 +66,7 @@ declare type ES3Object= Object
     
 /** jsx helpers */
 /** get api  */
-export declare class Query {
+export declare class Query extends Array {
   /**
    * 
    * @param callback apply function to iterate over query result  
@@ -106,7 +109,7 @@ export declare module  get {
        * @param selector 
        * @returns Query 
        */
-  function   comps(  selector?:allSelectorTypes):Query 
+  function   comps(  selector?:allSelectorTypes):Query  
       
       /**
        * 
@@ -115,7 +118,7 @@ export declare module  get {
        * @param selector 
        * @returns Query 
        */
-    function   items( selector?:allSelectorTypes):Query 
+    function   items( selector?:allSelectorTypes):Query  
       /**
        * 
        * @param item 
@@ -123,7 +126,7 @@ export declare module  get {
        * @param selector
        * @returns Query  
        */
-      function      sources( selector?:allSelectorTypes):Query 
+      function      sources( selector?:allSelectorTypes):Query   
       /**
        * 
        * @param item 
@@ -141,7 +144,7 @@ export declare module  get {
        * @param selector
        * @returns Query  
        */
-        function  footage( selector?:allSelectorTypes):Query 
+        function  footage( selector?:allSelectorTypes):Query  
 
       /**
        * 
@@ -150,31 +153,31 @@ export declare module  get {
        * @param selector
        * @return Query  
        */
-     function   layers( context?:LayerCollection, selector?:allSelectorTypes):Query 
-      /**
-       * 
+     function   layers( context?:LayerCollection, selector?:allSelectorTypes):Query  
+       /** 
+
        * @param item 
        * @param context 
        * @param selector
        * returns Query  
        */
-      function  props(  context?:AVLayer  | TextLayer  , selector?:allSelectorTypes):Query 
+      function  props(  context?:AVLayer  | TextLayer  , selector?:allSelectorTypes):Query  
      /**
       * 
       * @param selector 
       * @returns Query 
       */
-     function  root(selector?:allSelectorTypes):Query
+     function  root(selector?:allSelectorTypes):Query   
 
       
 }
 /**
 * @returns all items in the project 
 */
-export declare function get(selector? : allSelectorTypes) :Query 
+export declare type  get = (selector? : allSelectorTypes) =>  Query  | get 
    
 
- // 
+ /*
  export interface AEHelper   {
   convertPath(path:string) : string 
   getFile(path:string): File
@@ -186,7 +189,7 @@ export declare function get(selector? : allSelectorTypes) :Query
  
   toArray( collection : Collection | PropertyGroup   ) :   [] 
 }
- 
+*/ 
 export type File = FileConstructor
 
 

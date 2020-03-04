@@ -12,7 +12,7 @@ describe("Basic Tests", ()=>{
     afterEach( () => ae.options.noui = false  )  
 
 
- it("Memory should gt 0 " , async () => {
+xit("Memory should gt 0 " , async () => {
   
     
     //let file = path.resolve(dirname(__filename) , ".." , "Program" , "AfterEffects" , "App" , "Ae"  , "Support Files" ) 
