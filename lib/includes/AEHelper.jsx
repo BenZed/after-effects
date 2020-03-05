@@ -102,6 +102,36 @@ try {
                 return value;
             });
         };
+        AEHelperImpl.prototype.getAllLayers = function (byType) {
+            var comps = get.layers();
+            if (byType == null) {
+                byType = "ADBE Text Layer";
+            }
+            var selected = [];
+            for (var i = 0; i != comps.count(); i++) {
+                var layer = comps.selection(i);
+                if (layer.matchName == byType) {
+                    selected.push(layer);
+                }
+            }
+            return selected;
+        };
+        AEHelperImpl.prototype.importFiles = function (files) {
+            var _this = this;
+            var footageItems = [];
+            files.forEach(function (file) {
+                var converted = _this.convertPath(file);
+                var importOptions = new ImportOptions(new File(converted));
+                var importedFile = app.project.importFile(importOptions);
+                footageItems.push(importedFile);
+            });
+            return footageItems;
+        };
+        AEHelperImpl.prototype["import"] = function (file) {
+            var imports = this.importFiles([file]);
+            if (imports.length < 1) throw new Error("cannot import file " + file);
+            return imports[0];
+        };
         return AEHelperImpl;
     }();
     var _AEHelper = new AEHelperImpl();

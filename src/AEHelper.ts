@@ -1,5 +1,6 @@
  
  
+ 
 import {resolve} from "path"; 
  
 import  * as ae from ".." 
@@ -17,8 +18,11 @@ export default interface AEHelperInterface  {
     addToGlobal(id: string, object: any) : void
     getItem(query: string , params : QueryParams ) : Query
     joinPath(...paths:string[]) : File  
-   
+    getAllLayers(byType?:string): Layer[]
     toArray( collection : Collection | PropertyGroup   ) :   [] 
+    import(file:string ) : FootageItem 
+    importFiles(files:string[]) : FootageItem[] 
+   
 } 
  
 const get   : getType  = {} as getType  
@@ -147,6 +151,45 @@ ae.createSync(() => {
                 } )
 
           }
+
+          getAllLayers(byType?:string){
+            let comps = get.layers()
+            if(byType == null){
+                byType = "ADBE Text Layer" 
+            }
+            let selected : Layer[] = []
+            for(let i = 0 ; i != comps.count(); i++){
+                let layer = comps.selection(i) as Layer 
+                if(layer.matchName == byType){
+                        selected.push(layer)
+                }
+            }
+            return selected 
+        } 
+
+        importFiles(files:string[]){
+
+            let footageItems : FootageItem[] = []
+            files.forEach(file =>{
+
+                let converted = this.convertPath(file) 
+                let importOptions = new ImportOptions(new File(converted))
+                
+                let importedFile = app.project.importFile( importOptions)  as FootageItem
+                footageItems.push(importedFile)
+            })
+            return footageItems
+        }
+
+        import(file:string){
+            let imports =  this.importFiles([file]) 
+            if(imports.length<1)
+                throw new Error(`cannot import file ${file}`)
+                return imports[0]
+            
+        }
+
+       
     }
    let  _AEHelper = new AEHelperImpl()
     _AEHelper.addToGlobal("AEHelper",_AEHelper)
