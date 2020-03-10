@@ -3,38 +3,19 @@
  
 import {resolve} from "path"; 
  
-import  * as ae from ".." 
-import { Query  , getType  ,allTypes  } from ".."
+import  * as ae from "../.." 
+import { Query  , getType  ,allTypes  } from "../.."
 const File : FileConstructor = <FileConstructor>{}
-
-export interface QueryParams {
-    multi : boolean
-}
-export default interface AEHelperInterface  {
-    convertPath(path:string) : string 
-    getFile(path:string): File
-
-    File(path:string) : File 
-    addToGlobal(id: string, object: any) : void
-    getItem(query: string , params : QueryParams ) : Query
-    joinPath(...paths:string[]) : File  
-    getAllLayers(byType?:string): Layer[]
-    toArray( collection : Collection | PropertyGroup   ) :   [] 
-    import(file:string ) : FootageItem 
-    importFiles(files:string[]) : FootageItem[] 
-   
-} 
+import {QueryParams , AEHelper} from "./Interfaces/AEHelper"
  
-const get   : getType  = {} as getType  
-ae.options.includes = []
- 
+let get : getType = {} as getType
 ae.createSync(() => {
     enum AETypes {
 
         CompItem  = "CompItem"   , 
         FolderItem = "FolderItem"
     }
-      class AEHelperImpl implements AEHelperInterface {
+      class AEHelperImpl implements AEHelper  {
         private globalRegistry:Array<String>  = []
         constructor(){
          
@@ -49,27 +30,8 @@ ae.createSync(() => {
             
 
         }
-        convertPath   (path :string) : string   {
-
-            let regexStart = new RegExp(/^([C-Z]):/m)
-        
-            var replacedString = path.replace(regexStart,  (match,_1)=>{
-                  return "/"+_1;
-            }) ;
-
-            return replacedString;
-        }
-        File(path:string ){
-            return this.getFile(path)
-        } 
-        getFile(path:string   ){
-
-            path = this.convertPath(path)
-            
-            let file = new File(path) 
-
-            return file ;  
-        }
+       
+      
         addToGlobal(id: string, object: any){
            if(this.globalRegistry.filter(it => it == id).length > 0 ){
                 throw new Error( `Cannot add ${id} , because before already registered to globals `)
@@ -167,27 +129,7 @@ ae.createSync(() => {
             return selected 
         } 
 
-        importFiles(files:string[]){
-
-            let footageItems : FootageItem[] = []
-            files.forEach(file =>{
-
-                let converted = this.convertPath(file) 
-                let importOptions = new ImportOptions(new File(converted))
-                
-                let importedFile = app.project.importFile( importOptions)  as FootageItem
-                footageItems.push(importedFile)
-            })
-            return footageItems
-        }
-
-        import(file:string){
-            let imports =  this.importFiles([file]) 
-            if(imports.length<1)
-                throw new Error(`cannot import file ${file}`)
-                return imports[0]
-            
-        }
+         
 
        
     }

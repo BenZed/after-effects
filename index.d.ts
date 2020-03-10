@@ -1,3 +1,4 @@
+// @ts-nocheck
 /// <reference types="types-for-adobe/AfterEffects/2018"  />
  
  

@@ -1,7 +1,14 @@
 "use strict";
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 exports.__esModule = true;
 var path_1 = require("path");
-var ae = require("..");
+var ae = __importStar(require("../.."));
 var File = {};
 var get = {};
 ae.options.includes = [];
@@ -56,10 +63,10 @@ ae.createSync(function () {
                 var remainChar = it.slice(1, it.length);
                 switch (firstChar) {
                     case "#":
-                        context = _this.getFromComps(remainChar, context);
+                        //   context =  this.getFromComps(remainChar,context)
                         break;
                     case "!":
-                        context = _this.getFromLayers(remainChar, context);
+                        // context =  this.getFromLayers(remainChar,context) 
                         break;
                     case "&":
                         context = _this.getFromEffects(remainChar, context);
@@ -79,23 +86,6 @@ ae.createSync(function () {
         };
         AEHelperImpl.prototype.getFromItems = function (remainChar, context) {
             throw new Error("Method not implemented.");
-        };
-        AEHelperImpl.prototype.getFromLayers = function (remainChar, context) {
-            var newContext = null;
-            if (context == null) {
-                newContext = get.layers(undefined, remainChar);
-                return newContext.selection(0);
-            }
-            else if (context instanceof CompItem) {
-                newContext = get.layers(context.layers, remainChar);
-                return newContext.selection(0);
-            }
-            return newContext;
-        };
-        AEHelperImpl.prototype.getFromComps = function (remainChar, context) {
-            get.comps;
-            var comps = get.comps(remainChar);
-            return comps.selection(0);
         };
         AEHelperImpl.prototype.toArray = function (collection) {
             var array = [];
@@ -117,8 +107,39 @@ ae.createSync(function () {
                 return value;
             });
         };
+        AEHelperImpl.prototype.getAllLayers = function (byType) {
+            var comps = get.layers();
+            if (byType == null) {
+                byType = "ADBE Text Layer";
+            }
+            var selected = [];
+            for (var i = 0; i != comps.count(); i++) {
+                var layer = comps.selection(i);
+                if (layer.matchName == byType) {
+                    selected.push(layer);
+                }
+            }
+            return selected;
+        };
+        AEHelperImpl.prototype.importFiles = function (files) {
+            var _this = this;
+            var footageItems = [];
+            files.forEach(function (file) {
+                var converted = _this.convertPath(file);
+                var importOptions = new ImportOptions(new File(converted));
+                var importedFile = app.project.importFile(importOptions);
+                footageItems.push(importedFile);
+            });
+            return footageItems;
+        };
+        AEHelperImpl.prototype["import"] = function (file) {
+            var imports = this.importFiles([file]);
+            if (imports.length < 1)
+                throw new Error("cannot import file " + file);
+            return imports[0];
+        };
         return AEHelperImpl;
     }());
     var _AEHelper = new AEHelperImpl();
     _AEHelper.addToGlobal("AEHelper", _AEHelper);
-}, path_1.resolve(__dirname, "..", "..", "lib", "includes", "AEHelper.jsx"));
+}, path_1.resolve(__dirname, "..", "lib", "includes", "AEHelper.jsx"));

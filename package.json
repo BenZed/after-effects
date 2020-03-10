@@ -5,9 +5,15 @@
   "main": "index.js",
   "scripts": {
     "test": "node_modules/.bin/jasmine-ts ",
-    "build:AEHelpers": "node src/AEHelper.js",
-    "compile:AEHelpers": "node_modules/.bin/tsc src/AEHelper.ts ",
-    "build": "npm run compile:AEHelpers &   npm run build:AEHelpers && npm pack"
+    "b::AEHelper": "node src/Helpers/AEHelper.js",
+    "b::IOHelper": "node src/Helpers/IOHelper.js",
+    "b::CompHelper": "node src/Helpers/CompHelper.js",
+    "c::AEHelper": "node_modules/.bin/tsc --p  .  src/helpers/AEHelper.ts",
+    "c::IOHelper": "node_modules/.bin/tsc src/helpers/IOHelper.ts",
+    "c::CompHelper" : "node_modules/.bin/tsc src/helpers/CompHelper.ts " , 
+    "c_" :"c::AEHelper &  c::IOHelper & c::CompHelper ",
+    "b_" : "b::AEHelper &  b::IOHelper & b::CompHelper ",
+    "build": "npm run c_ & npm run b_ && npm pack"
   },
   "keywords": [
     "after",
