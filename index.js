@@ -10,7 +10,9 @@ const os = 		  require('os'),
       path =    require('path'),
       is =      require('is-explicit').default,
       uuid = 		require('uuid'),
-      Command = require('./lib/command');
+    
+      Command = require('./lib/command'); 
+    
 
 /*******************************************************************/
 // ERRORS
@@ -43,12 +45,21 @@ const options = {
 		path.join(__dirname, '/lib/includes/console.jsx'),
 		path.join(__dirname, '/lib/includes/es5-shim.jsx'),
     path.join(__dirname, '/lib/includes/get.jsx'),
-    path.join(__dirname, '/lib/includes/AEHelper.jsx')
+    
   ] , 
   noui : false ,  
   multi : false 
 };
+const includeHelpers = (includes)=>{
 
+    fs.readdirSync(path.resolve(__dirname,"lib","includes","helpers"))
+                .filter(file => file.endsWith(".jsx"))
+                .map(file => includes.push(path.join(__dirname, "/lib/includes/helpers/",file)))
+}
+
+includeHelpers(options.includes)
+console.log("includes has to have some more ")
+console.log(options.includes)
 const platform = (() => {
 
  const platform_name = os.platform();

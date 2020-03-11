@@ -4,14 +4,14 @@ import {resolve} from "path";
  
 import  * as ae from "../.." 
 import { Query  , getType  ,allTypes  } from "../.."
-
-import {QueryParams , AEHelper} from "./Interfaces/AEHelper"
-import {CompHelper } from "./Interfaces/CompHelper"
-let get : getType = {} as getType
+ 
+import {I_CompHelper ,QueryParams , I_ProjectHelper } from "./Interfaces"
+const  get : getType = {} as getType
+ae.options.includes  =[]
 
 ae.createSync(() => {
     let scriptId = "CompHelper" 
-    let HelperImpl : CompHelper =  {
+    let HelperImpl : I_CompHelper =  {
 
          get : {
              layers : (layerTypes? : string[] ) => {
@@ -36,4 +36,4 @@ ae.createSync(() => {
        
     
   $.global[scriptId] =  HelperImpl
-},  resolve(__dirname,".."   ,   "lib" , "includes"  , "AEHelper.jsx"))
+},  resolve(__dirname,".."  ,".." , "lib", "includes"   ,"helpers" , "2_CompHelper.jsx"))
