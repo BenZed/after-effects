@@ -10,8 +10,16 @@ exports.__esModule = true;
 var path_1 = require("path");
 var ae = __importStar(require("../.."));
 var get = {};
+var File = {};
 ae.options.includes = [];
 ae.createSync(function () {
+    var checkStrech = function (strech) {
+        if (strech < 0) {
+            return 0;
+        }
+        if (strech > 1)
+            return 1;
+    };
     var scriptId = "CompHelper";
     var HelperImpl = {
         get: {
@@ -34,6 +42,25 @@ ae.createSync(function () {
                     _loop_1(i);
                 }
                 return selected;
+            }
+        },
+        insert: {
+            footage: function (comp, options) {
+                if (options === void 0) { options = {
+                    strecth: 1,
+                    isStill: false,
+                    order: 0,
+                    startTime: 0,
+                    endTime: -1
+                }; }
+                var strech = checkStrech(options.strecth);
+                var footage = options.importedFile;
+                var footageToComp = footage.duration / comp.duration;
+                if (footageToComp < 1) {
+                    // footage shorter than the comp 
+                    //     let remaining = Math 1 - footageToComp 
+                }
+                return null;
             }
         }
     };

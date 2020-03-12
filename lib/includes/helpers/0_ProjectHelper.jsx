@@ -4,17 +4,8 @@ app.beginSuppressDialogs();
 try {
 
 (function () {
-    var AEHelperImpl = /** @class */function () {
-        function AEHelperImpl() {
-            this.globalRegistry = [];
-        }
-        AEHelperImpl.prototype.getFromEffects = function (remainChar, context) {
-            if (!(context instanceof AVLayer)) {
-                throw new Error("context is not a layer " + context);
-            }
-            return context.effect(remainChar);
-        };
-        AEHelperImpl.prototype.toArray = function (collection) {
+    var ProjectHelperImpl = {
+        toArray: function toArray(collection) {
             var array = [];
             
             var length = collection.hasOwnProperty("numProperties") ? collection.numProperties : collection.length;
@@ -24,11 +15,9 @@ try {
                 array.push(collection[i].name);
             }
             return array;
-        };
-        return AEHelperImpl;
-    }();
-    var _PHelper = new AEHelperImpl();
-    _PHelper.addToGlobal("ProjectHelper", _PHelper);
+        }
+    };
+    $.global["ProjectHelper"] = ProjectHelperImpl;
 }).apply(this);
 
 } catch (err) {

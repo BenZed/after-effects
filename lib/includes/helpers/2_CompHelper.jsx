@@ -4,6 +4,12 @@ app.beginSuppressDialogs();
 try {
 
 (function () {
+    var checkStrech = function checkStrech(strech) {
+        if (strech < 0) {
+            return 0;
+        }
+        if (strech > 1) return 1;
+    };
     var scriptId = "CompHelper";
     var HelperImpl = {
         get: {
@@ -27,6 +33,27 @@ try {
                     _loop_1(i);
                 }
                 return selected;
+            }
+        },
+        insert: {
+            footage: function footage(comp, options) {
+                if (options === void 0) {
+                    options = {
+                        strecth: 1,
+                        isStill: false,
+                        order: 0,
+                        startTime: 0,
+                        endTime: -1
+                    };
+                }
+                var strech = checkStrech(options.strecth);
+                var footage = options.importedFile;
+                var footageToComp = footage.duration / comp.duration;
+                if (footageToComp < 1) {
+                    // footage shorter than the comp 
+                    //     let remaining = Math 1 - footageToComp 
+                }
+                return null;
             }
         }
     };

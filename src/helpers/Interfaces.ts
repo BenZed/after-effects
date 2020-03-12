@@ -8,11 +8,26 @@ export interface I_IOHelper {
     joinPath(...paths:string[]) : File  
 }
 
+ 
+export interface InsertOptions {
+
+    strecth? : number     , 
+    isStill:  boolean   , 
+    order? : number  , 
+    importedFile : FootageItem  , 
+    startTime? : number , 
+    endTime? : number 
+
+}
 export interface I_CompHelper {
 
     get  : {
         layers : (layerType?: string[]  ) => Layer[] 
     } 
+
+    insert : {
+        footage : (compItem  : CompItem , options : InsertOptions) => null
+    }
 
 }
 
@@ -21,14 +36,6 @@ export interface QueryParams {
 } 
 export interface I_ProjectHelper {
 
-     
-     
-
- 
- 
-  
-   
- 
     toArray( collection : Collection | PropertyGroup   ) :   [] 
     
 }

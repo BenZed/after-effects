@@ -1,5 +1,4 @@
-import { I_ProjectHelper } from './Interfaces/I_ProjectHelper';
- 
+import { I_ProjectHelper } from './Interfaces' 
  
  
 import {resolve} from "path"; 
@@ -13,29 +12,9 @@ const  get : getType = {} as getType
 ae.options.includes  =[]
 ae.createSync(() => {
     
-      class AEHelperImpl implements I_ProjectHelper  {
-        private globalRegistry:Array<String>  = []
+      const  ProjectHelperImpl :  I_ProjectHelper =  {
        
-         
-        
-       
-      
-         
-            
-        
-          getFromEffects(remainChar: string, context: any): PropertyBase {
-             
-            
-            if(! (context instanceof AVLayer)){
-
-                throw new Error("context is not a layer " + context)
-            }
-           return  (<AVLayer>context).effect(remainChar)
-          }
-          
-         
-          
-          toArray( collection : Collection | PropertyGroup    ) :   []{
+          toArray : ( collection : Collection | PropertyGroup    ) :   []=>{
 
             let array :   [] = [] 
             // @ts-ignore
@@ -57,6 +36,6 @@ ae.createSync(() => {
 
        
     }
-   let  _PHelper = new AEHelperImpl()
-    _PHelper.addToGlobal("ProjectHelper",_PHelper)
+   
+  $.global["ProjectHelper"] = ProjectHelperImpl
 },  resolve(__dirname,".."  ,".." ,   "lib" ,"includes" ,"helpers" , "0_ProjectHelper.jsx"))

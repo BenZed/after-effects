@@ -14,17 +14,8 @@ var ProjectHelper = {};
 var get = {};
 ae.options.includes = [];
 ae.createSync(function () {
-    var AEHelperImpl = /** @class */ (function () {
-        function AEHelperImpl() {
-            this.globalRegistry = [];
-        }
-        AEHelperImpl.prototype.getFromEffects = function (remainChar, context) {
-            if (!(context instanceof AVLayer)) {
-                throw new Error("context is not a layer " + context);
-            }
-            return context.effect(remainChar);
-        };
-        AEHelperImpl.prototype.toArray = function (collection) {
+    var ProjectHelperImpl = {
+        toArray: function (collection) {
             var array = [];
             // @ts-ignore
             var length = collection.hasOwnProperty("numProperties") ? collection.numProperties : collection.length;
@@ -34,9 +25,7 @@ ae.createSync(function () {
                 array.push(collection[i].name);
             }
             return array;
-        };
-        return AEHelperImpl;
-    }());
-    var _PHelper = new AEHelperImpl();
-    _PHelper.addToGlobal("ProjectHelper", _PHelper);
+        }
+    };
+    $.global["ProjectHelper"] = ProjectHelperImpl;
 }, path_1.resolve(__dirname, "..", "..", "lib", "includes", "helpers", "0_ProjectHelper.jsx"));
