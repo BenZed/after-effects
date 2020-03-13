@@ -8,6 +8,7 @@ import { Query  , getType  ,allTypes  } from "../.."
 import {I_CompHelper ,QueryParams , I_ProjectHelper , InsertOptions } from "./Interfaces"
 const  get : getType = {} as getType
 const File : FileConstructor = {} as FileConstructor
+const ProjectHelper : I_ProjectHelper = {} as I_ProjectHelper
 ae.options.includes  =[]
 
 ae.createSync(() => {
@@ -46,22 +47,21 @@ ae.createSync(() => {
          insert : {
 
                 footage : (comp: CompItem , options: InsertOptions = { 
-                    strecth  : 1 , 
-                    isStill : false , 
+                   
+                     
                     order : 0 , 
-                    startTime: 0 , 
-                    endTime : -1  
+                    inPoint: 0 , 
+                    outPoint : -1  
                     
                 }as InsertOptions) => {
-                    const strech = checkStrech(options.strecth )
-                    const footage = options.importedFile  
-                    let footageToComp = footage.duration / comp.duration 
-                    if(footageToComp < 1){
-                        // footage shorter than the comp 
-                   //     let remaining = Math 1 - footageToComp 
 
-                    }
-                    return null 
+                    let layer = comp.layers.add(options.importedFile) 
+                    layer.inPoint = 0 
+                     if(options.outPoint > 0) {
+
+                        layer.timeRemapEnabled  = true 
+                        let propTimeRemap  = get.props(layer,"Time Remap").selection("")
+                     }
                 } 
          } 
     } 

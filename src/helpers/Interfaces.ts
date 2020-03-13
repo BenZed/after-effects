@@ -10,13 +10,12 @@ export interface I_IOHelper {
 
  
 export interface InsertOptions {
-
-    strecth? : number     , 
-    isStill:  boolean   , 
+ 
+    
     order? : number  , 
     importedFile : FootageItem  , 
-    startTime? : number , 
-    endTime? : number 
+    inPoint? : number , 
+    outPoint? : number 
 
 }
 export interface I_CompHelper {
