@@ -71,7 +71,7 @@ function codify (isFunctionExpression, source) {
 
 }
 
-function autoDetectFunctionExpression (source) {
+function autoDetectFunctionExpression (source: string) {
   // Remove doubled whitespace
   source = source
     .replace(/\s\s/g, ' ')
@@ -108,14 +108,16 @@ export default class Command {
 
     // if the source is a function, then this command is definetly a function
     // expression
-    isFunctionExpression = is(input, Function) ? true
+    isFunctionExpression = is(input, Function) 
+      ? true
 
       // otherwise, if an argument was explicitly defined, that will determine
       // if the source is a function expression
-      : is(isFunctionExpression, Boolean) ? isFunctionExpression
+      : is(isFunctionExpression, Boolean) 
+        ? isFunctionExpression
 
-      // Otherwise we try to auto detect
-      : autoDetectFunctionExpression(source) // eslint-disable-line indent
+        // Otherwise we try to auto detect
+        : autoDetectFunctionExpression(source) // eslint-disable-line indent
 
     this[SOURCE] = source
     this[CODE] = codify(isFunctionExpression, source)

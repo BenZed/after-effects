@@ -124,15 +124,17 @@ export default function factory (options = {}) { // Factory
 
   }
 
-  AfterEffects::validateOptionsAndTranspileIncludes(options)
+  validateOptionsAndTranspileIncludes.call(AfterEffects, options)
 
   // No set options for now
   // AfterEffects.setOptions = options => AfterEffects::validateOptionsAndTranspileIncludes(options, AfterEffects.options)
 
-  defineProperty(AfterEffects, 'scriptsDir', { get: AfterEffects::api.getScriptsDirSync })
+  defineProperty(AfterEffects, 'scriptsDir', { 
+    get: api.getScriptsDirSync.bind(AfterEffects)
+  })
 
   for (const key in api)
-    AfterEffects[key] = AfterEffects::api[key]
+    AfterEffects[key] = api[key].bind(AfterEffects)
 
   return AfterEffects
 }
