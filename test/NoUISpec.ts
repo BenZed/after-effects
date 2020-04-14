@@ -28,6 +28,14 @@ xit("Memory should gt 0 " , async () => {
     expect(mem).to.greaterThan(0,"memory should be greater than 0 ") 
 
  })
+
+ it("some desc" , ()=>{
+  
+    let p : Property ; 
+
+    p.setValue([0,1 ,1 ])
+
+ })
  
   
 })

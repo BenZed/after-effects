@@ -9,6 +9,7 @@ import {I_CompHelper ,QueryParams , I_ProjectHelper , InsertOptions } from "./In
 const  get : getType = {} as getType
 const File : FileConstructor = {} as FileConstructor
 const ProjectHelper : I_ProjectHelper = {} as I_ProjectHelper
+
 ae.options.includes  =[]
 
 ae.createSync(() => {
@@ -47,8 +48,6 @@ ae.createSync(() => {
          insert : {
 
                 footage : (comp: CompItem , options: InsertOptions = { 
-                   
-                     
                     order : 0 , 
                     inPoint: 0 , 
                     outPoint : -1  
@@ -56,12 +55,17 @@ ae.createSync(() => {
                 }as InsertOptions) => {
 
                     let layer = comp.layers.add(options.importedFile) 
-                    layer.inPoint = 0 
-                     if(options.outPoint > 0) {
+                    layer.inPoint = options.inPoint 
+                    if(comp.duration > options.importedFile.duration){  
+                            layer.timeRemapEnabled = true 
+                            let prop1 = get.props(layer,"Time Remap").selection(0) as Property 
+                            prop1.expressionEnabled = true 
+                            prop1.expression = "loopOut('cycle')"
+                            layer.outPoint = comp.duration 
+                            
 
-                        layer.timeRemapEnabled  = true 
-                        let propTimeRemap  = get.props(layer,"Time Remap").selection("")
-                     }
+                    }
+                     return layer 
                 } 
          } 
     } 

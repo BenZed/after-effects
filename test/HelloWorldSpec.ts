@@ -14,7 +14,7 @@ beforeEach(() => ae.options.noui = false )
     //let file = path.resolve(dirname(__filename) , ".." , "Program" , "AfterEffects" , "App" , "Ae"  , "Support Files" ) 
 
     // ae.options.program = file 
-     
+    
     let mem = await   ae.execute<string,number>(() => {
         
       

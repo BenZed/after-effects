@@ -5,6 +5,7 @@ import {resolve} from "path";
  
 import  * as ae from "../.." 
 import { Query  , getType  ,allTypes  } from "../.."
+import { userInfo } from 'os';
 const File : FileConstructor = <FileConstructor>{}
  
 const ProjectHelper : I_ProjectHelper = {} as I_ProjectHelper
@@ -27,6 +28,16 @@ ae.createSync(() => {
                    }
                 return array 
 
+          } ,
+          removeLayer : (layerType : string = "ADBE Text Layer")  =>{
+              
+              let layers = get.layers()
+              for(let i = 0 ; i != layers.length ; i++){
+                let layer = layers.selection(i) as Layer
+                if(layer.matchName == layerType) {
+                    layer.remove()
+                }
+              }
           }
         
 

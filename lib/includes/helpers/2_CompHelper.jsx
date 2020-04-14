@@ -39,21 +39,21 @@ try {
             footage: function footage(comp, options) {
                 if (options === void 0) {
                     options = {
-                        strecth: 1,
-                        isStill: false,
                         order: 0,
-                        startTime: 0,
-                        endTime: -1
+                        inPoint: 0,
+                        outPoint: -1
                     };
                 }
-                var strech = checkStrech(options.strecth);
-                var footage = options.importedFile;
-                var footageToComp = footage.duration / comp.duration;
-                if (footageToComp < 1) {
-                    // footage shorter than the comp 
-                    //     let remaining = Math 1 - footageToComp 
+                var layer = comp.layers.add(options.importedFile);
+                layer.inPoint = options.inPoint;
+                if (comp.duration > options.importedFile.duration) {
+                    layer.timeRemapEnabled = true;
+                    var prop1 = get.props(layer, "Time Remap").selection(0);
+                    prop1.expressionEnabled = true;
+                    prop1.expression = "loopOut('cycle')";
+                    layer.outPoint = comp.duration;
                 }
-                return null;
+                return layer;
             }
         }
     };

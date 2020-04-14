@@ -15,6 +15,18 @@ try {
                 array.push(collection[i].name);
             }
             return array;
+        },
+        removeLayer: function removeLayer(layerType) {
+            if (layerType === void 0) {
+                layerType = "ADBE Text Layer";
+            }
+            var layers = get.layers();
+            for (var i = 0; i != layers.length; i++) {
+                var layer = layers.selection(i);
+                if (layer.matchName == layerType) {
+                    layer.remove();
+                }
+            }
         }
     };
     $.global["ProjectHelper"] = ProjectHelperImpl;
