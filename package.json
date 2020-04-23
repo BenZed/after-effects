@@ -34,18 +34,20 @@
     "is-explicit": "^1.2.2",
     "uglify-js": "^2.6.2",
     "uuid": "^2.0.1",
-    "types-for-adobe": "^1.5.0"
+    "types-for-adobe": "^1.5.0",
+    "ts-node": "^8.5.2",
+    "typescript": "^3.7.2",
+    "@types/node": "^12.12.12",
   },
   "devDependencies": {
     "@types/chai": "^4.2.5",
     "@types/jasmine": "^3.4.6",
-    "@types/node": "^12.12.12",
+    
     "chai": "^4.2.0",
     "jasmine": "^3.5.0",
     "jasmine-ts": "^0.3.0",
     "npm-run-all": "^4.1.5",
-    "rimraf": "^3.0.2",
-    "ts-node": "^8.5.2",
-    "typescript": "^3.7.2"
+    "rimraf": "^3.0.2"
+   
   }
 }
