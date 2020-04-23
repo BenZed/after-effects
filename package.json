@@ -37,7 +37,7 @@
     "types-for-adobe": "^1.5.0",
     "ts-node": "^8.5.2",
     "typescript": "^3.7.2",
-    "@types/node": "^12.12.12",
+    "@types/node": "^12.12.12"
   },
   "devDependencies": {
     "@types/chai": "^4.2.5",
