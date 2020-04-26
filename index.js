@@ -50,16 +50,7 @@ const options = {
   noui : false ,  
   multi : false 
 };
-const includeHelpers = (includes)=>{
-
-    fs.readdirSync(path.resolve(__dirname,"lib","includes","helpers"))
-                .filter(file => file.endsWith(".jsx"))
-                .map(file => includes.push(path.join(__dirname, "/lib/includes/helpers/",file)))
-}
-
-includeHelpers(options.includes)
-console.log("includes has to have some more ")
-console.log(options.includes)
+ 
 const platform = (() => {
 
  const platform_name = os.platform();
