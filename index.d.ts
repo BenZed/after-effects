@@ -47,7 +47,7 @@ declare type ES3Object= Object
     }
     export const options  : options  
    // function execute<T,R>( fn:(args:T) => void    ) :Promise<void>  
-     export  function executeSync<T>( fn:(args:T) => T   ) :T 
+     export  function executeSync<T,R>( fn:(args:T) => T , args?: R  ) :T 
      export function execute<T,E>(fn:(param:T)=> E , param:T):Promise<E> 
      export  function execute(fn:()=>void):void  
      export function compile(fn :()=> any):string 
