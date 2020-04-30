@@ -18,7 +18,10 @@ declare type ES3Object= Object
  
  export   interface  options {
       
-    debug?: boolean , 
+    debug?: {
+      enabled? : boolean, 
+      dir?  : string | undefined 
+    } , 
     /**
        * 
        * @description If true, the code will be minified before being sent to After Effects. This is disabled by default, which is different from previous versions of this package. I feel there's little point in spending the extra time to minify code that isn't going over a network. Still, you can set minify to true if you're into that sort of thing.
