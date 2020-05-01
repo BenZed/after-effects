@@ -13,9 +13,9 @@ const File : FileConstructor = {} as FileConstructor
   
 describe("Basic Tests", ()=>{
 
-   beforeEach( () => ae.options.noui = true )  
+   /*beforeEach( () => ae.options.noui = true )  
     afterEach( () => ae.options.noui = false  )  
- 
+ */
 
 it("Memory should gt 0 " ,  (done) => {
   
@@ -23,7 +23,7 @@ it("Memory should gt 0 " ,  (done) => {
     //let file = path.resolve(dirname(__filename) , ".." , "Program" , "AfterEffects" , "App" , "Ae"  , "Support Files" ) 
 
     // ae.options.program = file 
-     
+    ae.options.noui = true
        ae.execute<string,number>(() => {
         
       
@@ -62,6 +62,33 @@ it("Memory should gt 0 " ,  (done) => {
         expect(files.length).to.be.eq(files2.length - 1)
     })
   
+    it("should return all layers as array", (done)=>{
+
  
+        ae.execute  ((params)=>{
+         
+             let file = io.convertPath(params.projectFile) 
+         
+             app.open( file ) 
+             let allItems  = get().toArray()
+              
+             app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES)
+             return {
+                 itemsSize: allItems.length ,
+            
+             }
+          
+         },{
+             projectFile : resolve(__dirname,"..","ae-templates","sample-project.aep")
+         }).then(result =>{
+            expect(result).not.to.be.undefined
+            expect(result.itemsSize).not.to.be.null 
+             
+            expect(result.itemsSize).to.be.greaterThan(0) 
+             
+            done()
+         })
+        
+     })
   
 })
