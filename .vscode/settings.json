@@ -1,0 +1,9 @@
+{
+    "jasmineExplorer.config": "./spec/support/jasmine.json" ,
+    "jasmineExplorer.nodeArgv": [
+        "--require",
+        "ts-node/register"
+        
+    ]
+ 
+}

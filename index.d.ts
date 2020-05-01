@@ -104,9 +104,9 @@ export declare function is(value : any , ...checkCls: any  ) : boolean
 /**
 * general get module 
 */
-export declare interface   getType { 
+export declare interface   get extends Function  { 
   
- 
+    () : Query 
  /**
        * @description selects CompItem from a project 
        * @param item
@@ -181,21 +181,15 @@ export declare interface   getType {
 */
 export declare type  getFn = (selector? : allSelectorTypes) =>  Query  | getType
    
-
- /*
- export interface AEHelper   {
-  convertPath(path:string) : string 
-  getFile(path:string): File
-
-  
-  addToGlobal(id: string, object: any) : void
-  getItem(query: string ) : Query
-  joinPath(...paths:string[]) : File  
  
-  toArray( collection : Collection | PropertyGroup   ) :   [] 
-}
-*/ 
-export type File = FileConstructor
+ 
 
+
+export declare  interface  io {
+
+  convertPath : (path:string) => File
+  
+ 
+}
 
 
