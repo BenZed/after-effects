@@ -70,7 +70,7 @@ declare type ES3Object= Object
     
 /** jsx helpers */
 /** get api  */
-export declare class Query extends Array {
+export declare class Query   {
   /**
    * 
    * @param callback apply function to iterate over query result  
