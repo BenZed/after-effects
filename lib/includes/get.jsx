@@ -385,6 +385,9 @@ if ($.global.get === undefined) {
 			{
 				return parsed.types;
 			};
+			this.first = null 
+			if(this.count() > 0 ) this.first = this.selection(0)  
+			
 		}
 
 		Query.prototype.each = function(callback)
@@ -446,7 +449,7 @@ if ($.global.get === undefined) {
 				select[method].apply(select, args);
 			});
 		};
-
+		 
 		Query.prototype.filter = function(/*args*/)
 		{
 			var args = [this.types(), this.selection()].concat(Array.prototype.slice.call(arguments));
@@ -559,6 +562,8 @@ if ($.global.get === undefined) {
 			var root_folder = new Query([FolderItem, app.project.rootFolder]);
 			return root_folder.children.apply(root_folder, args);
 		};
+
+		
 
 		return get;
 	})($.global.is);

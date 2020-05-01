@@ -73,6 +73,8 @@ declare type ES3Object= Object
 export declare interface Query  extends Function {
   
   () : (selection: string ) => Query
+
+  first:allTypes | null 
   /**
    * 
    * @param callback apply function to iterate over query result  
@@ -188,19 +190,15 @@ export declare interface   get extends Function  {
 
       
 }
-/**
-* @returns all items in the project 
-*/
-export declare type  getFn = (selector? : allSelectorTypes) =>  Query  | getType
    
  
  
 
 
-export declare  interface  io {
+export declare  interface  commons {
 
   convertPath : (path:string) => File
-  
+  toArray : <T> (items : Collection | Query | PropertyGroup | allTypes | any ) => T[] 
  
 }
 

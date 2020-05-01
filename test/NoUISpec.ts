@@ -1,6 +1,6 @@
 
 import  * as ae from ".." 
-import { io , get } from ".."
+import { commons  , get } from ".."
 import {expect} from "chai"
 
  
@@ -8,7 +8,7 @@ import {  readdirSync} from "fs"
 import {resolve} from "path"
 
 const get : get = {} as get 
-const io : io = {} as io
+const commons  : commons = {} as commons
 const File : FileConstructor = {} as FileConstructor 
   
 describe("Basic Tests", ()=>{
@@ -47,7 +47,7 @@ it("Memory should gt 0 " ,  (done) => {
         
         ae.executeSync ((params)=>{
            console.log(params.projectFile)
-            let file = io.convertPath(params.projectFile) 
+            let file = commons.convertPath(params.projectFile) 
         
             app.open( file ) 
             app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES)
@@ -62,12 +62,12 @@ it("Memory should gt 0 " ,  (done) => {
         expect(files.length).to.be.eq(files2.length - 1)
     })
   
-    it("should return all layers as array", (done)=>{
+    it("should return all items  as array", (done)=>{
 
  
         ae.execute  ((params)=>{
          
-             let file = io.convertPath(params.projectFile) 
+             let file = commons.convertPath(params.projectFile) 
          
              app.open( file ) 
              let allItems  = get().toArray()
@@ -90,5 +90,41 @@ it("Memory should gt 0 " ,  (done) => {
          })
         
      })
-  
+     it("should return all  layer as array", (done)=>{
+
+        let debugDir = resolve(process.cwd() , "debug")
+        
+        ae.options.debug.dir = debugDir 
+        ae.options.debug.enabled =  true 
+        ae.execute  ((params)=>{
+         
+             let file = commons.convertPath(params.projectFile) 
+            let layersize = 0 
+             app.open( file ) 
+             let comp1   = get.comps(/Comp 1/).first as CompItem
+             let compItemAsArray = commons.toArray(comp1)
+            if(comp1){
+              let   layers =    commons.toArray(comp1.layers)
+                layersize = layers.length 
+            }
+             app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES)
+             return {
+                 itemsSize: layersize , 
+                 compItemAsArraySize : compItemAsArray.length
+            
+             }
+          
+         },{
+             projectFile : resolve(__dirname,"..","ae-templates","sample-project.aep")
+         }).then(result =>{
+            expect(result).not.to.be.undefined
+            expect(result.itemsSize).not.to.be.null 
+            expect(result.compItemAsArraySize).not.to.be.null 
+            expect(result.itemsSize).to.be.greaterThan(0) 
+            expect(result.compItemAsArraySize).to.be.eq(1)
+             
+            done()
+         })
+        
+     })
 })
