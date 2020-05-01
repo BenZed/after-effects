@@ -72,7 +72,7 @@ declare type ES3Object= Object
 /** get api  */
 export declare interface Query  extends Function {
   
-  () : Array,
+  () : (selection: string ) => Query
   /**
    * 
    * @param callback apply function to iterate over query result  
@@ -84,7 +84,8 @@ export declare interface Query  extends Function {
    * 
    * @param index get item from collection 
    */
-  selection(index:number) :allTypes; 
+  selection<T>(index:number| undefined) :T[] ;
+  toArray<T> () : T[] 
   children() : Query; 
   /**
    * 

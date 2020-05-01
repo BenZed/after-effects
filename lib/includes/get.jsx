@@ -363,7 +363,10 @@ if ($.global.get === undefined) {
 			{
 				return selected.length;
 			};
+			this.toArray = function (){
 
+				return this.selection()
+			}
 			this.selection = function(index)
 			{
 				var index_supplied = arguments.length > 0 && is(index, Number);
