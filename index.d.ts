@@ -70,7 +70,9 @@ declare type ES3Object= Object
     
 /** jsx helpers */
 /** get api  */
-export declare class Query   {
+export declare interface Query  extends Function {
+  
+  () : Array,
   /**
    * 
    * @param callback apply function to iterate over query result  
@@ -92,8 +94,17 @@ export declare class Query   {
   get<T>(prop:string) : T;
 
  count(): number ; 
- types():string[]
-  
+ types():string[] 
+ filter(selector : allSelectorTypes) : Query 
+ comps(  selector?:allSelectorTypes):Query  
+ items( selector?:allSelectorTypes):Query 
+ sources( selector?:allSelectorTypes):Query  
+ folders(  selector?:allSelectorTypes):Query   
+ footage( selector?:allSelectorTypes):Query  
+ root(selector?:allSelectorTypes):Query   
+
+ props(  context?:AVLayer  | TextLayer  , selector?:allSelectorTypes):Query  
+
 }
 /**
 * 
