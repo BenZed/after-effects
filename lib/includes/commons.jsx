@@ -33,6 +33,10 @@ if (typeof commons  != 'object') {
                 } 
                 
 
+            } , 
+            hasOwnProperty : function  (obj , key) {
+
+                return obj.hasOwnProperty(key)
             }
               
 
