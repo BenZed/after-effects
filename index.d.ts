@@ -199,7 +199,7 @@ export declare  interface  commons {
 
   convertPath : (path:string) => File
   toArray : <T> (items : Collection | Query | PropertyGroup | allTypes | any ) => T[] 
-  hasProperty : (object :any , key:string  ) => boolean
+  has : (object :any , key:string  ) => boolean
 }
 
 

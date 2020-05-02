@@ -127,4 +127,43 @@ it("Memory should gt 0 " ,  (done) => {
          })
         
      })
+
+     it("should layer has ownproperty addComp", (done)=>{
+
+        let debugDir = resolve(process.cwd() , "debug")
+        
+        ae.options.debug.dir = debugDir 
+        ae.options.debug.enabled =  true 
+        ae.execute  ((params)=>{
+         
+             let file = commons.convertPath(params.projectFile) 
+            let hasOwnPropery = false  
+             app.open( file ) 
+             let layer = get.layers().first as Layer 
+             
+             if(layer ){
+              
+                hasOwnPropery = commons.has(layer,"activeAtTime")
+             } 
+
+             
+             app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES)
+             return {
+                 hasOwnPropery : hasOwnPropery
+                  
+            
+             }
+          
+         },{
+             projectFile : resolve(__dirname,"..","ae-templates","sample-project.aep")
+         }).then(result =>{
+            expect(result).not.to.be.undefined
+            expect(result.hasOwnPropery).not.to.be.null 
+           
+            expect(result.hasOwnPropery).to.be.eq(true)
+             
+            done()
+         })
+        
+     })
 })
