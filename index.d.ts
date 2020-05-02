@@ -200,6 +200,7 @@ export declare  interface  commons {
   convertPath : (path:string) => File
   toArray : <T> (items : Collection | Query | PropertyGroup | allTypes | any ) => T[] 
   has : (object :any , key:string  ) => boolean
+  reflect : (object:any) => ReflectionInfo 
 }
 
 

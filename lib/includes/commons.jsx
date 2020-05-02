@@ -68,6 +68,9 @@ if (typeof commons  != 'object') {
             } 
 
             return false 
+        } ,
+        reflect(obj) {
+            return obj.reflect 
         }
           
 
