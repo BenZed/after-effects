@@ -69,8 +69,19 @@ if (typeof commons  != 'object') {
 
             return false 
         } ,
-        reflect(obj) {
+        reflect: function (obj) {
             return obj.reflect 
+        } , 
+        get:function(obj, key){
+
+            if(! commons.has(obj,key)) 
+                throw new Error( key + "not exists in " + obj   )
+
+            return obj[key]
+
+            
+            
+
         }
           
 

@@ -166,4 +166,47 @@ it("Memory should gt 0 " ,  (done) => {
          })
         
      })
+
+     it("should layer name return from commons.get", (done)=>{
+
+        let debugDir = resolve(process.cwd() , "debug")
+        ae.options.noui  = true 
+        ae.options.debug.dir = debugDir 
+        ae.options.debug.enabled =  true 
+        ae.execute  ((params)=>{
+         
+             let file = commons.convertPath(params.projectFile) 
+            let matchName  = null  
+            let name = null
+             app.open( file ) 
+             let layer = get.layers().first as Layer 
+            
+             if(layer ){
+             
+                matchName = commons.get<string>(layer,"matchName"), 
+                name = commons.get<string>(layer,"name")
+             } 
+
+             
+             app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES)
+             return {
+                 matchName : matchName,
+                 name : name 
+                  
+            
+             }
+          
+         },{
+             projectFile : resolve(__dirname,"..","ae-templates","sample-project.aep")
+         }).then(result =>{
+            expect(result).not.to.be.undefined
+            expect(result.matchName).not.to.be.null 
+           expect(result.name).not.to.be.null
+           expect(result.name).to.be.eq("Light 1")
+            expect(result.matchName).to.be.eq("ADBE Light Layer")
+             
+            done()
+         })
+        
+     })
 })
