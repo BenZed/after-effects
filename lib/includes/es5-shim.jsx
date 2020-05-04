@@ -257,6 +257,48 @@ Array.prototype.lastIndexOf = Array.prototype.lastIndexOf ? Array.prototype.last
   return -1;
 };
 
+Array.prototype.sink = Array.prototype.sink ? Array.prototype.sink : function (callback,thisArg) {
+  var T, A, k;
+
+  if (this == null) {
+    throw new TypeError(' this is null or not defined');
+  }
+
+  // 1. Let O be the result of calling ToObject passing the |this|
+  //    value as the argument.
+  var O = Object(this);
+  
+
+  // 2. Let lenValue be the result of calling the Get internal
+  //    method of O with the argument "length".
+  // 3. Let len be ToUint32(lenValue).
+  var len = O.length >>> 0;
+  if (typeof callback !== 'function') {
+    throw new TypeError(callback + ' is not a function');
+  }
+
+  // 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
+  if (arguments.length > 1) {
+    T = thisArg;
+  }
+  A = new Array(len);
+
+  // 7. Let k be 0
+  k = 0;
+  
+  // do map change anthing 
+// ii. Let mappedValue be the result of calling the Call internal
+      //     method of callback with T as the this value and argument
+      //     list containing kValue, k, and O.
+      mappedValue =  callback.call(T, O);
+       
+  return mappedValue
+}
+// added flatmap 
+Array.prototype.flatMap  =Array.prototype.flatMap ? Array.prototype.flatMap :function(callback,thisArg) {
+  return Array.prototype.concat.apply([], this.map(callback,thisArg));
+};
+
 Array.prototype.map = Array.prototype.map ? Array.prototype.map : function(callback, thisArg) {
 
   var T, A, k;

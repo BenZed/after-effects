@@ -1,16 +1,18 @@
+ 
 
 import  * as ae from ".." 
-import { commons  , get } from ".."
+import { commons  , get   } from ".."
+import { Array  } from "../array"
 import {expect} from "chai"
 
  
 import {  readdirSync} from "fs" 
 import {resolve} from "path"
-
+ 
 const get : get = {} as get 
 const commons  : commons = {} as commons
 const File : FileConstructor = {} as FileConstructor 
-  
+
 describe("Basic Tests", ()=>{
 
    /*beforeEach( () => ae.options.noui = true )  
@@ -134,6 +136,8 @@ it("Memory should gt 0 " ,  (done) => {
         
         ae.options.debug.dir = debugDir 
         ae.options.debug.enabled =  true 
+        
+      
         ae.execute  ((params)=>{
          
              let file = commons.convertPath(params.projectFile) 
@@ -168,7 +172,8 @@ it("Memory should gt 0 " ,  (done) => {
      })
 
      it("should layer name return from commons.get", (done)=>{
-
+        //let a = [] 
+        
         let debugDir = resolve(process.cwd() , "debug")
         ae.options.noui  = true 
         ae.options.debug.dir = debugDir 
@@ -200,13 +205,54 @@ it("Memory should gt 0 " ,  (done) => {
              projectFile : resolve(__dirname,"..","ae-templates","sample-project.aep")
          }).then(result =>{
             expect(result).not.to.be.undefined
-            expect(result.matchName).not.to.be.null 
-           expect(result.name).not.to.be.null
-           expect(result.name).to.be.eq("Light 1")
-            expect(result.matchName).to.be.eq("ADBE Light Layer")
+        expect(result.matchName).not.to.be.null 
+        expect(result.name).not.to.be.null
+        expect(result.name).to.be.eq("Light 1")
+        expect(result.matchName).to.be.eq("ADBE Light Layer")
              
-            done()
+        done()
          })
         
      })
-})
+
+     it("array sink should return layers length  > 0 ", (done)=>{
+        //let a = [] 
+        
+        let debugDir = resolve(process.cwd() , "debug")
+        ae.options.noui  = true 
+        ae.options.debug.dir = debugDir 
+        ae.options.debug.enabled =  true 
+        ae.execute  ((params)=>{
+         
+             let file = commons.convertPath(params.projectFile) 
+            let matchName  = null  
+            let name = null
+             app.open( file ) 
+             let layers = get.layers().toArray()
+             let valuesLength = layers.sink(values => values.length)  
+
+             
+
+             
+             app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES)
+             return {
+                 length : valuesLength
+                  
+            
+             }
+          
+         },{
+             projectFile : resolve(__dirname,"..","ae-templates","sample-project.aep")
+         }).then(result =>{
+            expect(result).not.to.be.undefined
+        expect(result.length).not.to.be.null 
+         
+        expect(result.length).to.be.gt(0)
+  
+             
+        done()
+         })
+        
+     })
+        
+     })

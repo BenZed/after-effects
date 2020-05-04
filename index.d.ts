@@ -13,7 +13,15 @@ declare type ES3Object= Object
  
 
 
+declare global {
+  interface Array<T> {
+    flatMap :<U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: any)=> U[]
+    sink :<U> (callbackfn:(array:T[])=> U,thisArg?:any) => U
+  }
+  interface File extends FileConstructor {
 
+  }
+}
 
  
  export   interface  options {
@@ -201,7 +209,7 @@ export declare  interface  commons {
   toArray : <T> (items : Collection | Query | PropertyGroup | allTypes | any ) => T[] 
   has : (object :allTypes | Array  , key:string  ) => boolean
   reflect : (object:allTypes | Array ) => ReflectionInfo 
-  get : <T> (obj:allTypes | Array, key :string ) => T 
+  get : <T>(obj:allTypes | Array, key :string ) => T
 }
 
 
