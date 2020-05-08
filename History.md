@@ -1,3 +1,10 @@
+## [1.1.0.alpha.1]
+- typescript support added 
+- for sequential  reactive style execution Observable class added 
+- new Array methods : sink , flatMap 
+- debuging support added 
+- for windows noui option added 
+- jasmine test support added 
 ## [0.4.14]
 ### Changes
 - Missed a Deprecation warning.

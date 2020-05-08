@@ -298,7 +298,7 @@ Array.prototype.sink = Array.prototype.sink ? Array.prototype.sink : function (c
 Array.prototype.flatMap  =Array.prototype.flatMap ? Array.prototype.flatMap :function(callback,thisArg) {
   return Array.prototype.concat.apply([], this.map(callback,thisArg));
 };
-
+ 
 Array.prototype.map = Array.prototype.map ? Array.prototype.map : function(callback, thisArg) {
 
   var T, A, k;
@@ -439,7 +439,12 @@ Array.prototype.reduceRight = Array.prototype.reduceRight ? Array.prototype.redu
   }
   return value;
 };
+Array.prototype.has = Array.prototype.has ? Array.prototype.has : function (value) {
 
+  return this.some(function (_value) {
+    return (value == _value) ? true : false 
+  })
+}
 Array.prototype.some = Array.prototype.some ? Array.prototype.some : function(fun/*, thisArg*/) {
   'use strict';
 

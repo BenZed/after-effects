@@ -17,13 +17,72 @@ declare global {
   interface Array<T> {
     flatMap :<U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: any)=> U[]
     sink :<U> (callbackfn:(array:T[])=> U,thisArg?:any) => U
+    has :(value:string) => boolean 
   }
-  interface File extends FileConstructor {
-
-  }
-}
-
  
+ declare function   convertPath   (path:string) :File
+  var  File : FileConstructor = {} as FileConstructor 
+  declare  function toArray <T> (items : Collection | Query | PropertyGroup | allTypes | any ) :  T[] 
+  declare function   has(object :allTypes | Array  , key:string  , type:string  ) : boolean
+  declare function  getReflection  (object:allTypes | Array ) : ReflectionInfo 
+  declare function getValue  <T>(obj:allTypes | Array, key :string ) : T
+  declare function  open (file:string ) : [Project] 
+  declare function  close  (closeOptions?:CloseOptions) :  boolean
+  declare class Observable<T>{
+    pipe<R>(fn : (value:T)=>R):Observable<R> 
+    subscribe(subsFn  : (value:T) => void , errorFn?:(err:Error) => void , completeFn?:(()=>void) )
+  }
+  declare function create<T>(items:T) : Observable<T>
+  declare const get : get = {} as get 
+  declare const ae  : ae = {} as ae 
+
+
+
+
+}
+interface options {
+      
+  debug?: {
+    enabled? : boolean, 
+    dir?  : string | undefined 
+  } , 
+  /**
+     * 
+     * @description If true, the code will be minified before being sent to After Effects. This is disabled by default, which is different from previous versions of this package. I feel there's little point in spending the extra time to minify code that isn't going over a network. Still, you can set minify to true if you're into that sort of thing.
+     */
+    multi? : boolean , 
+    noui? : boolean , 
+    minify? : boolean ,
+    /**
+     * @description By default, ae will look for an After Effects installation in your platforms default application directory. If you've installed it elsewhere, you'll have to set this to the custom app directory.
+     */ 
+    program? : string 
+    /**
+     *  @description Includes is an array which will concatanate the code from other files into your command, for use inside After Effects
+     *  @default console.js Provides console.log to the After Effects namespace. 'console.log' inside After Effects will return logs to the node.js console when execution is complete, assuming you correctly have Preferences -> General -> Allow Scripts to Write Files and Access Network set inside After Effects.
+     *  @default es5-shim.js The javascript environment within After Effects is very dated, pre ES5. With es5-shim included, methods and functions available in es5 will be available.
+     * @default get.js Provides a jQuery inspired selector object to work with items in After Effects inside of an object called 'get' 
+     */
+    includes? : string[  ]
+    /**
+     * @description  With errorHandling enabled, errors thrown in After Effects will be suppressed and returned in the promise result:
+       @description  With errorHandling disabled, After Effects will create a popup and prevent further code execution until it is dealt with
+     */ 
+   errorHandling? : boolean 
+   testing? : boolean 
+   commandSavePath? : string
+  }
+ interface ae  {
+
+  options : options 
+  executeSync : <P,R>( fn:(args:P) => R , params?: P  ) =>R 
+  execute: <T,E>(fn:(param:T)=> E , param:T)=>Promise<E> 
+  execute: (fn:()=>void)=>void  
+  compile : (fn :()=> any)=>string 
+  create : <T>(fn :()=> any , path : string)=>Promise<T>
+  createSync:(fn:()=> any,path:string) =>void 
+
+ }
  export   interface  options {
       
     debug?: {
@@ -202,7 +261,7 @@ export declare interface   get extends Function  {
  
  
 
-
+/*
 export declare  interface  commons {
 
   convertPath : (path:string) => File
@@ -210,6 +269,8 @@ export declare  interface  commons {
   has : (object :allTypes | Array  , key:string  ) => boolean
   reflect : (object:allTypes | Array ) => ReflectionInfo 
   get : <T>(obj:allTypes | Array, key :string ) => T
+  from$ : <T>(...params : T) => T[]
 }
+*/
 
 
