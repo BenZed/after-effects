@@ -8,6 +8,7 @@ import { resolve, format } from "path"
 
 
 describe("Commons Tests", () => {
+    
     beforeEach(() => ae.options.noui = true)
     afterEach(() => ae.options.noui = false)
 
@@ -163,6 +164,8 @@ describe("Commons Tests", () => {
             done()
         })
     })
+
+    
     it("array sink should return layers length  > 0 ", (done) => {
         //let a = [] 
         let debugDir = resolve(process.cwd(), "debug")
@@ -192,7 +195,8 @@ describe("Commons Tests", () => {
             done()
         })
     })
-    it("should layer size gt 2 by using Observables   ", (done) => {
+   
+    it("should find test layer with observables ", (done) => {
         //let a = [] 
         let debugDir = resolve(process.cwd(), "debug")
         ae.options.noui = true
@@ -200,27 +204,29 @@ describe("Commons Tests", () => {
         ae.options.debug.enabled = true
         ae.execute((params) => {
 
-            let file = convertPath(params.projectFile)
-            create(open(params.projectFile))
-                .pipe<Array<Layer>>(project => get.layers().toArray())
-                .pipe(layers => layers.length)
-                .subscribe(size => {
-                    length = size
-                }, (e) => {
-                    length = -1
-                }, () => {
-                    close(CloseOptions.DO_NOT_SAVE_CHANGES)
-                })
-            return {
-                length: length
-            }
+            let result  = {
+                size : 0
+            } 
+         
+            let ob$ = fromProject(params.projectFile)
+                .pipe<Layer[],Layer[]>(ops.map(project=> get.layers().toArray() ) 
+                 ,  ops.filter (layer => layer.name == "testlayer")
+                
+                ).subscribe(layers => {
+
+    
+                        result.size  =  layers.length
+                }) 
+
+            return result
+
+
         }, {
             projectFile: resolve(__dirname, "..", "ae-templates", "sample-project.aep")
         }).then(result => {
             expect(result).not.to.be.undefined
-            expect(result.length).not.to.be.null
-            expect(result.length).to.be.gt(2)
-
+            expect(result.size).not.to.be.null
+            expect(result.size).to.be.greaterThan(0,"layer named testlayer must exits  ")
             done()
         })
     })

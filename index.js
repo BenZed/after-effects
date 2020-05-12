@@ -47,7 +47,9 @@ const options = {
 		path.join(__dirname, '/lib/includes/console.jsx'),
 		path.join(__dirname, '/lib/includes/es5-shim.jsx'),
     path.join(__dirname, '/lib/includes/get.jsx'),
-    path.join(__dirname,'/lib/includes/commons.jsx')
+    path.join(__dirname,'/lib/includes/commons.jsx'),
+    path.join(__dirname,'/lib/includes/observable.jsx')
+
     
   ] , 
   noui : false ,  

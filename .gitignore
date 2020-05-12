@@ -8,3 +8,6 @@ Program
 *.tgz
 after-effects-*.tgz
 debug
+.nyc_output
+coverage
+*.log

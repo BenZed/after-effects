@@ -4,7 +4,7 @@
   "description": "Send instructions to the After Effects scripting environment from node.js. ",
   "main": "index.js",
   "scripts": {
-    "test": "node_modules/.bin/jasmine-ts"
+    "test": "node_modules/.bin/mocha  -r ts-node/register test/** --timeout 50000"
   },
   "keywords": [
     "after",
@@ -24,22 +24,18 @@
     "babel-preset-es2015": "^6.3.13",
     "escape-string-applescript": "^2.0.0",
     "is-explicit": "^1.2.2",
+    "nyc": "^15.0.1",
     "uglify-js": "^2.6.2",
-    "uuid": "^2.0.1",
-    "types-for-adobe": "^1.5.0",
-    "ts-node": "^8.5.2",
-    "typescript": "^3.7.2",
-    "@types/node": "^12.12.12"
+    "uuid": "^2.0.1"
   },
   "devDependencies": {
     "@types/chai": "^4.2.5",
-    "@types/jasmine": "^3.4.6",
-    
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^12.12.12",
     "chai": "^4.2.0",
-    "jasmine": "^3.5.0",
-    "jasmine-ts": "^0.3.0",
-    "npm-run-all": "^4.1.5",
-    "rimraf": "^3.0.2"
-   
+    "mocha": "^7.1.2",
+    "ts-node": "^8.5.2",
+    "types-for-adobe": "^1.5.0",
+    "typescript": "^3.7.2"
   }
 }
