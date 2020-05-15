@@ -11,3 +11,4 @@ debug
 .nyc_output
 coverage
 *.log
+tmp 

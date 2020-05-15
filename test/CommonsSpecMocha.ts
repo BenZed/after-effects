@@ -9,14 +9,14 @@ import { resolve, format } from "path"
 
 describe("Commons Tests", () => {
     
-    beforeEach(() => ae.options.noui = true)
+    beforeEach(() => ae.options.noui = true )
     afterEach(() => ae.options.noui = false)
 
     it(" should  used memory gt 0 ", (done) => {
 
         //let file = path.resolve(dirname(__filename) , ".." , "Program" , "AfterEffects" , "App" , "Ae"  , "Support Files" ) 
         // ae.options.program = file 
-        ae.options.noui = true
+       
         ae.options.debug.enabled = true
 
         ae.options.debug.dir = resolve(process.cwd(), "debug")
