@@ -26,6 +26,10 @@ declare global {
   declare function getValue<T>(obj: allTypes | Array, key: string): T
   declare function open(file: string): [Project]
   declare function close(closeOptions?: CloseOptions): boolean
+  declare function getLayersByName(name:string, context? : CompItem , regex?: RegExp) : Layer[] 
+  declare function getLayersByName(name:string, regex?: RegExp) : Layer[] 
+
+  declare function getCompsByName(name:string, regex?:Regexp) : CompItem[] 
   declare class Observable<T>{
     create<T>(items: T): Observable<T>
     doOnFinal: (cb: () => void) => Observable<T>

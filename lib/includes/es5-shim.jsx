@@ -161,7 +161,7 @@ Array.prototype.forEach = Array.prototype.forEach ? Array.prototype.forEach : fu
   }
   // 8. return undefined
 };
-Array.first = Array.first ? Array.first : function (){
+Array.prototype.first = Array.prototype.first ? Array.prototype.first : function (){
 
   var O = Object(this);
     // 2. Let lenValue be the result of calling the Get internal method

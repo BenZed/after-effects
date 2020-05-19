@@ -16,7 +16,7 @@ describe("Commons Tests", () => {
 
         //let file = path.resolve(dirname(__filename) , ".." , "Program" , "AfterEffects" , "App" , "Ae"  , "Support Files" ) 
         // ae.options.program = file 
-       
+        ae.options.noui = true
         ae.options.debug.enabled = true
 
         ae.options.debug.dir = resolve(process.cwd(), "debug")
@@ -32,24 +32,8 @@ describe("Commons Tests", () => {
         })
 
     })
-    it("should debug scripts in specified folder increase after test", () => {
-        let debugDir = resolve(process.cwd(), "debug")
-        let files = readdirSync(debugDir)
-        ae.options.debug.dir = debugDir
-        ae.options.debug.enabled = true
-        ae.executeSync((params) => {
-            console.log(params.projectFile)
-            let file = convertPath(params.projectFile)
-            app.open(file)
-            app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES)
-
-        }, {
-            projectFile: resolve(__dirname, "..", "ae-templates", "sample-project.aep")
-        })
-        let files2 = readdirSync(debugDir)
-        expect(files.length).to.be.eq(files2.length - 1)
-    })
     it("should  all items  array gt 1", (done) => {
+        ae.options.noui = true
         let debugDir = resolve(process.cwd(), "debug")
         ae.options.debug.dir = debugDir
         ae.options.debug.enabled = true
@@ -73,6 +57,7 @@ describe("Commons Tests", () => {
     })
     it("should layer size gt 2 ", (done) => {
         let debugDir = resolve(process.cwd(), "debug")
+        ae.options.noui = true
         ae.options.debug.dir = debugDir
         ae.options.debug.enabled = true
         ae.execute((params) => {
@@ -106,7 +91,7 @@ describe("Commons Tests", () => {
         let debugDir = resolve(process.cwd(), "debug")
         ae.options.debug.dir = debugDir
         ae.options.debug.enabled = true
-
+        ae.options.noui = true
         ae.execute((params) => {
             let file = convertPath(params.projectFile)
             let hasOwnPropery = false
@@ -227,6 +212,120 @@ describe("Commons Tests", () => {
             expect(result).not.to.be.undefined
             expect(result.size).not.to.be.null
             expect(result.size).to.be.greaterThan(0,"layer named testlayer must exits  ")
+            done()
+        })
+    })
+
+    it("should getCompByName  comps gt 0  ", (done) => {
+        //let a = [] 
+        let debugDir = resolve(process.cwd(), "debug")
+        ae.options.noui = true
+        ae.options.debug.dir = debugDir
+        ae.options.debug.enabled = true
+        ae.execute((params) => {
+
+            let result  = {
+                size : 0
+            } 
+           let project =  open(params.projectFile) 
+           let comp1 = getCompsByName("comp 1") 
+           result.size = comp1.length 
+            close(CloseOptions.DO_NOT_SAVE_CHANGES)
+            return result
+
+
+        }, {
+            projectFile: resolve(__dirname, "..", "ae-templates", "sample-project.aep")
+        }).then(result => {
+            expect(result).not.to.be.undefined
+            expect(result.size).not.to.be.null
+            expect(result.size).to.be.greaterThan(0,"layer named testlayer must exits  ")
+            done()
+        })
+    })
+
+    it("should getCompByName with regex  comps gt 0  ", (done) => {
+        //let a = [] 
+        let debugDir = resolve(process.cwd(), "debug")
+        ae.options.noui = true
+        ae.options.debug.dir = debugDir
+        ae.options.debug.enabled = true
+        ae.execute((params) => {
+
+            let result  = {
+                size : 0
+            } 
+           let project =  open(params.projectFile) 
+           let comp1 = getCompsByName("comp 1",/^comp/i) 
+           result.size = comp1.length 
+            close(CloseOptions.DO_NOT_SAVE_CHANGES)
+            return result
+
+
+        }, {
+            projectFile: resolve(__dirname, "..", "ae-templates", "sample-project.aep")
+        }).then(result => {
+            expect(result).not.to.be.undefined
+            expect(result.size).not.to.be.null
+            expect(result.size).to.be.greaterThan(0,"layer named testlayer must exits  ")
+            done()
+        })
+    })
+
+    it("should getLayerByName(dark gray solid)   comps gt 0  ", (done) => {
+        //let a = [] 
+        let debugDir = resolve(process.cwd(), "debug")
+        ae.options.noui = true
+        ae.options.debug.dir = debugDir
+        ae.options.debug.enabled = true
+        ae.execute((params) => {
+
+            let result  = {
+                size : 0
+            } 
+           let project =  open(params.projectFile) 
+           let comp1 = getLayersByName("Dark Gray Solid 1",/^dark/i) 
+           result.size = comp1.length 
+            close(CloseOptions.DO_NOT_SAVE_CHANGES)
+            return result
+
+
+        }, {
+            projectFile: resolve(__dirname, "..", "ae-templates", "sample-project.aep")
+        }).then(result => {
+            expect(result).not.to.be.undefined
+            expect(result.size).not.to.be.null
+            expect(result.size).to.be.greaterThan(0,"layer named testlayer must exits  ")
+            done()
+        })
+    })
+
+    
+    it("should getLayerByName(dark gray solid)  in a comp context  comps gt 0  ", (done) => {
+        //let a = [] 
+        let debugDir = resolve(process.cwd(), "debug")
+        ae.options.noui = true
+        ae.options.debug.dir = debugDir
+        ae.options.debug.enabled = true
+        ae.execute((params) => {
+
+            let result  = {
+                size : 0
+            } 
+           let project =  open(params.projectFile) 
+           let comp1 : CompItem = getCompsByName("Comp 1").first()
+           let layer1 = getLayersByName("Dark Gray Solid 1",comp1,/^dark/i) 
+           result.size = layer1.length
+            close(CloseOptions.DO_NOT_SAVE_CHANGES)
+            return result
+
+
+        }, {
+            projectFile: resolve(__dirname, "..", "ae-templates", "sample-project.aep")
+        }).then(result => {
+            expect(result).not.to.be.undefined
+            expect(result.size).not.to.be.null
+            expect(result.size).to.be.eq(1,"layer named testlayer must exits  ")
             done()
         })
     })

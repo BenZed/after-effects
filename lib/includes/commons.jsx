@@ -1,6 +1,5 @@
- 
 (function (global) {
-    
+
     global.convertPath = function (path) {
         var regexStart = new RegExp(/^([C-Z]):/m);
         var newPath = path.replace(regexStart, function (match, _1) {
@@ -14,18 +13,18 @@
         var objRef = getReflection(items)
         var props = objRef.properties
         var methods = objRef.methods
-        
+
         if (props.has("length")) {
             size = items.length
         }
-         else if (props.has("numProperties")) {
+        else if (props.has("numProperties")) {
             size = items.numProperties
             itemMethod = "property"
-        }else  if (methods.has("count")) {
+        } else if (methods.has("count")) {
             size = items.count()
-        } else if (props.has("numOutputModules")){
-                size= items.numOutputModules
-                itemMethod = "outputModule"
+        } else if (props.has("numOutputModules")) {
+            size = items.numOutputModules
+            itemMethod = "outputModule"
         }
         if (size == 0) {
             return [items]
@@ -35,9 +34,9 @@
         for (var i = 1; i != size + 1; i++) {
             var item = null
             switch (itemMethod) {
-                case "outputModule" : 
-                array = items.outputModule(1).templates
-                break ;
+                case "outputModule":
+                    array = items.outputModule(1).templates
+                    break;
                 case "property":
                     array.push(items.property(i))
                     break;
@@ -74,7 +73,7 @@
         var file = convertPath(path)
         return app.open(file)
     }
-    global.openProject = function (path){
+    global.openProject = function (path) {
         var file = convertPath(path)
         return app.open(file)
     }
@@ -84,11 +83,32 @@
         }
         return app.project.close(closeOptions)
     }
-    global.render=function (comp, file , outputModule , outFile, outTemplate) {
-       var item =  project.renderQueue.items.add(comp)
-       var module = item.outputModule()
-       toArray(module)
-        
-    } 
-   
-}) ($.global)
+    global.render = function (comp, file, outputModule, outFile, outTemplate) {
+        var item = project.renderQueue.items.add(comp)
+        var module = item.outputModule()
+        toArray(module)
+
+    }
+
+    global.getCompsByName = function (name, regex) {
+
+        return get.comps(regex).toArray().filter(function (comp) {
+
+            return comp.name.toLowerCase().trim() == name.toLowerCase().trim()
+        })
+
+    }
+    global.getLayersByName = function (name, comp, regex) {
+
+        var layers = {}
+        if (typeof comp != "undefined") {
+            layers = get.layers(comp.layers, regex)
+        } else {
+            layers = get.layers(regex)
+        }
+        return layers.toArray().filter(function (layer) {
+            return layer.name.toLowerCase().trim() == name.toLowerCase().trim()
+        })
+    }
+
+})($.global)
