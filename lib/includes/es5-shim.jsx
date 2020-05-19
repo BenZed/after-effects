@@ -161,7 +161,17 @@ Array.prototype.forEach = Array.prototype.forEach ? Array.prototype.forEach : fu
   }
   // 8. return undefined
 };
+Array.first = Array.first ? Array.first : function (){
 
+  var O = Object(this);
+    // 2. Let lenValue be the result of calling the Get internal method
+  //    of O with the argument "length".
+  // 3. Let len be ToUint32(lenValue).
+  var len = O.length >>> 0;
+  if(len <1) 
+    return null 
+  return O[0]
+}
 Array.prototype.indexOf = Array.prototype.indexOf ? Array.prototype.indexOf : function (searchElement, fromIndex) {
 
   var k;

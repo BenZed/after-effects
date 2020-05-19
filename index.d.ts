@@ -15,6 +15,7 @@ declare global {
     sink: <U> (callbackfn: (array: T[]) => U, thisArg?: any) => U
     has: (value: string) => boolean
     in_array : (value:string ) => boolean
+    first : ()=> T 
   }
   declare function openProject(path: string): Project
   declare function convertPath(path: string): File
