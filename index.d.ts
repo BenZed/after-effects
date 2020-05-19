@@ -17,6 +17,7 @@ declare global {
     in_array : (value:string ) => boolean
     first : ()=> T 
   }
+  declare function importFootage(path:string,importAs?:ImportAsType) : FootageItem 
   declare function openProject(path: string): Project
   declare function convertPath(path: string): File
   var File: FileConstructor = {} as FileConstructor

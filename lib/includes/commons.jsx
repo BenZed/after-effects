@@ -7,6 +7,23 @@
         });
         return new File(path)
     }
+
+    global.importFootage = function ( path ,importAs ){
+
+
+       var  file  = convertPath(path)
+      
+        var importOptions = new ImportOptions(file) 
+         
+        if(typeof importAs != undefined){
+           importAs =  ImportAsType.FOOTAGE;
+        }
+        importOptions.importAs= importAs 
+        var importedFootage = app.project.importFile(importOptions) 
+    return importedFootage 
+
+          
+    }
     global.toArray = function (items) {
         var size = 0
         var itemMethod = null

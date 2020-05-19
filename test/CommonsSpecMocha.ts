@@ -1,4 +1,3 @@
-
 import ae from ".."
 
 import { expect } from "chai"
@@ -326,6 +325,46 @@ describe("Commons Tests", () => {
             expect(result).not.to.be.undefined
             expect(result.size).not.to.be.null
             expect(result.size).to.be.eq(1,"layer named testlayer must exits  ")
+            done()
+        })
+    })
+
+    it("should import footage  ", (done) => {
+        //let a = [] 
+        let debugDir = resolve(process.cwd(), "debug")
+        ae.options.noui = true 
+        ae.options.debug.dir = debugDir
+        ae.options.debug.enabled = true
+        ae.execute((params) => {
+
+            let result  = {
+                size : 0,
+                previousSize : 0 , 
+                afterSize : 0  
+            } 
+           let project =  open(params.projectFile) 
+           let comp1 : CompItem = getCompsByName("Comp 1").first()
+
+           let footage  = importFootage(params.testimage)  
+            result.previousSize = toArray(comp1.layers).length 
+
+            comp1.layers.add(footage) 
+           
+           result.afterSize =  toArray(comp1.layers).length  
+
+
+          close(CloseOptions.DO_NOT_SAVE_CHANGES)
+            return result
+
+
+        }, {
+            projectFile: resolve(__dirname, "..", "ae-templates", "sample-project.aep"), 
+            testimage  : resolve(__dirname,"..","ae-templates","test.png")
+
+        }).then(result => {
+            expect(result).not.to.be.undefined
+            expect(result.previousSize).to.be.lessThan(result.afterSize)
+             
             done()
         })
     })
