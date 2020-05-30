@@ -94,6 +94,7 @@ interface ae {
   compile: (fn: () => any) => string
   create: <T>(fn: () => any, path: string) => Promise<T>
   createSync: (fn: () => any, path: string) => void
+  addInclude : (path:string) => void 
 }
 export interface options {
   debug?: {

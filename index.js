@@ -239,7 +239,9 @@ function createSync(funcOrCommand, scriptPath) {
   process.stdout.write(`Script written to ${scriptPath}\n`);
   return scriptPath;
 }
-
+function addInclude(path){
+  includes.push(path)
+}
 /*******************************************************************/
 // EXPORTS
 /*******************************************************************/
@@ -254,7 +256,7 @@ module.exports.create = create;
 module.exports.createSync = createSync;
 module.exports.options = options;
 module.exports.Command = Command;
-
+module.exports.addInclude = addInclude
 Object.defineProperty(module.exports, 'scriptsDir', {
   //Pass in dummy command so we have access to the currently set program option, if one exists
   get: () => platform.scriptsDir({ options: { program: module.exports.options.program }})
