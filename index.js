@@ -259,5 +259,5 @@ Object.defineProperty(module.exports, 'scriptsDir', {
   //Pass in dummy command so we have access to the currently set program option, if one exists
   get: () => platform.scriptsDir({ options: { program: module.exports.options.program }})
 });
-Object.preventExtensions(module.exports);
+//Object.preventExtensions(module.exports);
 //Object.preventExtensions(module.exports.options);
