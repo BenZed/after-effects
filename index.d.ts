@@ -81,7 +81,7 @@ interface options {
   noui?: boolean,
   minify?: boolean,
   program?: string
-  includes?: string[]
+  includes : string[]
   errorHandling?: boolean
   testing?: boolean
   commandSavePath?: string

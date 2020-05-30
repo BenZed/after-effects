@@ -260,4 +260,4 @@ Object.defineProperty(module.exports, 'scriptsDir', {
   get: () => platform.scriptsDir({ options: { program: module.exports.options.program }})
 });
 Object.preventExtensions(module.exports);
-Object.preventExtensions(module.exports.options);
+//Object.preventExtensions(module.exports.options);
