@@ -1,6 +1,6 @@
 {
   "name": "after-effects",
-  "version": "1.1.0-alpha.8",
+  "version": "1.1.0-alpha.9",
   "description": "Send instructions to the After Effects scripting environment from node.js. ",
   "main": "index.js",
   "scripts": {
@@ -27,7 +27,7 @@
     "escape-string-applescript": "^2.0.0",
     "is-explicit": "^1.2.2",
     "nyc": "^15.0.1",
-    "types-for-adobe": "^1.5.0",
+    "types-for-adobe": "https://github.com/corluk/Types-for-Adobe.git",
     "uglify-js": "^2.6.2"
   },
   "devDependencies": {

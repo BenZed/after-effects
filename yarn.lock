@@ -2236,10 +2236,9 @@ typedarray-to-buffer@^3.1.5:
   dependencies:
     is-typedarray "^1.0.0"
 
-types-for-adobe@^1.5.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/types-for-adobe/-/types-for-adobe-1.7.0.tgz#369607cb0001c214f0f1d6402864cb77054236d4"
-  integrity sha512-yvkGLsECDDPwf6e216TGCxDg/WPZ2uGxmHceyLGCHaO9Pgcc1MptGcjcSvdKbIT8CkG0PKFBoouGXN5jfVyC4A==
+"types-for-adobe@https://github.com/corluk/Types-for-Adobe.git":
+  version "3.0.0-alpha.1"
+  resolved "https://github.com/corluk/Types-for-Adobe.git#ede61361e1a8badcffe367e11ea784e4ecf66af2"
 
 typescript@^3.7.2:
   version "3.8.3"
