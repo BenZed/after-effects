@@ -128,4 +128,22 @@
         })
     }
 
+
+    global.getEffectProperty  = function (layer , effectNs ) {
+
+        var ns = "Echo|Echo Time (seconds)"
+        var a = effectNS.split("|")
+            var e = layer.effect 
+        for(var  i = 0 ; i!= a.length; i++){
+                
+                    e = e(a[i])
+            }
+    }
+global.effectWrapper  = function (layer ,effectName ) {
+    var effect = layer.effect(effectName)
+    var fn = function (propName){
+
+        return effect(propName) 
+    }
+}
 })($.global)

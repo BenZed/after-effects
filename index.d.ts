@@ -70,6 +70,20 @@ declare global {
      
 
   }
+  declare interface EffectDefinition {
+
+    name:string , 
+    props : string[]
+  }
+  declare const  EffectManager =  {
+    apply<T>(layer:Layer, effectName: string )  : T 
+   ,  inject (effectDefinition:EffectDefinition): void 
+
+  }
+  declare var effectRegistry : {name:string, props: string[]} 
+  declare function applyEffect <T>(comp:CompItem , name :string ) : T 
+  declare function effect<T>(comp:CompItem,effectName :string ) 
+
   declare function render () : void 
 }
 interface options {

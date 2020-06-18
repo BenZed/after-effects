@@ -356,7 +356,8 @@ describe("Commons Tests", () => {
           close(CloseOptions.DO_NOT_SAVE_CHANGES)
             return result
 
-
+            let a = {}
+            
         }, {
             projectFile: resolve(__dirname, "..", "ae-templates", "sample-project.aep"), 
             testimage  : resolve(__dirname,"..","ae-templates","test.png")

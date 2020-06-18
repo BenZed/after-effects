@@ -49,7 +49,8 @@ const options = {
     path.join(__dirname, '/lib/includes/get.jsx'),
     path.join(__dirname,'/lib/includes/commons.jsx'),
     path.join(__dirname,'/lib/includes/observable.jsx') ,
-    path.join(__dirname,'/lib/includes/renderer.jsx')
+    path.join(__dirname,'/lib/includes/renderer.jsx'),
+    path.join(__dirname,'/lib/includes/effects.jsx')
     
   ] , 
   noui : false ,  
