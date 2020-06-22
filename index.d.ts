@@ -29,14 +29,14 @@ declare global {
   declare function close(closeOptions?: CloseOptions): boolean
   declare function getLayersByName(name:string, context? : CompItem , regex?: RegExp) : Layer[] 
   declare function getLayersByName(name:string, regex?: RegExp) : Layer[] 
-
+  declare function saveWithSuffix(suffix :name ) : File 
   declare function getCompsByName(name:string, regex?:Regexp) : CompItem[] 
   declare class Observable<T>{
     create<T>(items: T): Observable<T>
     doOnFinal: (cb: () => void) => Observable<T>
     //pipe_single<R>(fn: (value: T) => R): Observable<R>
 
-    subscribe(subsFn: (value: T) => void, errorFn?: (err: Error) => void, completeFn?: (() => void))
+   /* subscribe(subsFn: (value: T) => void, errorFn?: (err: Error) => void, completeFn?: (() => void))
     pipe<A>(op1: OperatorFunction<T, A>): Observable<A>;
     pipe<A, B>(op1: OperatorFunction<T, A>, op2: OperatorFunction<A, B>): Observable<B>;
     pipe<A, B, C>(op1: OperatorFunction<T, A>, op2: OperatorFunction<A, B>, op3: OperatorFunction<B, C>): Observable<C>;
@@ -47,6 +47,7 @@ declare global {
     pipe<A, B, C, D, E, F, G, H>(op1: OperatorFunction<T, A>, op2: OperatorFunction<A, B>, op3: OperatorFunction<B, C>, op4: OperatorFunction<C, D>, op5: OperatorFunction<D, E>, op6: OperatorFunction<E, F>, op7: OperatorFunction<F, G>, op8: OperatorFunction<G, H>): Observable<H>;
     pipe<A, B, C, D, E, F, G, H, I>(op1: OperatorFunction<T, A>, op2: OperatorFunction<A, B>, op3: OperatorFunction<B, C>, op4: OperatorFunction<C, D>, op5: OperatorFunction<D, E>, op6: OperatorFunction<E, F>, op7: OperatorFunction<F, G>, op8: OperatorFunction<G, H>, op9: OperatorFunction<H, I>): Observable<I>;
     pipe<A, B, C, D, E, F, G, H, I>(op1: OperatorFunction<T, A>, op2: OperatorFunction<A, B>, op3: OperatorFunction<B, C>, op4: OperatorFunction<C, D>, op5: OperatorFunction<D, E>, op6: OperatorFunction<E, F>, op7: OperatorFunction<F, G>, op8: OperatorFunction<G, H>, op9: OperatorFunction<H, I>, ...operations: OperatorFunction<any, any>[]): Observable<{}>;
+  */
   }
   declare class OperatorFunction<T extends Observable, A> {
     filter: (callback: (value: T, index: number, array: T[]) => boolean) => A

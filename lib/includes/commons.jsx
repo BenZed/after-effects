@@ -94,6 +94,14 @@
         var file = convertPath(path)
         return app.open(file)
     }
+    global.saveWithSuffix = function (suffix ) {
+
+        var file = app.project.file  
+        var newName = file.name + suffix 
+        var newFile = new File(newFile)
+        app.project.save(newFile)
+        return newFile 
+    }
     global.close = function (closeOptions) {
         if (typeof closeOptions == "undefined") {
             closeOptions = CloseOptions.DO_NOT_SAVE_CHANGES
