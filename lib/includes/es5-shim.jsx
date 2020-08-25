@@ -800,7 +800,30 @@ String.prototype.includes = String.prototype.includes ? String.prototype.include
       return Object.keys(object);
     };
   }
-
+ // Object assign  
+  if(!Object.assign) {
+    var isObject = function (obj) {
+      return obj && typeof obj === 'object';
+    }
+    Object.defineProperty(Object, 'assign', {
+      value: function(target, source){
+        var s, i, props;
+        if (!isObject(target)) { throw new TypeError('target must be an object'); }
+        for (s = 1; s < arguments.length; ++s) {
+          source = arguments[s];
+          if (!isObject(source)) { throw new TypeError('source ' + s + ' must be an object'); }
+          props = Object.keys(Object(source));
+          for (i = 0; i < props.length; ++i) {
+            target[props[i]] = source[props[i]];
+          }
+        }
+        return target;
+      },
+      enumerable: false
+    });
+   
+    
+  }
   // ES5 15.2.3.5
   // http://es5.github.com/#x15.2.3.5
   if (!Object.create) {

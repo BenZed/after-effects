@@ -4,6 +4,7 @@ import { expect } from "chai"
 
 import { readdirSync } from "fs"
 import { resolve, format } from "path"
+import { O_TRUNC } from "constants"
 
 
 describe("Commons Tests", () => {
@@ -180,40 +181,7 @@ describe("Commons Tests", () => {
         })
     })
    
-    it("should find test layer with observables ", (done) => {
-        //let a = [] 
-        let debugDir = resolve(process.cwd(), "debug")
-        ae.options.noui = true
-        ae.options.debug.dir = debugDir
-        ae.options.debug.enabled = true
-        ae.execute((params) => {
-
-            let result  = {
-                size : 0
-            } 
-         
-            let ob$ = fromProject(params.projectFile)
-                .pipe<Layer[],Layer[]>(ops.map(project=> get.layers().toArray() ) 
-                 ,  ops.filter (layer => layer.name == "testlayer")
-                
-                ).subscribe(layers => {
-
     
-                        result.size  =  layers.length
-                }) 
-
-            return result
-
-
-        }, {
-            projectFile: resolve(__dirname, "..", "ae-templates", "sample-project.aep")
-        }).then(result => {
-            expect(result).not.to.be.undefined
-            expect(result.size).not.to.be.null
-            expect(result.size).to.be.greaterThan(0,"layer named testlayer must exits  ")
-            done()
-        })
-    })
 
     it("should getCompByName  comps gt 0  ", (done) => {
         //let a = [] 
@@ -328,7 +296,33 @@ describe("Commons Tests", () => {
             done()
         })
     })
+    it("should merged object a eq 1 " , (done)=>{
+        let debugDir = resolve(process.cwd(), "debug")
+        ae.options.noui = true 
+        ae.options.debug.dir = debugDir
+        ae.options.debug.enabled = true
+        let params = {
+            target : {
+                a: 0 
 
+            }, 
+           source : {
+                a: 1,
+                b: 1  
+            }
+        }
+        ae.execute((params) => {
+                let newObject = Object.assign(params.target, params.source) 
+            return newObject
+            
+        },params).then(outparams => {
+
+            expect(outparams.a).to.be.eq(1)
+            expect(outparams.b).not.to.be.null
+            
+        }).finally(()=>{done()})
+
+    })
     it("should import footage  ", (done) => {
         //let a = [] 
         let debugDir = resolve(process.cwd(), "debug")
