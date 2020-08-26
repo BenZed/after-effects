@@ -805,8 +805,7 @@ String.prototype.includes = String.prototype.includes ? String.prototype.include
     var isObject = function (obj) {
       return obj && typeof obj === 'object';
     }
-    Object.defineProperty(Object, 'assign', {
-      value: function(target, source){
+    Object.assign = function(target, source){
         var s, i, props;
         if (!isObject(target)) { throw new TypeError('target must be an object'); }
         for (s = 1; s < arguments.length; ++s) {
@@ -818,9 +817,9 @@ String.prototype.includes = String.prototype.includes ? String.prototype.include
           }
         }
         return target;
-      },
-      enumerable: false
-    });
+      }
+      
+    
    
     
   }
