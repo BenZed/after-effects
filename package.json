@@ -27,10 +27,11 @@
     "escape-string-applescript": "^2.0.0",
     "is-explicit": "^1.2.2",
     "nyc": "^15.0.1",
-    "types-for-adobe": "https://github.com/corluk/Types-for-Adobe.git",
+   
     "uglify-js": "^2.6.2"
   },
   "devDependencies": {
+    "types-for-adobe": "https://github.com/corluk/Types-for-Adobe.git",
     "@types/chai": "^4.2.5",
     "@types/mocha": "^7.0.2",
     "@types/node": "^12.12.12",
