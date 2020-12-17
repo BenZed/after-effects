@@ -1,6 +1,4 @@
-if(!exports){
-    exports = {}
-} 
+ 
 (function (global) {
 
     global.convertPath = function (path) {
