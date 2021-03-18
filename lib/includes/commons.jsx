@@ -173,7 +173,7 @@ global.ae_helpers = {
         return _ref 
     },
     addEffect : function (ref , name  ) {
-       return  ref.property("ADBE Effect Parade").addProperty("ADBE Linear Wipe")
+       return  ref.property("ADBE Effect Parade").addProperty(name)
     }
 }
 })($.global)
