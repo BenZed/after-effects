@@ -13,10 +13,12 @@ declare global {
 
   interface ae_helpers {
     getComp : (name:string|Regexp) => CompItem 
-    importFootage : (path:string,importAs?:ImportAsType) => FootageItem ,
-    render :  () => void,
-    getProperty : (ref:AVLayer| PropertyGroup,path: string ) => PropertyGroup | Property  ,
-    addEffect : (ref:AVLayer, name : string) => PropertyGroup 
+    importFootage : (path:string,importAs?:ImportAsType) => FootageItem 
+    render :  () => void 
+    getProperty : (ref:AVLayer| PropertyGroup,path: string ) => PropertyGroup | Property  
+    addEffect : (ref:AVLayer, name : string) => PropertyGroup  
+    extendProperty : (ref:AVLayer|PropertyGroup ) => (name) => PropertyGroup | Property
+    extendEffect : (ref:AVLayer, name: string ) => (name) => PropertyGroup | Property
   }
   interface Array<T> {
     flatMap: <U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: any) => U[]

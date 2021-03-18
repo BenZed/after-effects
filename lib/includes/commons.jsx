@@ -180,6 +180,11 @@ global.ae_helpers = {
         return function(name){
             return ae_helpers.getProperty(ref,name)
         }
+    },
+    extendEffect : function (ref,name) {
+
+        var effect = ae_helpers.getEffect(ref,name)
+        return ae_helpers.extendProperty(effect)
     }
 }
 })($.global)
