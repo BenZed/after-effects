@@ -172,8 +172,18 @@ global.ae_helpers = {
         } 
         return _ref 
     },
-    addEffect : function (ref , name  ) {
-       return  ref.property("ADBE Effect Parade").addProperty(name)
+    addEffect : function (ref , name ,force  ) {
+        var  effects = ref.property("ADBE Effect Parade")
+        var context  = effects.property(name)
+        if(context == undefined){
+            return  ref.property("ADBE Effect Parade").addProperty(name)
+        }else {
+            if(force){
+                return  ref.property("ADBE Effect Parade").addProperty(name)
+            }
+            return context 
+        }
+        
     },
     extendProperty : function (ref){
 
@@ -181,9 +191,9 @@ global.ae_helpers = {
             return ae_helpers.getProperty(ref,name)
         }
     },
-    extendEffect : function (ref,name) {
+    extendEffect : function (ref,name,force) {
 
-        var effect = ae_helpers.getEffect(ref,name)
+        var effect = ae_helpers.getEffect(ref,name,force)
         return ae_helpers.extendProperty(effect)
     }
 }

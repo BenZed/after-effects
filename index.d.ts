@@ -16,9 +16,9 @@ declare global {
     importFootage : (path:string,importAs?:ImportAsType) => FootageItem 
     render :  () => void 
     getProperty : (ref:AVLayer| PropertyGroup,path: string ) => PropertyGroup | Property  
-    addEffect : (ref:AVLayer, name : string) => PropertyGroup  
+    addEffect : (ref:AVLayer, name : string,force : boolean | null ) => PropertyGroup  
     extendProperty : (ref:AVLayer|PropertyGroup ) => (name) => PropertyGroup | Property
-    extendEffect : (ref:AVLayer, name: string ) => (name) => PropertyGroup | Property
+    extendEffect : (ref:AVLayer, name: string , force : boolean | null  ) => (name) => PropertyGroup | Property
   }
   interface Array<T> {
     flatMap: <U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: any) => U[]
