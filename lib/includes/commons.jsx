@@ -174,6 +174,12 @@ global.ae_helpers = {
     },
     addEffect : function (ref , name  ) {
        return  ref.property("ADBE Effect Parade").addProperty(name)
+    },
+    extendProperty : function (ref){
+
+        return function(name){
+            return ae_helpers.getProperty(ref,name)
+        }
     }
 }
 })($.global)
