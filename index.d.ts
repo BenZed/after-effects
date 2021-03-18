@@ -10,6 +10,14 @@ declare type ES3Object = Object
 
 
 declare global {
+
+  interface ae_helpers {
+    getComp : (name:string|Regexp) => CompItem 
+    importFootage : (path:string,importAs?:ImportAsType) => FootageItem ,
+    render :  () => void,
+    getProperty : (ref:AVLayer| PropertyGroup,path: string ) => PropertyGroup | Property  ,
+    addEffect : (ref:AVLayer, name : string) => PropertyGroup 
+  }
   interface Array<T> {
     flatMap: <U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: any) => U[]
     sink: <U> (callbackfn: (array: T[]) => U, thisArg?: any) => U

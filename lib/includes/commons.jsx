@@ -115,7 +115,7 @@
         toArray(module)
 
     }
-
+    
     global.getCompsByName = function (name, regex) {
 
         return get.comps(regex).toArray().filter(function (comp) {
@@ -153,6 +153,27 @@ global.effectWrapper  = function (layer ,effectName ) {
     var fn = function (propName){
 
         return effect(propName) 
+    }
+}
+
+global.ae_helpers = { 
+    
+    getComp : function (name) {
+        return get.comps(name).first 
+    },
+    importFootage : globals.importFootage,
+    render : globals.render ,
+    getProperty : function (ref, path)  {
+        var _ref = ref 
+        var  props= path.split(".")
+        while(props.length > 0){
+                var strPath = props.shift() 
+                _ref = _ref.property(strPath)
+        } 
+        return _ref 
+    },
+    addEffect : function (ref , name  ) {
+       return  ref.property("ADBE Effect Parade").addProperty("ADBE Linear Wipe")
     }
 }
 })($.global)
