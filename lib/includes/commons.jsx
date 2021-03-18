@@ -161,8 +161,8 @@ global.ae_helpers = {
     getComp : function (name) {
         return get.comps(name).first 
     },
-    importFootage : globals.importFootage,
-    render : globals.render ,
+    importFootage : global.importFootage,
+    render : global.render ,
     getProperty : function (ref, path)  {
         var _ref = ref 
         var  props= path.split(".")
