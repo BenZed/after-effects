@@ -1,4 +1,4 @@
- 
+
 (function (global) {
 
     global.convertPath = function (path) {
@@ -9,21 +9,21 @@
         return new File(path)
     }
 
-    global.importFootage = function ( path ,importAs ){
+    global.importFootage = function (path, importAs) {
 
 
-       var  file  = convertPath(path)
-      
-        var importOptions = new ImportOptions(file) 
-         
-        if(typeof importAs != undefined){
-           importAs =  ImportAsType.FOOTAGE;
+        var file = convertPath(path)
+
+        var importOptions = new ImportOptions(file)
+
+        if (typeof importAs != undefined) {
+            importAs = ImportAsType.FOOTAGE;
         }
-        importOptions.importAs= importAs 
-        var importedFootage = app.project.importFile(importOptions) 
-    return importedFootage 
+        importOptions.importAs = importAs
+        var importedFootage = app.project.importFile(importOptions)
+        return importedFootage
 
-          
+
     }
     global.toArray = function (items) {
         var size = 0
@@ -95,13 +95,13 @@
         var file = convertPath(path)
         return app.open(file)
     }
-    global.saveWithSuffix = function (suffix ) {
+    global.saveWithSuffix = function (suffix) {
 
-        var file = app.project.file  
-        var newName = file.name + suffix 
+        var file = app.project.file
+        var newName = file.name + suffix
         var newFile = new File(newFile)
         app.project.save(newFile)
-        return newFile 
+        return newFile
     }
     global.close = function (closeOptions) {
         if (typeof closeOptions == "undefined") {
@@ -115,7 +115,7 @@
         toArray(module)
 
     }
-    
+
     global.getCompsByName = function (name, regex) {
 
         return get.comps(regex).toArray().filter(function (comp) {
@@ -138,63 +138,86 @@
     }
 
 
-    global.getEffectProperty  = function (layer , effectNs ) {
+    global.getEffectProperty = function (layer, effectNs) {
 
         var ns = "Echo|Echo Time (seconds)"
         var a = effectNS.split("|")
-            var e = layer.effect 
-        for(var  i = 0 ; i!= a.length; i++){
-                
-                    e = e(a[i])
-            }
-    }
-global.effectWrapper  = function (layer ,effectName ) {
-    var effect = layer.effect(effectName)
-    var fn = function (propName){
+        var e = layer.effect
+        for (var i = 0; i != a.length; i++) {
 
-        return effect(propName) 
+            e = e(a[i])
+        }
     }
-}
+    global.effectWrapper = function (layer, effectName) {
+        var effect = layer.effect(effectName)
+        var fn = function (propName) {
 
-global.ae_helpers = { 
-    
-    getComp : function (name) {
-        return get.comps(name).first 
-    },
-    importFootage : global.importFootage,
-    render : global.render ,
-    getProperty : function (ref, path)  {
-        var _ref = ref 
-        var  props= path.split(".")
-        while(props.length > 0){
-                var strPath = props.shift() 
+            return effect(propName)
+        }
+    }
+
+    global.ae_helpers = {
+
+        getComp: function (name) {
+            return get.comps(name).first
+        },
+        importFootage: global.importFootage,
+        render: global.render,
+        getProperty: function (ref, path) {
+            var _ref = ref
+            var props = path.split(".")
+            while (props.length > 0) {
+                var strPath = props.shift()
                 _ref = _ref.property(strPath)
-        } 
-        return _ref 
-    },
-    addEffect : function (ref , name ,force  ) {
-        var  effects = ref.property("ADBE Effect Parade")
-        var context  = effects.property(name)
-        if(context == undefined){
-            return  ref.property("ADBE Effect Parade").addProperty(name)
-        }else {
-            if(force){
-                return  ref.property("ADBE Effect Parade").addProperty(name)
             }
-            return context 
-        }
-        
-    },
-    extendProperty : function (ref){
+            return _ref
+        },
+        addEffect: function (ref, name) {
+            var effects = ref.property("ADBE Effect Parade")
+            var context = effects.property(name)
+            if (context == undefined) {
+                return ref.property("ADBE Effect Parade").addProperty(name)
+            } else {
+                if (force) {
+                    return ref.property("ADBE Effect Parade").addProperty(name)
+                }
+                return context
+            }
 
-        return function(name){
-            return ae_helpers.getProperty(ref,name)
-        }
-    },
-    extendEffect : function (ref,name,force) {
+        },
+        extendProperty: function (ref) {
 
-        var effect = ae_helpers.getEffect(ref,name,force)
-        return ae_helpers.extendProperty(effect)
+            return function (name) {
+                return ae_helpers.getProperty(ref, name)
+            }
+        },
+        extendEffect: function (ref, name) {
+
+            var effect = ae_helpers.getEffect(ref, name, force)
+            return ae_helpers.extendProperty(effect)
+        },
+        getPropertyByName: function (propertyGroup, term) {
+            for (var i = 1; i != propertyGroup.numProperties + 1; i++) {
+                var context = propertyGroup.property(i)
+                if (context.name == term || context.matchName == term) {
+                    return context
+                }
+            }
+            return undefined
+        },
+        getEffectByName: function (ref, name) {
+
+            return ae_helpers.getPropertyByName(ref.property("ADBE Effect Parade"), name)
+        },
+        isPropertyExists: function (ref, name) {
+
+            return ae_helpers.getPropertyByName(ref, name) != undefined
+        },
+        isEffectExists: function (ref, name) {
+            return ae_helpers.getPropertyByName(ref.property("ADBE Effect Parade"), name) != undefined
+
+
+
+        }
     }
-}
 })($.global)
