@@ -217,7 +217,7 @@
             return ae_helpers.extendProperty(effect)
         } ,
         getPropertyByName : function (ref,name){
-            let properties = getPropertiesByName(ref,name)
+            var properties = getPropertiesByName(ref,name)
             if(properties.length < 1){
                 throw new Error("Property name " + name + "not exists in " + ref.name) 
             }
@@ -226,7 +226,7 @@
         },
         // 
         getEffectByName : function (ref,name){
-            let effects = getEffectsByName(ref,name)
+            var effects = getEffectsByName(ref,name)
             if(effects.length < 1){
                 throw new Error("Effects  name " + name + "not exists in " + ref.name) 
             }
