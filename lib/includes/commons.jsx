@@ -169,6 +169,7 @@
             while (props.length > 0) {
                 var strPath = props.shift()
                 _ref = _ref.property(strPath)
+             
             }
             return _ref
         },
@@ -185,11 +186,17 @@
             }
 
         },
-        extendProperty: function (ref) {
+        extendProperty: function (ref,name) {
 
-            return function (name) {
-                return ae_helpers.getProperty(ref, name)
-            }
+            var baseRef = ae_helpers.getProperty(ref,name)
+                return  { 
+
+                    
+                    getProperty : function (_name){
+                            ae.helpers.getProperty(baseRef,_name)
+                    }
+                }   
+            
         },
         extendEffect: function (ref, name) {
 
