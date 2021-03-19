@@ -193,31 +193,50 @@
         },
         extendEffect: function (ref, name) {
 
-            var effect = ae_helpers.getEffect(ref, name, force)
+            var effect = ae_helpers.getEffectByName(ref, name)
             return ae_helpers.extendProperty(effect)
-        },
-        getPropertyByName: function (propertyGroup, term) {
-            for (var i = 1; i != propertyGroup.numProperties + 1; i++) {
-                var context = propertyGroup.property(i)
-                if (context.name == term || context.matchName == term) {
-                    return context
-                }
+        } ,
+        getPropertyByName : function (ref,name){
+            let properties = getPropertiesByName(ref,name)
+            if(properties.length < 1){
+                throw new Error("Property name " + name + "not exists in " + ref.name) 
             }
-            return undefined
+            return properties[0]
+            
         },
-        getEffectByName: function (ref, name) {
+        getEffectByName : function (ref,name){
+            let effects = getEffectsByName(ref,name)
+            if(effects.length < 1){
+                throw new Error("Effects  name " + name + "not exists in " + ref.name) 
+            }
+            return effects[0]
+            
+        },
 
+        getPropertiesByName: function (propertyGroup, term) {
+
+            var props = [] 
+            for (var i = 1; i != propertyGroup.numProperties + 1; i++) {
+                var prop = propertyGroup.property(i)
+                term = term.toUpperCase()
+                var name = context.name.toUpperCase()
+                var matchName = context.matchName.toUpperCase()
+                if (name  == term || matchName == term) {
+                    props.push(prop)
+                }
+                
+            }
+            return props 
+        },
+        getEffectsByName: function (ref, name) {
             return ae_helpers.getPropertyByName(ref.property("ADBE Effect Parade"), name)
         },
         isPropertyExists: function (ref, name) {
-
-            return ae_helpers.getPropertyByName(ref, name) != undefined
+            return ae_helpers.getPropertyByName(ref, name).length > 0 
         },
         isEffectExists: function (ref, name) {
-            return ae_helpers.getPropertyByName(ref.property("ADBE Effect Parade"), name) != undefined
-
-
-
+            return ae_helpers.getPropertyByName(ref.property("ADBE Effect Parade"), name).length >  0 
         }
+
     }
 })($.global)
