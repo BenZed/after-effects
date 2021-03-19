@@ -177,7 +177,7 @@
             var effects = ref.property("ADBE Effect Parade")
             var context = effects.property(name)
             if (context == undefined) {
-                return ref.property("ADBE Effect Parade").addProperty(name)
+                return 
             } else {
                 if (force) {
                     return ref.property("ADBE Effect Parade").addProperty(name)
@@ -198,9 +198,22 @@
                 }   
             
         },
+        // if name used new effect will be add - if match name first effect retieved on exist 
         extendEffect: function (ref, name) {
-
-            var effect = ae_helpers.getEffectByName(ref, name)
+            var effect  = null
+            
+            try{
+                 effect = ae_helpers.getEffectByName(ref, name)
+            }catch(err){
+                // possibly name used to retieve 
+                var effects = ref.property("ADBE Effect Parade")
+                if(effects == null){
+                    throw new Error("cannot get effect from " + ref.name)
+                }
+                effect = effects.addProperty(name)
+               
+            }
+           
             return ae_helpers.extendProperty(effect)
         } ,
         getPropertyByName : function (ref,name){
@@ -211,6 +224,7 @@
             return properties[0]
             
         },
+        // 
         getEffectByName : function (ref,name){
             let effects = getEffectsByName(ref,name)
             if(effects.length < 1){
@@ -219,7 +233,10 @@
             return effects[0]
             
         },
+        getEffectsByMatchName : function (ref,matchName){
 
+            return ae_helpers.getPropertiesByName(ref,matchName)
+        },
         getPropertiesByName: function (propertyGroup, term) {
 
             var props = [] 
