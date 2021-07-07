@@ -74,6 +74,73 @@ console.log(projectName)
 
 Also see the [After Effects Scripting Guide](http://blogs.adobe.com/aftereffects/files/2012/06/After-Effects-CS6-Scripting-Guide.pdf) for information about the After Effects Javascript API.
 ___
+<<<<<<< HEAD
+=======
+## Sync vs Async
+
+The default shortcut function will run the code synchronously and block NodeJS until complete, however, you can also send code to After Effects asynchronously:
+
+    //execute sends code to after effects, returning a Promise
+    ae.execute(() => {
+      return app.project.activeItem.name;
+    })
+    .then(name => console.log(name))
+    .catch(err => console.log('No Active Item'));
+
+The default shortcut function actually is just a shortcut to ae.executeSync:
+
+    function save_current_project() {
+      app.project.save();
+    }
+
+    ae.executeSync(save_current_project);
+    //is the same as
+    ae(save_current_project);
+
+___
+## Options
+The ae object has a couple of options:
+
+	ae.options.errorHandling = true;
+	ae.options.minify = false;
+    ae.options.program = null;
+	ae.options.includes = [
+		'./node_modules/after-effects/lib/includes/console.jsx',
+		'./node_modules/after-effects/lib/includes/es5-shim.jsx',
+		'./node_modules/after-effects/lib/includes/get.jsx'
+	]
+
+This would be how you set defaults.
+
+### errorHandling
+With errorHandling enabled, errors thrown in After Effects will be suppressed and returned in the promise result:
+
+    ae.options.errorHandling = true;
+
+    ae.execute(() => throw new Error("FooBar got FooBarred all the way to FooBar."))
+    .then(result => console.log(result)) // empty
+    .catch(err => console.log(err)); // contains error
+
+With errorHandling disabled, After Effects will create a popup and prevent further code execution until it is dealt with.
+
+### minify
+If true, the code will be minified before being sent to After Effects. This is disabled by default, which is different from previous versions of this package. I feel there's little point in spending the extra time to minify code that isn't going over a network. Still, you can set minify to true if you're into that sort of thing.
+
+    ae.options.minify = true;
+
+### program
+By default, ae will look for an After Effects installation in your platforms default application directory. If you've installed it elsewhere, you'll have to set this to the custom app directory.
+
+    ae.options.program = path.join('OtherAppDirectory','Adobe After Effects 2015');
+
+Also handy if you've installed multiple versions of After Effects on your machine, and you'd like to target a specific one.
+
+### includes
+Includes is an array which will concatanate the code from other files into your command, for use inside After Effects.
+The defaults are as follows:
+
+##### _console.js_
+>>>>>>> master
 
 #### _Sync vs Async_
 

@@ -1,10 +1,5 @@
 .DS_Store
 node_modules
 develop.js
-test
-src
-
-.eslintignore
-.eslint.json
-.gitignore
-.languagebabel
+*.tgz
+spec 

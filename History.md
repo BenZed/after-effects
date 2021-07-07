@@ -1,3 +1,28 @@
+## [1.1.0.alpha.1]
+- typescript support added 
+- for sequential  reactive style execution Observable class added 
+- new Array methods : sink , flatMap 
+- debuging support added 
+- for windows noui option added 
+- jasmine test support added 
+## [0.4.14]
+### Changes
+- Missed a Deprecation warning.
+
+## [0.4.13]
+### Changes
+- Accidentally deleted index.js without realizing it last publish. Whoops.
+
+## [0.4.12]
+### Changes
+- Deprecation warning in new Node.js installs Fixed
+
+## [0.4.11]
+### Changes
+- Fixed an old problem with the get.js include
+- Includes are now .jsx files, instead of .js files, because they are ES3 and After-Effects compliant and don't need to be transformed.
+- Fixed a problem that stripped away babel-added functions, preventing usage of the class keyword.
+
 ## [0.4.9]
 ### Changes
 - Fixed a silly bug that I missed last commit.

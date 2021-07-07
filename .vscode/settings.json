@@ -1,0 +1,14 @@
+{
+    "jasmineExplorer.config": "./spec/support/jasmine.json" ,
+    "jasmineExplorer.nodeArgv": [
+        "--require",
+        "ts-node/register"
+        
+    ],
+    "mocha.requires": [
+        "ts-node/register"
+       ],
+    "mocha.logVerbose" :  true ,
+    "mocha.files.glob" : "test/**/*.ts"
+ 
+}

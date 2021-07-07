@@ -1,6 +1,14 @@
 .DS_Store
 node_modules
 develop.js
-lib
-lib-old
-cmd-res-test
+*.temp.js
+.idea/
+*.iml
+Program
+*.tgz
+after-effects-*.tgz
+debug
+.nyc_output
+coverage
+*.log
+tmp 
