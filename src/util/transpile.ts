@@ -28,11 +28,9 @@ const BABEL_OPTIONS = {
 
 }
 
-/******************************************************************************/
 // Exports
-/******************************************************************************/
 
-export function babelify (str) {
+export function babelify(str: string) {
 
   try {
 
@@ -50,11 +48,10 @@ export function babelify (str) {
 
 // This is a big fucker of a function and it probably wont make a lot of sense
 // If you're not familiar with the Adobe scripting environment.
-// TODO Comment in greater detail.
 
-export function adobify (command, includes, options = {}, ...args) {
+export function adobify(command, includes, options = {}, ...args) {
 
-  const [ prefixes, babelified ] = command[CODE]
+  const [prefixes, babelified] = command[CODE]
 
   const { isFunctionExpression } = command
 
@@ -138,7 +135,7 @@ export function adobify (command, includes, options = {}, ...args) {
   )
 
   if (doResultWriting || doErrorHandling) lines.push(
-    `  $.nodeJS.file = File('${resultUrl::escaped()}');`,
+    `  $.nodeJS.file = File('${escaped.call(resultUrl)} ');`,
     '  $.nodeJS.file.open(\'w\');',
     '  $.nodeJS.file.write(\'module.exports = \' + ({',
     '    error: $.nodeJS.result instanceof Error ? { message: $.nodeJS.result.message, stack: $.nodeJS.result.stack } : null,'
@@ -158,8 +155,8 @@ export function adobify (command, includes, options = {}, ...args) {
     '  $.nodeJS.file.close();',
     '',
     `} else alert('NodeJS Error\\nCannot ${errDescription} from ` +
-            'After Effects unless "Preferences" > "General" > "Allow Scripts' +
-            ' to Write Files and Access Network" is enabled.\')',
+    'After Effects unless "Preferences" > "General" > "Allow Scripts' +
+    ' to Write Files and Access Network" is enabled.\')',
     '',
     'delete $.nodeJS;'
   )

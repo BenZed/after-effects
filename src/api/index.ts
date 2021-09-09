@@ -2,7 +2,6 @@ import os from 'os'
 import path from 'path'
 
 import { adobify } from '../util/transpile'
-import { CODE } from '../util/symbols'
 import { write, writeSync } from '../util/fs-util'
 
 import { AfterEffectsMissingError, findAfterEffects, findAfterEffectsSync } from './common'
@@ -12,9 +11,7 @@ import { launchWin, launchWinSync } from './launch-win'
 
 import Command from '../command'
 
-/******************************************************************************/
 // Platform Specific Switches
-/******************************************************************************/
 
 const platform = os.platform()
 const isMac = platform === 'darwin'
@@ -39,11 +36,9 @@ const launchSync = isMac
   ? launchMacSync
   : launchWinSync
 
-/******************************************************************************/
 // Perperation common to sync and async
-/******************************************************************************/
 
-function prepareExec (source, includes, options, ...args) {
+function prepareExec(source, includes, options, ...args) {
 
   const command = Command.fromSource(source)
 
@@ -53,7 +48,7 @@ function prepareExec (source, includes, options, ...args) {
   return { programDir, adobified, resultUrl, logger, renderEngine }
 }
 
-function prepareCreate (source, includes, options, ...args) {
+function prepareCreate(source, includes, options, ...args) {
 
   const command = Command.fromSource(source)
 
@@ -68,11 +63,9 @@ function prepareCreate (source, includes, options, ...args) {
   return { options: createOptions, adobified }
 }
 
-/******************************************************************************/
 // Exports
-/******************************************************************************/
 
-export function executeSync (source, ...args) {
+export function executeSync(source, ...args) {
   const { programDir = PROGRAM_DIR, adobified, resultUrl, logger, renderEngine } =
     prepareExec(source, this[CODE], this.options, ...args)
 
@@ -83,7 +76,7 @@ export function executeSync (source, ...args) {
   return launchSync(adobified, aeUrl, resultUrl, logger, renderEngine)
 }
 
-export async function execute (source, ...args) {
+export async function execute(source, ...args) {
   const { programDir = PROGRAM_DIR, adobified, resultUrl, logger, renderEngine } =
     prepareExec(source, this[CODE], this.options, ...args)
 
@@ -94,7 +87,7 @@ export async function execute (source, ...args) {
   return launch(adobified, aeUrl, resultUrl, logger, renderEngine)
 }
 
-export function createSync (source, url, ...args) {
+export function createSync(source, url, ...args) {
   const { options, adobified } = prepareCreate(source, this[CODE], this.options, ...args)
 
   const jsxUrl = path.isAbsolute(url)
@@ -106,7 +99,7 @@ export function createSync (source, url, ...args) {
   return jsxUrl
 }
 
-export async function create (source, url, ...args) {
+export async function create(source, url, ...args) {
   const { options, adobified } = prepareCreate(source, this[CODE], this.options, ...args)
 
   const jsxUrl = path.isAbsolute(url)
@@ -118,7 +111,7 @@ export async function create (source, url, ...args) {
   return jsxUrl
 }
 
-export function getScriptsDirSync (options) {
+export function getScriptsDirSync(options) {
   const { programDir = PROGRAM_DIR } = options || this.options
 
   const aeUrl = findAfterEffectsSync(programDir, isMac)
@@ -130,7 +123,7 @@ export function getScriptsDirSync (options) {
   return path.join(aeDir, SCRIPT_SUBPATH)
 }
 
-export async function getScriptsDir (options) {
+export async function getScriptsDir(options) {
   const { programDir = PROGRAM_DIR } = options || this.options
 
   const aeUrl = await findAfterEffects(programDir, isMac)

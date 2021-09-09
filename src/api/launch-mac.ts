@@ -7,20 +7,18 @@ import { write, writeSync, tryUnlink, tryUnlinkSync } from '../util/fs-util'
 
 import { AfterEffectsMissingError, parseResults, execPromise, escaped, CMD_RES_DIR } from './common'
 
-/******************************************************************************/
 // Helper
-/******************************************************************************/
 
 export class CouldNotCreateAppleScriptError extends Error {
-  constructor (msg) {
+  constructor(msg: string) {
     super('Could not create AppleScript file for After Effects execution' +
-    (msg ? ': ' + msg : '.'))
+      (msg ? ': ' + msg : '.'))
 
     this.name = 'CouldNotCreateAppleScript'
   }
 }
 
-function checkForMissingAppHack (error) {
+function checkForMissingAppHack(error: Error) {
   // I haven't bothered how to use applescript well enough to determine if the
   // After Effects app exists or not. So, rather than figure it out, I'll just
   // look for an error that includes this string, because that error means that
@@ -32,7 +30,7 @@ function checkForMissingAppHack (error) {
 
 }
 
-function getRenderEngineUrl (aeUrl) {
+function getRenderEngineUrl(aeUrl) {
   const aeDir = path.dirname(aeUrl)
   const reUrl = path.join(aeDir, 'Adobe After Effects Render Engine.app')
 
@@ -40,11 +38,9 @@ function getRenderEngineUrl (aeUrl) {
 
 }
 
-/******************************************************************************/
 // Apple Scripts
-/******************************************************************************/
 
-function prepareAppleScript (adobified, aeUrl, renderEngine) {
+function prepareAppleScript(adobified, aeUrl, renderEngine) {
 
   const scptUrl = path.join(CMD_RES_DIR, `ae-command-${uuid.v4()}.scpt`)
 
@@ -64,17 +60,17 @@ function prepareAppleScript (adobified, aeUrl, renderEngine) {
 
   scptTxt.push(
     `tell application "${aeUrl}"`,
-    `  DoScript "${adobified::escaped()}"`,
+    `  DoScript "${escaped(adobified)} "`,
     'end tell'
   )
 
-  return [ scptUrl, scptTxt.join('\n') ]
+  return [scptUrl, scptTxt.join('\n')]
 
 }
 
-function writeAppleScriptSync (adobified, aeUrl, renderEngine) {
+function writeAppleScriptSync(adobified, aeUrl, renderEngine) {
 
-  const [ scptUrl, scptTxt ] = prepareAppleScript(adobified, aeUrl, renderEngine)
+  const [scptUrl, scptTxt] = prepareAppleScript(adobified, aeUrl, renderEngine)
 
   try {
     writeSync(scptUrl, scptTxt)
@@ -85,9 +81,9 @@ function writeAppleScriptSync (adobified, aeUrl, renderEngine) {
   return scptUrl
 }
 
-async function writeAppleScript (adobified, aeUrl, renderEngine) {
+async function writeAppleScript(adobified, aeUrl, renderEngine) {
 
-  const [ scptUrl, scptTxt ] = prepareAppleScript(adobified, aeUrl, renderEngine)
+  const [scptUrl, scptTxt] = prepareAppleScript(adobified, aeUrl, renderEngine)
 
   try {
     await write(scptUrl, scptTxt)
@@ -98,7 +94,7 @@ async function writeAppleScript (adobified, aeUrl, renderEngine) {
   return scptUrl
 }
 
-function executeAppleScriptSync (scriptUrl, resultUrl, logger) {
+function executeAppleScriptSync(scriptUrl: string, resultUrl: string, logger) {
 
   try {
     execSync(`osascript ${scriptUrl}`)
@@ -115,15 +111,15 @@ function executeAppleScriptSync (scriptUrl, resultUrl, logger) {
     tryUnlinkSync(scriptUrl)
     tryUnlinkSync(resultUrl)
 
-    throw checkForMissingAppHack(err)
+    throw checkForMissingAppHack(err as Error)
   }
 
 }
 
-async function executeAppleScript (scriptUrl, resultUrl, logger) {
+async function executeAppleScript(scriptUrl: string, resultUrl: string, logger) {
 
   try {
-    await execPromise(`osascript ${scriptUrl}`)
+    await execPromise(`osascript ${scriptUrl}`, null)
 
     const results = parseResults(resultUrl, logger)
 
@@ -141,11 +137,9 @@ async function executeAppleScript (scriptUrl, resultUrl, logger) {
   }
 }
 
-/******************************************************************************/
 // Exports
-/******************************************************************************/
 
-export function launchMacSync (adobified, aeUrl, resultUrl, logger, renderEngine) {
+export function launchMacSync(adobified, aeUrl, resultUrl, logger, renderEngine) {
 
   const scrptUrl = writeAppleScriptSync(adobified, aeUrl, renderEngine)
 
@@ -153,7 +147,7 @@ export function launchMacSync (adobified, aeUrl, resultUrl, logger, renderEngine
 
 }
 
-export async function launchMac (adobified, aeUrl, resultUrl, logger, renderEngine) {
+export async function launchMac(adobified, aeUrl, resultUrl, logger, renderEngine) {
 
   const scrptUrl = await writeAppleScript(adobified, aeUrl, renderEngine)
 

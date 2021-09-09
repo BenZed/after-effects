@@ -5,29 +5,24 @@ import { execSync } from 'child_process'
 import { write, writeSync, tryUnlink, tryUnlinkSync } from '../util/fs-util'
 import { parseResults, execPromise, CMD_RES_DIR } from './common'
 
-/******************************************************************************/
-// afterfx.exe flags
-/******************************************************************************/
+/* afterfx.exe flags
 
-// -r run a script
-// -ro ??
-// -s run code provided as string
-// -so ??
-// -m import file
-// -re render engine
-// -noui don't show the ui
+-r run a script
+-ro ??
+-s run code provided as string
+-so ??
+-m import file
+-re render engine
+-noui don't show the ui
+*/
 
-/******************************************************************************/
 // Data
-/******************************************************************************/
 
 const STDIO = []
 
-/******************************************************************************/
 // Helper
-/******************************************************************************/
 
-function execSetup (jsxUrl, aeUrl, renderEngine) {
+function execSetup(jsxUrl, aeUrl, renderEngine) {
 
   const reArg = renderEngine ? ' -re' : ''
   const aeDir = path.dirname(aeUrl)
@@ -64,7 +59,7 @@ function execSetup (jsxUrl, aeUrl, renderEngine) {
 
 }
 
-function writeJsxSync (jsxTxt) {
+function writeJsxSync(jsxTxt) {
   const jsxUrl = path.join(CMD_RES_DIR, `ae-command-${uuid.v4()}.jsx`)
 
   writeSync(jsxUrl, jsxTxt)
@@ -72,7 +67,7 @@ function writeJsxSync (jsxTxt) {
   return jsxUrl
 }
 
-async function writeJsx (jsxTxt) {
+async function writeJsx(jsxTxt) {
   const jsxUrl = path.join(CMD_RES_DIR, `ae-command-${uuid.v4()}.jsx`)
 
   await write(jsxUrl, jsxTxt)
@@ -80,7 +75,7 @@ async function writeJsx (jsxTxt) {
   return jsxUrl
 }
 
-function executeJsxSync (jsxUrl, aeUrl, resultUrl, logger, renderEngine) {
+function executeJsxSync(jsxUrl, aeUrl, resultUrl, logger, renderEngine) {
 
   const { openCmd, runCmd, runOptions, openOptions } = execSetup(jsxUrl, aeUrl, renderEngine)
 
@@ -106,7 +101,7 @@ function executeJsxSync (jsxUrl, aeUrl, resultUrl, logger, renderEngine) {
 
 }
 
-async function executeJsx (jsxUrl, aeUrl, resultUrl, logger, renderEngine) {
+async function executeJsx(jsxUrl, aeUrl, resultUrl, logger, renderEngine) {
 
   const { openCmd, runCmd, runOptions, openOptions } = execSetup(jsxUrl, aeUrl, renderEngine)
 
@@ -123,25 +118,20 @@ async function executeJsx (jsxUrl, aeUrl, resultUrl, logger, renderEngine) {
   await tryUnlink(resultUrl)
 
   return results
-
 }
 
-/******************************************************************************/
 // Exports
-/******************************************************************************/
 
-export function launchWinSync (adobified, aeUrl, resultUrl, logger, renderEngine) {
+export function launchWinSync(adobified, aeUrl, resultUrl, logger, renderEngine) {
 
   const jsxUrl = writeJsxSync(adobified)
 
   return executeJsxSync(jsxUrl, aeUrl, resultUrl, logger, renderEngine)
-
 }
 
-export async function launchWin (adobified, aeUrl, resultUrl, logger, renderEngine) {
+export async function launchWin(adobified, aeUrl, resultUrl, logger, renderEngine) {
 
   const jsxUrl = await writeJsx(adobified)
 
   return executeJsx(jsxUrl, aeUrl, resultUrl, logger, renderEngine)
-
 }

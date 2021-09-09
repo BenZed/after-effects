@@ -2,18 +2,14 @@
 import is from 'is-explicit'
 import * as api from './api'
 
-import { CODE } from './util/symbols'
 import { babelify } from './util/transpile'
 import { inputToSource } from './command'
 
-/******************************************************************************/
 // Defaults
-/******************************************************************************/
 
 const { freeze, defineProperty } = Object
 
-const DEFAULT_INCLUDES = freeze([
-])
+const DEFAULT_INCLUDES = freeze([])
 
 const DEFAULTS = freeze({
   handleErrors: true,
@@ -25,19 +21,20 @@ const DEFAULTS = freeze({
   includes: DEFAULT_INCLUDES
 })
 
-/******************************************************************************/
 // Validation
-/******************************************************************************/
 
 const VALID_SHORTCUTS = [
-  'execute', 'executeSync', 'create', 'createSync'
+  'execute',
+  'executeSync',
+  'create',
+  'createSync'
 ]
 
 // Why define all these validator helper functions? Well, it makes the main
 // validate function look cleaner, and I'm not sure how many more options I'm going
 // to add.
 
-function validateBoolean (name, options, defs) {
+function validateBoolean(name, options, defs) {
 
   const value = options[name]
 
@@ -48,7 +45,7 @@ function validateBoolean (name, options, defs) {
   return isDefined ? value : defs[name]
 }
 
-function validateFunction (name, options, defs) {
+function validateFunction(name, options, defs) {
 
   const value = options[name]
 
@@ -59,7 +56,7 @@ function validateFunction (name, options, defs) {
 
 }
 
-function validateString (name, options, enums, defs) {
+function validateString(name, options, enums, defs) {
 
   const value = options[name]
 
@@ -72,7 +69,7 @@ function validateString (name, options, enums, defs) {
 
 }
 
-function validateArray (name, options, Type, defs) {
+function validateArray(name, options, Type, defs) {
 
   const value = options[name]
 
@@ -82,10 +79,10 @@ function validateArray (name, options, Type, defs) {
   if (isDefined && !isValid)
     throw new Error(`if defined, options.${name} must be an array of ${Type.name}s.`)
 
-  return isDefined ? [ ...value ] : [ ...defs.includes ]
+  return isDefined ? [...value] : [...defs.includes]
 }
 
-function validateOptionsAndTranspileIncludes (options = {}, defs = DEFAULTS) {
+function validateOptionsAndTranspileIncludes(options = {}, defs = DEFAULTS) {
 
   defs = { ...defs } // Rewrap to prevent future setOptions calls from mutating past options
 
@@ -103,20 +100,18 @@ function validateOptionsAndTranspileIncludes (options = {}, defs = DEFAULTS) {
   })
 
   // Codify Includes
-  this[CODE] = this.options.includes.map(inputToSource).map(babelify)
+  this.code = this.options.includes.map(inputToSource).map(babelify)
 }
 
-/******************************************************************************/
 // Exports
-/******************************************************************************/
 
-export default function factory (options = {}) { // Factory
+export default function factory(options = {}) { // Factory
 
   // It actually doesn't need to be invoked with new at all, but lets enforce some readability.
   if (!is(this))
     throw new Error('Class constructor AfterEffects cannot be invoked without \'new\'')
 
-  function AfterEffects (...args) { // Instance
+  function AfterEffects(...args) { // Instance
 
     const { shortcut: method } = AfterEffects.options
 
@@ -129,7 +124,7 @@ export default function factory (options = {}) { // Factory
   // No set options for now
   // AfterEffects.setOptions = options => AfterEffects::validateOptionsAndTranspileIncludes(options, AfterEffects.options)
 
-  defineProperty(AfterEffects, 'scriptsDir', { 
+  defineProperty(AfterEffects, 'scriptsDir', {
     get: api.getScriptsDirSync.bind(AfterEffects)
   })
 

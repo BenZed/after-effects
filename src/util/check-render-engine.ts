@@ -1,16 +1,14 @@
 import AfterEffects from '../factory'
 import Command from '../command'
 
-/******************************************************************************/
 // Helpers
-/******************************************************************************/
 
 const twoSeconds = () => new Promise(resolve => setTimeout(resolve, 2000))
 
 const waitTwoSecondsSync = () => {
   const nowPlusTwo = Date.now() + 2000
 
-  while (Date.now() < nowPlusTwo) {} // This is disgusting, i feel gross writing this.
+  while (Date.now() < nowPlusTwo) { } // This is disgusting, i feel gross writing this.
 }
 
 const createChecker = ae => {
@@ -27,9 +25,7 @@ const createChecker = ae => {
 
 }
 
-/******************************************************************************/
 // Commands
-/******************************************************************************/
 
 /* global app */
 
@@ -41,13 +37,11 @@ const checkRenderEngineCommand = new Command(shouldBeRenderEngine => {
   return requiresRestart
 })
 
-const restartCommand = new Command(() => {}) // Blank
+const restartCommand = new Command(() => { }) // Blank
 
-/******************************************************************************/
 // Exports
-/******************************************************************************/
 
-export async function checkRenderEngine (ae) {
+export async function checkRenderEngine(ae) {
 
   const aeChecker = createChecker(ae)
 
@@ -65,7 +59,7 @@ export async function checkRenderEngine (ae) {
 
 }
 
-export function checkRenderEngineSync (ae) {
+export function checkRenderEngineSync(ae) {
 
   const aeChecker = createChecker(ae)
 

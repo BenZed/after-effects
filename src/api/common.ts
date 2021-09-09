@@ -1,17 +1,30 @@
-import path from 'path'
-import fs from 'fs-extra'
 import { exec } from 'child_process'
+
+import {
+  readSync,
+  readDir,
+  readDirSync,
+  isAccessibleDirSync,
+  isAccessibleDir,
+  isAccessibleFileSync,
+  isAccessibleFile
+} from '../util/fs-util'
+
+import { AfterEffectsResults, ErrorJson } from '../types'
+
 import os from 'os'
 import jsesc from 'jsesc'
+import path from 'path'
 
-import { isAccessibleDirSync, isAccessibleDir, isAccessibleFileSync, isAccessibleFile }
-  from '../util/fs-util'
+// Types
 
-/******************************************************************************/
+type Func<A extends any[]> = (...args: A) => any
+
+type AllButLastParameter<P> = P extends Func<[...infer A, any]> ? A : never
+
 // Helpers
-/******************************************************************************/
 
-export const execPromise = (...args) => new Promise((resolve, reject) => {
+export const execPromise = (...args: AllButLastParameter<typeof exec>) => new Promise((resolve, reject) => {
   exec(...args, (err, result) => {
     if (err)
       reject(err)
@@ -20,8 +33,8 @@ export const execPromise = (...args) => new Promise((resolve, reject) => {
   })
 })
 
-export function escaped (quotes = 'double') {
-  return jsesc(this, { quotes })
+export function escaped(str: string, quotes: 'double' | 'single' = 'double') {
+  return jsesc(str, { quotes })
 }
 
 // Command & Response Directory
@@ -30,41 +43,37 @@ export function escaped (quotes = 'double') {
 // Switch these comments when testings
 export const CMD_RES_DIR = os.tmpdir()
 
-/******************************************************************************/
 // Errors
-/******************************************************************************/
 
 export class AfterEffectsMissingError extends Error {
-  constructor (message) {
+  constructor(message?: string) {
     super('After Effects could not be found.' + (message ? '\n' + message : ''))
     this.name = 'AfterEffectsMissing'
   }
 }
 
 export class NoResultError extends Error {
-  constructor (message) {
+  constructor(message: string) {
     super('Could not get results from After Effects. Ensure that "Preferences" >' +
-    ' "General" > "Allow Scripts" to Write Files and Access Network is enabled,' +
-    ' and that you have write permissions to temporary folders.' +
-    (message ? '\n' + message : ''))
+      ' "General" > "Allow Scripts" to Write Files and Access Network is enabled,' +
+      ' and that you have write permissions to temporary folders.' +
+      (message ? '\n' + message : ''))
 
     this.name = 'NoResultError'
   }
 }
 
 export class AfterEffectsScriptError extends Error {
-  constructor (err) {
+  constructor(err: ErrorJson) {
     super('Script execution error inside of After Effects' + (err.message ? ': ' + err.message : '.'))
     this.name = 'AfterEffectsScriptError'
     this.stack = err.stack
   }
 }
 
-/******************************************************************************/
 // Find After Effects
-/******************************************************************************/
 
-function afterEffectsNameMatch (url) {
+function afterEffectsNameMatch(url: string) {
 
   const ext = path.extname(url)
   const basename = path.basename(url, ext)
@@ -75,14 +84,14 @@ function afterEffectsNameMatch (url) {
 
 }
 
-async function getAfterEffectsInDir (dir, isMac) {
+async function getAfterEffectsInDir(dir: string, isMac: boolean) {
 
   const EXT = isMac ? '.app' : '.lnk'
   // In Mac, The After Effects program is really just another Directory, so we
   // cant check if it's an accessible file.
   const isAccessible = isMac ? isAccessibleDir : isAccessibleFile
 
-  const names = await fs.readdir(dir)
+  const names = await readDir(dir)
   for (const name of names) {
     const url = path.join(dir, name)
 
@@ -93,12 +102,12 @@ async function getAfterEffectsInDir (dir, isMac) {
   return null
 }
 
-function getAfterEffectsInDirSync (dir, isMac) {
+function getAfterEffectsInDirSync(dir: string, isMac: boolean) {
 
   const EXT = isMac ? '.app' : '.lnk'
   const isAccessible = isMac ? isAccessibleDirSync : isAccessibleFileSync
 
-  const names = fs.readdirSync(dir)
+  const names = readDirSync(dir)
   for (const name of names) {
     const url = path.join(dir, name)
 
@@ -109,13 +118,13 @@ function getAfterEffectsInDirSync (dir, isMac) {
   return null
 }
 
-export async function findAfterEffects (dir, isMac) {
+export async function findAfterEffects(dir: string, isMac: boolean): Promise<string | null> {
 
   let afterEffects = await getAfterEffectsInDir(dir, isMac)
   if (afterEffects)
     return afterEffects
 
-  const names = await fs.readdir(dir)
+  const names = await readDir(dir)
   for (const name of names) {
 
     const url = path.join(dir, name)
@@ -132,13 +141,13 @@ export async function findAfterEffects (dir, isMac) {
 
 }
 
-export function findAfterEffectsSync (dir, isMac) {
+export function findAfterEffectsSync(dir: string, isMac: boolean): string | null {
 
   let afterEffects = getAfterEffectsInDirSync(dir, isMac)
   if (afterEffects)
     return afterEffects
 
-  const names = fs.readdirSync(dir)
+  const names = readDirSync(dir)
   for (const name of names) {
 
     const url = path.join(dir, name)
@@ -155,11 +164,9 @@ export function findAfterEffectsSync (dir, isMac) {
 
 }
 
-/******************************************************************************/
 // Parse Results
-/******************************************************************************/
 
-export function parseResults (resultUrl, logger) {
+export function parseResults(resultUrl: string, logger: (...args: any[]) => void) {
 
   // Adobe doesn't have a JSON object, but it does have a function called 'toSource()'
   // which returns an eval()ible string that describes a javascript obbject.
@@ -171,8 +178,8 @@ export function parseResults (resultUrl, logger) {
   let results
 
   try {
-    results = require(resultUrl)
-  } catch (err) {
+    results = JSON.parse(readSync(resultUrl)) as AfterEffectsResults
+  } catch (err: any) {
     throw new NoResultError(err.message)
   }
 

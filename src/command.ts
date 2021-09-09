@@ -1,15 +1,12 @@
 import is from 'is-explicit'
 import isPath from 'is-valid-path'
 
-import { CODE, SOURCE } from './util/symbols'
 import { babelify } from './util/transpile'
 import { readSync } from './util/fs-util'
 
-/******************************************************************************/
 // Helper
-/******************************************************************************/
 
-export function inputToSource (input) {
+export function inputToSource(input: Function | Command | string): string {
 
   let source = null
 
@@ -17,17 +14,17 @@ export function inputToSource (input) {
     source = input.toString()
 
   else if (is(input, Command))
-    source = input[SOURCE]
+    source = (input as Command).source
 
   // If string is a path, try and read the file it's a path to.
   else if (isPath(input))
-    source = readSync(input)
+    source = readSync(input as string)
 
   // whatever other string it is better be valid code
-  else if (is(input, String))
+  else
     source = input
 
-  if (source === null)
+  if (typeof source !== 'string')
     throw new Error('must be created with functions, urls to code files or blobs of code as a string')
 
   // If we're trying to use a js file that exports a single function as a source
@@ -40,7 +37,7 @@ export function inputToSource (input) {
 
 }
 
-function codify (isFunctionExpression, source) {
+function codify(isFunctionExpression: boolean, source: string) {
 
   // Source must be evaluated in parenthesis if we're making a function expression
   // otherwise this will break.
@@ -48,7 +45,7 @@ function codify (isFunctionExpression, source) {
 
   let prefixes = ''
 
-  let babelified = babelify(source)
+  let babelified = babelify(source) ?? ''
 
   if (isFunctionExpression) {
 
@@ -67,11 +64,10 @@ function codify (isFunctionExpression, source) {
 
   }
 
-  return [ prefixes, babelified ]
-
+  return [prefixes, babelified]
 }
 
-function autoDetectFunctionExpression (source: string) {
+function autoDetectFunctionExpression(source: string) {
   // Remove doubled whitespace
   source = source
     .replace(/\s\s/g, ' ')
@@ -88,13 +84,11 @@ function autoDetectFunctionExpression (source: string) {
   return result
 }
 
-/******************************************************************************/
-// Exportsr
-/******************************************************************************/
+// Exports
 
 export default class Command {
 
-  static fromSource (source, isFunctionExpression) {
+  static fromSource(source: string, isFunctionExpression: boolean) {
 
     return is(source, Command)
       ? source
@@ -102,33 +96,37 @@ export default class Command {
 
   }
 
-  constructor (input, isFunctionExpression) {
+  readonly source: string
+
+  readonly code: string[]
+
+  constructor(input: string | Function | Command, isFunctionExpression: boolean) {
 
     const source = inputToSource(input)
 
     // if the source is a function, then this command is definetly a function
     // expression
-    isFunctionExpression = is(input, Function) 
+    isFunctionExpression = is(input, Function)
       ? true
 
       // otherwise, if an argument was explicitly defined, that will determine
       // if the source is a function expression
-      : is(isFunctionExpression, Boolean) 
+      : is(isFunctionExpression, Boolean)
         ? isFunctionExpression
 
         // Otherwise we try to auto detect
         : autoDetectFunctionExpression(source) // eslint-disable-line indent
 
-    this[SOURCE] = source
-    this[CODE] = codify(isFunctionExpression, source)
+    this.source = source
+    this.code = codify(isFunctionExpression, source)
 
     Object
       .defineProperty(this, 'isFunctionExpression', { value: isFunctionExpression })
 
   }
 
-  toString () {
-    return this[CODE][1]
+  toString() {
+    return this.code[1] ?? ''
   }
 
 }
