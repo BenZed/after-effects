@@ -1,4 +1,4 @@
-import is from 'is-explicit'
+import is from '@benzed/is'
 import isPath from 'is-valid-path'
 
 import { babelify } from './util/transpile'
@@ -8,125 +8,124 @@ import { readSync } from './util/fs-util'
 
 export function inputToSource(input: Function | Command | string): string {
 
-  let source = null
+    let source = null
 
-  if (is(input, Function))
-    source = input.toString()
+    if (is(input, Function))
+        source = input.toString()
 
-  else if (is(input, Command))
-    source = (input as Command).source
+    else if (is(input, Command))
+        source = (input as Command).source
 
-  // If string is a path, try and read the file it's a path to.
-  else if (isPath(input))
-    source = readSync(input as string)
+    // If string is a path, try and read the file it's a path to.
+    else if (isPath(input))
+        source = readSync(input as string)
 
-  // whatever other string it is better be valid code
-  else
-    source = input
+    // whatever other string it is better be valid code
+    else
+        source = input
 
-  if (typeof source !== 'string')
-    throw new Error('must be created with functions, urls to code files or blobs of code as a string')
+    if (typeof source !== 'string')
+        throw new Error('must be created with functions, urls to code files or blobs of code as a string')
 
-  // If we're trying to use a js file that exports a single function as a source
-  // we'll remove the export default so it doesn't break.
-  // TODO there are probably a lot of cases this regeex doesn't support, such
-  // as module.exports
-  source = source.replace(/^(\s+)?export\s+default/, '')
+    // If we're trying to use a js file that exports a single function as a source
+    // we'll remove the export default so it doesn't break.
+    // TODO there are probably a lot of cases this regeex doesn't support, such
+    // as module.exports
+    source = source.replace(/^(\s+)?export\s+default/, '')
 
-  return source
+    return source
 
 }
 
 function codify(isFunctionExpression: boolean, source: string) {
 
-  // Source must be evaluated in parenthesis if we're making a function expression
-  // otherwise this will break.
-  source = isFunctionExpression ? `(${source})` : source
+    // Source must be evaluated in parenthesis if we're making a function expression
+    // otherwise this will break.
+    source = isFunctionExpression ? `(${source})` : source
 
-  let prefixes = ''
+    let prefixes = ''
 
-  let babelified = babelify(source) ?? ''
+    let babelified = babelify(source) ?? ''
 
-  if (isFunctionExpression) {
+    if (isFunctionExpression) {
 
-    const funcStart = babelified
-      .indexOf('(function')
+        const funcStart = babelified
+            .indexOf('(function')
 
-    // Isolate the babel prefixes and remove the 'use strict' directive. (After Effects doesn't use it)
-    prefixes = babelified
-      .substring(0, funcStart)
-      .replace(/'use\sstrict';(\n)/, '')
-      .trim()
+        // Isolate the babel prefixes and remove the 'use strict' directive. (After Effects doesn't use it)
+        prefixes = babelified
+            .substring(0, funcStart)
+            .replace(/'use\sstrict';(\n)/, '')
+            .trim()
 
-    // Isolate babelified code to just the function expression (remove babel prefixes and the final ;)
-    babelified = babelified
-      .substring(funcStart, babelified.length - 1)
+        // Isolate babelified code to just the function expression (remove babel prefixes and the final ;)
+        babelified = babelified
+            .substring(funcStart, babelified.length - 1)
 
-  }
+    }
 
-  return [prefixes, babelified]
+    return [prefixes, babelified]
 }
 
 function autoDetectFunctionExpression(source: string) {
-  // Remove doubled whitespace
-  source = source
-    .replace(/\s\s/g, ' ')
-    .replace(/\s\s/g, ' ') // twice, to catch odd numbers
-    .trim()
+    // Remove doubled whitespace
+    source = source
+        .replace(/\s\s/g, ' ')
+        .replace(/\s\s/g, ' ') // twice, to catch odd numbers
+        .trim()
 
-  // TODO there are a lot of cases this doesn't support. Do some testing and add more.
-  const result =
-    // Test if Arrow Function
-    /^\(((\w| |\d|,)+)?\)\s?=>/.test(source) ||
-    // Test if function keyword
-    /^function\s?\(((\w| |\d|,)+)?\)\s?{/.test(source)
+    // TODO there are a lot of cases this doesn't support. Do some testing and add more.
+    const result =
+        // Test if Arrow Function
+        /^\(((\w| |\d|,)+)?\)\s?=>/.test(source) ||
+        // Test if function keyword
+        /^function\s?\(((\w| |\d|,)+)?\)\s?{/.test(source)
 
-  return result
+    return result
 }
 
 // Exports
 
 export default class Command {
 
-  static fromSource(source: string, isFunctionExpression: boolean) {
+    static fromSource(source: string, isFunctionExpression?: boolean) {
 
-    return is(source, Command)
-      ? source
-      : new Command(source, isFunctionExpression)
+        return is(source, Command)
+            ? source
+            : new Command(source, isFunctionExpression)
 
-  }
+    }
 
-  readonly source: string
+    readonly source: string
 
-  readonly code: string[]
+    readonly code: string[]
 
-  constructor(input: string | Function | Command, isFunctionExpression: boolean) {
+    readonly isFunctionExpression: boolean
 
-    const source = inputToSource(input)
+    constructor(input: string | Function | Command, isFunctionExpression?: boolean) {
 
-    // if the source is a function, then this command is definetly a function
-    // expression
-    isFunctionExpression = is(input, Function)
-      ? true
+        const source = inputToSource(input)
 
-      // otherwise, if an argument was explicitly defined, that will determine
-      // if the source is a function expression
-      : is(isFunctionExpression, Boolean)
-        ? isFunctionExpression
+        // if the source is a function, then this command is definetly a function
+        // expression
+        isFunctionExpression = is(input, Function)
+            ? true
 
-        // Otherwise we try to auto detect
-        : autoDetectFunctionExpression(source) // eslint-disable-line indent
+            // otherwise, if an argument was explicitly defined, that will determine
+            // if the source is a function expression
+            : is(isFunctionExpression, Boolean)
+                ? isFunctionExpression
 
-    this.source = source
-    this.code = codify(isFunctionExpression, source)
+                // Otherwise we try to auto detect
+                : autoDetectFunctionExpression(source) // eslint-disable-line indent
 
-    Object
-      .defineProperty(this, 'isFunctionExpression', { value: isFunctionExpression })
+        this.source = source
+        this.code = codify(isFunctionExpression, source)
+        this.isFunctionExpression = isFunctionExpression
+    }
 
-  }
-
-  toString() {
-    return this.code[1] ?? ''
-  }
+    toString() {
+        return this.code[1] ?? ''
+    }
 
 }

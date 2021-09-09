@@ -1,137 +1,60 @@
 
-import is from 'is-explicit'
+import is from '@benzed/is'
 import * as api from './api'
 
 import { babelify } from './util/transpile'
 import { inputToSource } from './command'
+import { AfterEffects, AfterEffectsOptions } from './types'
 
 // Defaults
 
-const { freeze, defineProperty } = Object
-
-const DEFAULT_INCLUDES = freeze([])
-
-const DEFAULTS = freeze({
-  handleErrors: true,
-  writeResults: true,
-  renderEngine: false,
-  programDir: undefined,
-  logger: console.log.bind(console),
-  shortcut: 'executeSync',
-  includes: DEFAULT_INCLUDES
-})
-
-// Validation
-
-const VALID_SHORTCUTS = [
-  'execute',
-  'executeSync',
-  'create',
-  'createSync'
-]
-
-// Why define all these validator helper functions? Well, it makes the main
-// validate function look cleaner, and I'm not sure how many more options I'm going
-// to add.
-
-function validateBoolean(name, options, defs) {
-
-  const value = options[name]
-
-  const isDefined = is(value)
-  if (isDefined && !is(value, Boolean))
-    throw new Error(`if defined, options.${name} must be true or false`)
-
-  return isDefined ? value : defs[name]
+const DEFAULTS: Partial<AfterEffectsOptions> = {
+    handleErrors: true,
+    writeResults: true,
+    renderEngine: false,
+    logger: console.log.bind(console),
+    shortcut: 'executeSync'
 }
 
-function validateFunction(name, options, defs) {
+function validateOptionsAndTranspileIncludes(this: AfterEffects<any, any>, options = {}, defs = DEFAULTS) {
 
-  const value = options[name]
+    defs = { ...defs } // Rewrap to prevent future setOptions calls from mutating past options
 
-  if (is(value) && !is(value, Function))
-    throw new Error(`if defined, options.${name} must be true or false`)
+    if (!is.plainObject(options))
+        throw new Error('options, if defined, must be a plain object.')
 
-  return value || defs[name]
+    this.options = {
+        ...options,
+        ...DEFAULTS
+    }
 
-}
-
-function validateString(name, options, enums, defs) {
-
-  const value = options[name]
-
-  const isValid = enums ? enums.includes(value) : true
-
-  if (is(value) && (!is(value, String) || !isValid))
-    throw new Error(`if defined, options.${name} must be ${enums ? 'one of ' + enums : 'a string'}`)
-
-  return value || defs[name]
-
-}
-
-function validateArray(name, options, Type, defs) {
-
-  const value = options[name]
-
-  const isDefined = is(value)
-  const isValid = is(value, Array) && (value.length === 0 || is.arrayOf(value, Type))
-
-  if (isDefined && !isValid)
-    throw new Error(`if defined, options.${name} must be an array of ${Type.name}s.`)
-
-  return isDefined ? [...value] : [...defs.includes]
-}
-
-function validateOptionsAndTranspileIncludes(options = {}, defs = DEFAULTS) {
-
-  defs = { ...defs } // Rewrap to prevent future setOptions calls from mutating past options
-
-  if (!is.plainObject(options))
-    throw new Error('options, if defined, must be a plain object.')
-
-  this.options = Object.freeze({
-    handleErrors: validateBoolean('handleErrors', options, defs),
-    writeResults: validateBoolean('writeResults', options, defs),
-    renderEngine: validateBoolean('renderEngine', options, defs),
-    shortcut: validateString('shortcut', options, VALID_SHORTCUTS, defs),
-    programDir: validateString('programDir', options, null, defs),
-    logger: validateFunction('logger', options, defs),
-    includes: validateArray('includes', options, String, defs)
-  })
-
-  // Codify Includes
-  this.code = this.options.includes.map(inputToSource).map(babelify)
+    // Codify Includes
+    this.code = this.options.includes.map(inputToSource).map(babelify)
 }
 
 // Exports
 
-export default function factory(options = {}) { // Factory
+type Definition = Parameters<typeof Object.defineProperty>[2]
 
-  // It actually doesn't need to be invoked with new at all, but lets enforce some readability.
-  if (!is(this))
-    throw new Error('Class constructor AfterEffects cannot be invoked without \'new\'')
+const defineGet = (
+    input: Partial<AfterEffects<any, any>>,
+    key: keyof AfterEffects<any, any>,
+    get: () => string | null
+) => Object.defineProperty(input, key, { get })
 
-  function AfterEffects(...args) { // Instance
+export default function createAfterEffectsInstance<A extends any[], V>(options: Partial<AfterEffectsOptions> = {}) {
 
-    const { shortcut: method } = AfterEffects.options
+    const afterEffects: AfterEffects<A, V> = () => { }
+    afterEffects.options = {
+        ...options,
+        ...DEFAULTS
+    }
+    afterEffects.execute = api.execute
+    afterEffects.executeSync = api.executeSync
+    afterEffects.create = api.create
+    afterEffects.createSync = api.createSync
 
-    return AfterEffects[method](...args)
+    afterEffects.scriptsDir = api.getScriptsDirSync(afterEffects.options)
 
-  }
-
-  validateOptionsAndTranspileIncludes.call(AfterEffects, options)
-
-  // No set options for now
-  // AfterEffects.setOptions = options => AfterEffects::validateOptionsAndTranspileIncludes(options, AfterEffects.options)
-
-  defineProperty(AfterEffects, 'scriptsDir', {
-    get: api.getScriptsDirSync.bind(AfterEffects)
-  })
-
-  for (const key in api)
-    AfterEffects[key] = api[key].bind(AfterEffects)
-
-  return AfterEffects
+    return afterEffects
 }
-
-export { DEFAULT_INCLUDES }
