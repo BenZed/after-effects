@@ -22,8 +22,8 @@ function checkForMissingAppHack(error: Error) {
     // I haven't bothered how to use applescript well enough to determine if the
     // After Effects app exists or not. So, rather than figure it out, I'll just
     // look for an error that includes this string, because that error means that
-    // DoScript couldn't complete, which means the suggested After Effects app doesnt
-    // exist.
+    // DoScript couldn't complete, which could mean the suggested After Effects app 
+    // doesnt exist.
     return error.message.includes('Expected end of line but found')
         ? new AfterEffectsMissingError()
         : error
@@ -34,7 +34,6 @@ function getRenderEngineUrl(aeUrl: string) {
     const reUrl = path.join(aeDir, 'Adobe After Effects Render Engine.app')
 
     return reUrl
-
 }
 
 // Apple Scripts
