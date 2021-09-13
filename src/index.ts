@@ -1,18 +1,26 @@
-import AfterEffects from './factory'
-import Command from './command'
 
-import {
-    checkRenderEngine,
-    checkRenderEngineSync
-} from './util/check-render-engine'
+import quickExecute from './quick-execute'
 
-// Exports
+// import AfterEffects from './factory'
+// import Command from './command'
 
-export {
-    AfterEffects,
-    Command,
-    checkRenderEngine,
-    checkRenderEngineSync
-}
+// import {
+//     checkRenderEngine,
+//     checkRenderEngineSync
+// } from './util/check-render-engine'
 
-export default new AfterEffects()
+// // Exports
+
+// export {
+//     AfterEffects,
+//     Command,
+//     checkRenderEngine,
+//     checkRenderEngineSync
+// }
+
+
+// export default new AfterEffects()
+
+export default quickExecute
+
+export * from './types'
