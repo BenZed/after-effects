@@ -1,7 +1,9 @@
-import { CommandConfig } from '.'
+import 'types-for-adobe/AfterEffects/2018'
+
 import {
     ExecuteResult,
     Command,
+    CommandConfig,
 
     Json,
     JsonFunc
@@ -9,20 +11,21 @@ import {
 
 /*** Move Me ***/
 
-function createCommand<A extends Json[], R extends Json>(config: CommandConfig<A, R>): Command<A, R> {
+function createCommand<A extends Json[], R extends Json | void>(config: CommandConfig<A, R>): Command<A, R> {
 
     return {
         ...config,
         es3: '' // TODO: transpile
     }
-
 }
 
 function commandToIIFEStr<A extends Json[]>(command: Command<A, Json | void>, args: A): string {
+
+    // "function(arg1, arg2){}" -> "(function(arg1, arg2){})(0, 1)"
     return `(${command.es3})(${args.map(arg => JSON.stringify(arg)).join(',')})`
 }
 
-function sendToAfterEffects<A extends Json[], R extends Json>(
+function sendToAfterEffects<A extends Json[], R extends Json | void>(
     command: Command<A, R>,
     args: A
 ): ExecuteResult<R> | null {
@@ -35,7 +38,7 @@ function sendToAfterEffects<A extends Json[], R extends Json>(
 
 /*** Main ***/
 
-function quickExecute<A extends Json[], R extends Json>(
+function quickExecute<A extends Json[], R extends Json | void>(
     source: JsonFunc<A, R>,
     ...args: A
 ): ExecuteResult<R> | null {
@@ -49,7 +52,6 @@ function quickExecute<A extends Json[], R extends Json>(
     const result = sendToAfterEffects(command, args)
     return result
 }
-
 
 /*** Exports ***/
 
