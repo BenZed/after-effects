@@ -1,5 +1,5 @@
 
-import quickExecute from './quick-execute'
+import execute from './execute'
 
 // import AfterEffects from './factory'
 // import Command from './command'
@@ -18,9 +18,10 @@ import quickExecute from './quick-execute'
 //     checkRenderEngineSync
 // }
 
-
 // export default new AfterEffects()
 
-export default quickExecute
+export default execute
 
 export * from './types'
+export * from './execute'
+export * from './create-script'

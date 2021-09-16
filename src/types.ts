@@ -10,27 +10,21 @@ export interface JsonError {
     readonly name: string
 }
 
-export interface AppInfo {
-
-    /**
-     * Where the After Effects application is installed.
-     */
-    readonly path: string
-
-    /**
-     * Script directory for the corresponding After Effects installation.
-     */
-    readonly scriptDir: string
-
-}
 
 type PrependCommand<T> = T extends Command<infer A, void, false>
-    ? Command<A, void, false> & { args: A }
+    ? Command<A, void, false> & (A extends [] ? {} : { readonly args: A })
+    //                           ^ with args
     : never
 
-export interface Command<A extends Json[], R extends Json | void, S extends boolean = boolean> {
+export interface CommandConfig<A extends Json[], R extends Json | void, S extends boolean = boolean> {
 
     readonly source: JsonFunc<A, R>
+
+    /**
+     * Should After Effects script execution results and/or errors be serialized and returned
+     * to node?
+     */
+    readonly serializeResult?: S
 
     /**
      * Prepend an es5 shim to the es3 environment inside After Effects, allowing the source
@@ -44,39 +38,34 @@ export interface Command<A extends Json[], R extends Json | void, S extends bool
     readonly prependCustomEs3?: (PrependCommand<Json[]> | string)[]
 
     /**
-     * Should After Effects script execution results and/or errors be serialized and returned
-     * to node?
+     * Where the After Effects application to use for this command is installed.
      */
-    readonly serializeResult: S
+    readonly appPath?: string
+}
+
+export interface Command<A extends Json[], R extends Json | void, S extends boolean = boolean> extends Required<CommandConfig<A, R, S>> {
 
     /**
      * Transpiled javascript function that will work in the es3 scripting environment inside After Effects
      */
     readonly es3: string
-
 }
 
-export type CommandConfig<A extends Json[], R extends Json | void, S extends boolean = boolean> = Omit<Command<A, R, S>, 'es3'>
 
-interface _UseCommandConfig<A extends Json[], R extends Json | void, S extends boolean> {
-
-    readonly command: Command<A, R, S>
+export type CreateScriptConfig = CommandConfig<[], void, false> & {
 
     /**
-     * Arguments that will be stringified and passed to the After Effects command when used.
+     * Target path of the file relative to the After Effect's app script folder. 
      */
-    readonly args: A
-
-    readonly app: AppInfo
+    readonly scriptName: string
 }
 
-export interface ExecuteConfig<A extends Json[], R extends Json | void> extends _UseCommandConfig<A, R, boolean> {
+export type ExecuteConfig<A extends Json[], R extends Json | void> = CommandConfig<A, R, boolean> & {
 
     /**
      * Should the command be executed in the Render Engine or not?
      */
-    readonly renderEngine: boolean
-
+    readonly renderEngine?: boolean
 }
 
 export interface ExecuteResult<R extends Json | void> {
@@ -87,7 +76,7 @@ export interface ExecuteResult<R extends Json | void> {
     readonly logs: {
         readonly info: readonly Json[],
         readonly warn: readonly Json[],
-        readonly error: readonly Json[],
+        readonly error: readonly Json[]
     }
 
     readonly result: R
@@ -96,14 +85,7 @@ export interface ExecuteResult<R extends Json | void> {
 
 }
 
-export interface CreateScriptConfig<A extends Json[]> extends _UseCommandConfig<A, void, false> {
-
-    /**
-     * Target path of the file relative to the After Effect's app script folder. 
-     */
-    readonly scriptPath: `./${string}.jsx`
-}
-
 export {
-    Json
+    Json,
+    Func
 }
