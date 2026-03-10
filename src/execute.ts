@@ -8,7 +8,6 @@ import {
 
 import createCommand from './create-command'
 import sendToAfterEffects from './send-to-after-effects'
-import { isFunction } from '@benzed/is'
 
 /*** Helper ***/
 
@@ -16,7 +15,7 @@ function resolveExecuteConfig<A extends Json[], R extends Json | void>(
     input: JsonFunc<A, R> | ExecuteConfig<A, R>
 ): ExecuteConfig<A, R> {
 
-    const config: ExecuteConfig<A, R> = isFunction(input)
+    const config: ExecuteConfig<A, R> = typeof input === 'function'
         ? {
             source: input,
             prependEs5Shim: true,

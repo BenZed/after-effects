@@ -1,6 +1,8 @@
-import { Func, Json } from '@benzed/util'
-
 /*** Types ***/
+
+type Json = string | number | boolean | null | readonly Json[] | { readonly [key: string]: Json }
+
+type Func<A extends any[], R> = (...args: A) => R
 
 export type JsonFunc<A extends Json[], R extends Json | void> = Func<A, R>
 

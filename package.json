@@ -4,8 +4,6 @@
     "description": "Send instructions to the After Effects scripting environment from node.js.",
     "main": "lib/index.js",
     "scripts": {
-        "link-benzed": "ts-node ./scripts/link-benzed.ts",
-        "postinstall": "npm run link-benzed"
     },
     "keywords": [
         "after",

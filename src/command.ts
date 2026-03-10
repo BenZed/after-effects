@@ -1,4 +1,3 @@
-import is from '@benzed/is'
 import isPath from 'is-valid-path'
 
 import { babelify } from './util/transpile'
@@ -10,10 +9,10 @@ export function inputToSource(input: Function | Command | string): string {
 
     let source = null
 
-    if (is(input, Function))
+    if (typeof input === 'function')
         source = input.toString()
 
-    else if (is(input, Command))
+    else if (input instanceof Command)
         source = (input as Command).source
 
     // If string is a path, try and read the file it's a path to.
@@ -90,7 +89,7 @@ export default class Command {
 
     static fromSource(source: string, isFunctionExpression?: boolean) {
 
-        return is(source, Command)
+        return source instanceof Command
             ? source
             : new Command(source, isFunctionExpression)
 
@@ -108,12 +107,12 @@ export default class Command {
 
         // if the source is a function, then this command is definetly a function
         // expression
-        isFunctionExpression = is(input, Function)
+        isFunctionExpression = typeof input === 'function'
             ? true
 
             // otherwise, if an argument was explicitly defined, that will determine
             // if the source is a function expression
-            : is(isFunctionExpression, Boolean)
+            : typeof isFunctionExpression === 'boolean'
                 ? isFunctionExpression
 
                 // Otherwise we try to auto detect

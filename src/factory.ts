@@ -1,5 +1,4 @@
 
-import is from '@benzed/is'
 import * as api from './api'
 
 import { babelify } from './util/transpile'
@@ -20,7 +19,7 @@ function validateOptionsAndTranspileIncludes(this: AfterEffects<any, any>, optio
 
     defs = { ...defs } // Rewrap to prevent future setOptions calls from mutating past options
 
-    if (!is.plainObject(options))
+    if (options === null || typeof options !== 'object' || Array.isArray(options) || Object.getPrototypeOf(options) !== Object.prototype)
         throw new Error('options, if defined, must be a plain object.')
 
     this.options = {
