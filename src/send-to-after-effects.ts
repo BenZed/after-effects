@@ -22,16 +22,19 @@ const PROGRAM_DIR = isMac
 
 function buildAdobified<A extends Json[]>(command: Command<A, Json | void>, args: A) {
 
-    // Use the legacy Command class so we can pass it to adobify(), which handles
-    // the full Adobe scripting boilerplate (error trapping, result file writing, etc.)
-    const oldCmd = new OldCommand(command.source)
+    // When targeting the legacy ExtendScript environment, run the source through
+    // OldCommand which babelifies it to ES3 and splits out babel prefixes.
+    // Otherwise pass the raw source so modern JS (UXP) is left intact.
+    const scriptCmd = command.transpileToEs3
+        ? new OldCommand(command.source)
+        : { code: ['', `(${command.source.toString()})`], isFunctionExpression: true }
 
     const options = {
         handleErrors: !!command.serializeResult,
         writeResults: !!command.serializeResult
     }
 
-    return adobify(oldCmd, [], options, ...args)
+    return adobify(scriptCmd as any, [], options, ...args)
 }
 
 function wrapResult<R extends Json | void>(raw: unknown, command: Command<any, R>): ExecuteResult<R> | null {

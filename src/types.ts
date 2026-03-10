@@ -43,6 +43,12 @@ export interface CommandConfig<A extends Json[], R extends Json | void, S extend
      * Where the After Effects application to use for this command is installed.
      */
     readonly appPath?: string
+
+    /**
+     * Transpile the source to ES3 for use in the legacy ExtendScript environment.
+     * Omit or set false for modern JS (UXP).
+     */
+    readonly transpileToEs3?: boolean
 }
 
 export interface Command<A extends Json[], R extends Json | void, S extends boolean = boolean> extends Required<CommandConfig<A, R, S>> {

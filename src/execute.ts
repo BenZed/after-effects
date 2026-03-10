@@ -18,7 +18,6 @@ function resolveExecuteConfig<A extends Json[], R extends Json | void>(
     const config: ExecuteConfig<A, R> = typeof input === 'function'
         ? {
             source: input,
-            prependEs5Shim: true,
             serializeResult: true
         }
 
