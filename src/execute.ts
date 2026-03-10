@@ -6,7 +6,6 @@ import {
     JsonFunc
 } from './types'
 
-import createCommand from './command'
 import sendToAfterEffects, { sendToAfterEffectsAsync } from './send-to-after-effects'
 
 /*** Helper ***/
@@ -38,10 +37,7 @@ function executeSync<A extends Json[], R extends Json | void>(
         // ensure instance of render engine is running
     }
 
-    const command = createCommand(commandConfig)
-
-    const result = sendToAfterEffects(command, args, renderEngine)
-    return result
+    return sendToAfterEffects(commandConfig, args, renderEngine)
 }
 
 async function execute<A extends Json[], R extends Json | void>(
@@ -54,10 +50,7 @@ async function execute<A extends Json[], R extends Json | void>(
         // ensure instance of render engine is running
     }
 
-    const command = createCommand(commandConfig)
-
-    const result = await sendToAfterEffectsAsync(command, args, renderEngine)
-    return result
+    return sendToAfterEffectsAsync(commandConfig, args, renderEngine)
 }
 
 /*** Exports ***/

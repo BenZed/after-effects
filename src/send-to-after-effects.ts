@@ -25,20 +25,22 @@ function buildAdobified<A extends Json[]>(command: CommandConfig<A, Json | void>
     // When targeting the legacy ExtendScript environment, run the source through
     // toEs3Script() which babelifies it to ES3 and splits out babel prefixes.
     // Otherwise pass the raw source so modern JS (UXP) is left intact.
-    const scriptCmd = command.transpileToEs3
+    const transpile = command.transpileToEs3 ?? true
+    const scriptCmd = transpile
         ? toEs3Script(command.source)
         : { code: ['', `(${command.source.toString()})`], isFunctionExpression: true }
 
+    const serialize = command.serializeResult ?? true
     const options = {
-        handleErrors: !!command.serializeResult,
-        writeResults: !!command.serializeResult
+        handleErrors: !!serialize,
+        writeResults: !!serialize
     }
 
     return adobify(scriptCmd, [], options, ...args)
 }
 
 function wrapResult<R extends Json | void>(raw: unknown, command: CommandConfig<any, R>): ExecuteResult<R> | null {
-    if (!command.serializeResult || raw === null || raw === undefined)
+    if (!(command.serializeResult ?? true) || raw === null || raw === undefined)
         return null
 
     return {

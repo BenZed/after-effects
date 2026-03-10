@@ -2,7 +2,6 @@ import os from 'os'
 import path from 'path'
 
 import { JsonFunc, CreateScriptConfig } from './types'
-import createCommand from './command'
 import toEs3Script from './to-es3-script'
 import { adobify } from './util/transpile'
 import { write, writeSync } from './util/fs-util'
@@ -43,10 +42,10 @@ function resolveCreateScriptConfig(
     return config
 }
 
-function buildScriptAdobified(command: ReturnType<typeof createCommand>) {
-    const oldCmd = toEs3Script(command.source)
+function buildScriptAdobified(config: CreateScriptConfig) {
+    const scriptCmd = toEs3Script(config.source)
     const options = { handleErrors: false, writeResults: false }
-    const { adobified } = adobify(oldCmd, [], options)
+    const { adobified } = adobify(scriptCmd, [], options)
     return adobified
 }
 
@@ -62,19 +61,17 @@ function createScriptSync(
     ...input: [source: JsonFunc<[], void>, scriptName: string] | [config: CreateScriptConfig]
 ): void {
 
-    const { scriptName, ...commandConfig } = resolveCreateScriptConfig(input)
+    const config = resolveCreateScriptConfig(input)
+    const adobified = buildScriptAdobified(config)
 
-    const command = createCommand(commandConfig)
-    const adobified = buildScriptAdobified(command)
-
-    const programDir = command.appPath || PROGRAM_DIR
+    const programDir = config.appPath || PROGRAM_DIR
     const aeUrl = findAfterEffectsSync(programDir, isMac)
     if (!aeUrl)
         throw new AfterEffectsMissingError()
 
     const aeDir = path.dirname(aeUrl)
     const scriptsDir = path.join(aeDir, SCRIPT_SUBPATH)
-    const jsxUrl = resolveScriptPath(scriptName, scriptsDir)
+    const jsxUrl = resolveScriptPath(config.scriptName, scriptsDir)
 
     writeSync(jsxUrl, adobified)
 }
@@ -83,19 +80,17 @@ async function createScript(
     ...input: [source: JsonFunc<[], void>, scriptName: string] | [config: CreateScriptConfig]
 ): Promise<void> {
 
-    const { scriptName, ...commandConfig } = resolveCreateScriptConfig(input)
+    const config = resolveCreateScriptConfig(input)
+    const adobified = buildScriptAdobified(config)
 
-    const command = createCommand(commandConfig)
-    const adobified = buildScriptAdobified(command)
-
-    const programDir = command.appPath || PROGRAM_DIR
+    const programDir = config.appPath || PROGRAM_DIR
     const aeUrl = await findAfterEffects(programDir, isMac)
     if (!aeUrl)
         throw new AfterEffectsMissingError()
 
     const aeDir = path.dirname(aeUrl)
     const scriptsDir = path.join(aeDir, SCRIPT_SUBPATH)
-    const jsxUrl = resolveScriptPath(scriptName, scriptsDir)
+    const jsxUrl = resolveScriptPath(config.scriptName, scriptsDir)
 
     await write(jsxUrl, adobified)
 }
