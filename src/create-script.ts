@@ -2,7 +2,6 @@ import os from 'os'
 import path from 'path'
 
 import { JsonFunc, CreateScriptConfig } from './types'
-import createCommand from './create-command'
 import OldCommand from './command'
 import { adobify } from './util/transpile'
 import { write, writeSync } from './util/fs-util'
@@ -43,8 +42,8 @@ function resolveCreateScriptConfig(
     return config
 }
 
-function buildScriptAdobified(command: ReturnType<typeof createCommand>) {
-    const oldCmd = new OldCommand(command.source)
+function buildScriptAdobified(config: CreateScriptConfig) {
+    const oldCmd = new OldCommand(config.source)
     const options = { handleErrors: false, writeResults: false }
     const { adobified } = adobify(oldCmd, [], options)
     return adobified
@@ -62,12 +61,10 @@ function createScriptSync(
     ...input: [source: JsonFunc<[], void>, scriptName: string] | [config: CreateScriptConfig]
 ): void {
 
-    const { scriptName, ...commandConfig } = resolveCreateScriptConfig(input)
+    const { scriptName, ...config } = resolveCreateScriptConfig(input)
+    const adobified = buildScriptAdobified({ ...config, scriptName })
 
-    const command = createCommand(commandConfig)
-    const adobified = buildScriptAdobified(command)
-
-    const programDir = command.appPath || PROGRAM_DIR
+    const programDir = config.appPath || PROGRAM_DIR
     const aeUrl = findAfterEffectsSync(programDir, isMac)
     if (!aeUrl)
         throw new AfterEffectsMissingError()
@@ -83,12 +80,10 @@ async function createScript(
     ...input: [source: JsonFunc<[], void>, scriptName: string] | [config: CreateScriptConfig]
 ): Promise<void> {
 
-    const { scriptName, ...commandConfig } = resolveCreateScriptConfig(input)
+    const { scriptName, ...config } = resolveCreateScriptConfig(input)
+    const adobified = buildScriptAdobified({ ...config, scriptName })
 
-    const command = createCommand(commandConfig)
-    const adobified = buildScriptAdobified(command)
-
-    const programDir = command.appPath || PROGRAM_DIR
+    const programDir = config.appPath || PROGRAM_DIR
     const aeUrl = await findAfterEffects(programDir, isMac)
     if (!aeUrl)
         throw new AfterEffectsMissingError()

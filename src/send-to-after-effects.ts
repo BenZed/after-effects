@@ -1,7 +1,7 @@
 import os from 'os'
 import path from 'path'
 
-import { Json, Command, ExecuteResult } from './types'
+import { Json, CommandConfig, ExecuteResult } from './types'
 import OldCommand from './command'
 import { adobify } from './util/transpile'
 import { findAfterEffectsSync, findAfterEffects, AfterEffectsMissingError } from './api/common'
@@ -20,25 +20,26 @@ const PROGRAM_DIR = isMac
 
 /*** Helper ***/
 
-function buildAdobified<A extends Json[]>(command: Command<A, Json | void>, args: A) {
+function buildAdobified<A extends Json[]>(config: CommandConfig<A, Json | void>, args: A) {
 
     // When targeting the legacy ExtendScript environment, run the source through
     // OldCommand which babelifies it to ES3 and splits out babel prefixes.
     // Otherwise pass the raw source so modern JS (UXP) is left intact.
-    const scriptCmd = command.transpileToEs3
-        ? new OldCommand(command.source)
-        : { code: ['', `(${command.source.toString()})`], isFunctionExpression: true }
+    const transpileToEs3 = config.transpileToEs3 ?? true
+    const scriptCmd = transpileToEs3
+        ? new OldCommand(config.source)
+        : { code: ['', `(${config.source.toString()})`], isFunctionExpression: true }
 
     const options = {
-        handleErrors: !!command.serializeResult,
-        writeResults: !!command.serializeResult
+        handleErrors: !!config.serializeResult,
+        writeResults: !!config.serializeResult
     }
 
     return adobify(scriptCmd as any, [], options, ...args)
 }
 
-function wrapResult<R extends Json | void>(raw: unknown, command: Command<any, R>): ExecuteResult<R> | null {
-    if (!command.serializeResult || raw === null || raw === undefined)
+function wrapResult<R extends Json | void>(raw: unknown, serializeResult: boolean | undefined): ExecuteResult<R> | null {
+    if (!serializeResult || raw === null || raw === undefined)
         return null
 
     return {
@@ -51,13 +52,13 @@ function wrapResult<R extends Json | void>(raw: unknown, command: Command<any, R
 /*** Main ***/
 
 function sendToAfterEffects<A extends Json[], R extends Json | void>(
-    command: Command<A, R>,
+    config: CommandConfig<A, R>,
     args: A,
     renderEngine = false
 ): ExecuteResult<R> | null {
 
-    const { adobified, resultUrl } = buildAdobified(command, args)
-    const programDir = command.appPath || PROGRAM_DIR
+    const { adobified, resultUrl } = buildAdobified(config, args)
+    const programDir = config.appPath || PROGRAM_DIR
 
     const aeUrl = findAfterEffectsSync(programDir, isMac)
     if (!aeUrl)
@@ -70,17 +71,17 @@ function sendToAfterEffects<A extends Json[], R extends Json | void>(
         ? launchMacSync(adobified, aeUrl, resultUrl, console.log, renderEngine)
         : launchWinSync(adobified, aeUrl, resultUrl, console.log, renderEngine)
 
-    return wrapResult(raw, command)
+    return wrapResult(raw, config.serializeResult)
 }
 
 export async function sendToAfterEffectsAsync<A extends Json[], R extends Json | void>(
-    command: Command<A, R>,
+    config: CommandConfig<A, R>,
     args: A,
     renderEngine = false
 ): Promise<ExecuteResult<R> | null> {
 
-    const { adobified, resultUrl } = buildAdobified(command, args)
-    const programDir = command.appPath || PROGRAM_DIR
+    const { adobified, resultUrl } = buildAdobified(config, args)
+    const programDir = config.appPath || PROGRAM_DIR
 
     const aeUrl = await findAfterEffects(programDir, isMac)
     if (!aeUrl)
@@ -93,7 +94,7 @@ export async function sendToAfterEffectsAsync<A extends Json[], R extends Json |
         ? await launchMac(adobified, aeUrl, resultUrl, console.log, renderEngine)
         : await launchWin(adobified, aeUrl, resultUrl, console.log, renderEngine)
 
-    return wrapResult(raw, command)
+    return wrapResult(raw, config.serializeResult)
 }
 
 /*** Exports ***/

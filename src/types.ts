@@ -13,11 +13,6 @@ export interface JsonError {
 }
 
 
-type PrependCommand<T> = T extends Command<infer A, void, false>
-    ? Command<A, void, false> & (A extends [] ? {} : { readonly args: A })
-    //                           ^ with args
-    : never
-
 export interface CommandConfig<A extends Json[], R extends Json | void, S extends boolean = boolean> {
 
     readonly source: JsonFunc<A, R>
@@ -37,7 +32,7 @@ export interface CommandConfig<A extends Json[], R extends Json | void, S extend
     /**
      * Preprend arbitrary es3 code for edge cases.
      */
-    readonly prependCustomEs3?: (PrependCommand<Json[]> | string)[]
+    readonly prependCustomEs3?: string[]
 
     /**
      * Where the After Effects application to use for this command is installed.
@@ -50,14 +45,6 @@ export interface CommandConfig<A extends Json[], R extends Json | void, S extend
      * Will default to false in the next major version once UXP is standard.
      */
     readonly transpileToEs3?: boolean
-}
-
-export interface Command<A extends Json[], R extends Json | void, S extends boolean = boolean> extends Required<CommandConfig<A, R, S>> {
-
-    /**
-     * Transpiled javascript function that will work in the es3 scripting environment inside After Effects
-     */
-    readonly es3: string
 }
 
 
