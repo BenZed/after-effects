@@ -1,5 +1,5 @@
 import { Command, CommandConfig, Json } from './types'
-import OldCommand from './command'
+import toEs3Script from './command'
 
 /*** Cache ***/
 
@@ -8,7 +8,7 @@ const es3Cache = new Map<string, string>()
 function getEs3(source: string, transpile: boolean): string {
     const key = `${transpile}:${source}`
     if (!es3Cache.has(key))
-        es3Cache.set(key, transpile ? new OldCommand(source).toString() : source)
+        es3Cache.set(key, transpile ? toEs3Script(source).code[1] ?? '' : source)
 
     return es3Cache.get(key)!
 }

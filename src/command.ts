@@ -93,7 +93,7 @@ function autoDetectFunctionExpression(source: string) {
 
 // Exports
 
-export default function Command(input: string | Function | Es3Script, isFunctionExpression?: boolean): Es3Script {
+export default function toEs3Script(input: string | Function | Es3Script, isFunctionExpression?: boolean): Es3Script {
 
     const source = inputToSource(input)
 
