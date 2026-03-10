@@ -46,7 +46,8 @@ export interface CommandConfig<A extends Json[], R extends Json | void, S extend
 
     /**
      * Transpile the source to ES3 for use in the legacy ExtendScript environment.
-     * Omit or set false for modern JS (UXP).
+     * Defaults to true. Set false to pass modern JS through untouched (UXP).
+     * Will default to false in the next major version once UXP is standard.
      */
     readonly transpileToEs3?: boolean
 }

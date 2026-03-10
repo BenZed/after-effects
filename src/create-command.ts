@@ -7,7 +7,7 @@ function createCommand<A extends Json[], R extends Json | void>(
     config: CommandConfig<A, R>
 ): Command<A, R> {
 
-    const es3 = config.transpileToEs3
+    const es3 = (config.transpileToEs3 ?? true)
         ? new OldCommand(config.source).toString()
         : config.source.toString()
 
@@ -15,7 +15,7 @@ function createCommand<A extends Json[], R extends Json | void>(
         serializeResult: true,
         prependEs5Shim: false,
         prependCustomEs3: [],
-        transpileToEs3: false,
+        transpileToEs3: true,
         appPath: '',
         ...config,
         es3
