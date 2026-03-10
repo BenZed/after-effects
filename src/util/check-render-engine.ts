@@ -1,5 +1,5 @@
 import AfterEffects from '../factory'
-import Command from '../command'
+import toEs3Script from '../command'
 
 // Helpers
 
@@ -29,7 +29,7 @@ const createChecker = ae => {
 
 /* global app */
 
-const checkRenderEngineCommand = new Command(shouldBeRenderEngine => {
+const checkRenderEngineCommand = new toEs3Script(shouldBeRenderEngine => {
   const requiresRestart = app.isRenderEngine !== shouldBeRenderEngine
   if (requiresRestart)
     app.quit()
@@ -37,7 +37,7 @@ const checkRenderEngineCommand = new Command(shouldBeRenderEngine => {
   return requiresRestart
 })
 
-const restartCommand = new Command(() => { }) // Blank
+const restartCommand = new toEs3Script(() => { }) // Blank
 
 // Exports
 

@@ -2,7 +2,7 @@ import os from 'os'
 import path from 'path'
 
 import { JsonFunc, CreateScriptConfig } from './types'
-import OldCommand from './command'
+import toEs3Script from './command'
 import { adobify } from './util/transpile'
 import { write, writeSync } from './util/fs-util'
 import { findAfterEffects, findAfterEffectsSync, AfterEffectsMissingError } from './api/common'
@@ -43,7 +43,7 @@ function resolveCreateScriptConfig(
 }
 
 function buildScriptAdobified(config: CreateScriptConfig) {
-    const oldCmd = new OldCommand(config.source)
+    const oldCmd = new toEs3Script(config.source)
     const options = { handleErrors: false, writeResults: false }
     const { adobified } = adobify(oldCmd, [], options)
     return adobified

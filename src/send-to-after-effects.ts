@@ -2,7 +2,7 @@ import os from 'os'
 import path from 'path'
 
 import { Json, CommandConfig, ExecuteResult } from './types'
-import OldCommand from './command'
+import toEs3Script from './command'
 import { adobify } from './util/transpile'
 import { findAfterEffectsSync, findAfterEffects, AfterEffectsMissingError } from './api/common'
 import { launchMacSync, launchMac } from './api/launch-mac'
@@ -23,11 +23,11 @@ const PROGRAM_DIR = isMac
 function buildAdobified<A extends Json[]>(config: CommandConfig<A, Json | void>, args: A) {
 
     // When targeting the legacy ExtendScript environment, run the source through
-    // OldCommand which babelifies it to ES3 and splits out babel prefixes.
+    // toEs3Script which babelifies it to ES3 and splits out babel prefixes.
     // Otherwise pass the raw source so modern JS (UXP) is left intact.
     const transpileToEs3 = config.transpileToEs3 ?? true
     const scriptCmd = transpileToEs3
-        ? new OldCommand(config.source)
+        ? new toEs3Script(config.source)
         : { code: ['', `(${config.source.toString()})`], isFunctionExpression: true }
 
     const options = {

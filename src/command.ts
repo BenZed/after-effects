@@ -5,15 +5,15 @@ import { readSync } from './util/fs-util'
 
 // Helper
 
-export function inputToSource(input: Function | Command | string): string {
+export function inputToSource(input: Function | toEs3Script | string): string {
 
     let source = null
 
     if (typeof input === 'function')
         source = input.toString()
 
-    else if (input instanceof Command)
-        source = (input as Command).source
+    else if (input instanceof toEs3Script)
+        source = (input as toEs3Script).source
 
     // If string is a path, try and read the file it's a path to.
     else if (isPath(input))
@@ -85,13 +85,13 @@ function autoDetectFunctionExpression(source: string) {
 
 // Exports
 
-export default class Command {
+export default class toEs3Script {
 
     static fromSource(source: string, isFunctionExpression?: boolean) {
 
-        return source instanceof Command
+        return source instanceof toEs3Script
             ? source
-            : new Command(source, isFunctionExpression)
+            : new toEs3Script(source, isFunctionExpression)
 
     }
 
@@ -101,7 +101,7 @@ export default class Command {
 
     readonly isFunctionExpression: boolean
 
-    constructor(input: string | Function | Command, isFunctionExpression?: boolean) {
+    constructor(input: string | Function | toEs3Script, isFunctionExpression?: boolean) {
 
         const source = inputToSource(input)
 
