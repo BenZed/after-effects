@@ -87,6 +87,40 @@ export interface ExecuteResult<R extends Json | void> {
 
 }
 
+// Types needed by api/ modules
+
+export type Logger = (...args: any[]) => void
+
+/** Shape of errors serialized out of the AE scripting environment */
+export type ErrorJson = JsonError
+
+export interface AfterEffectsResults {
+    error: ErrorJson | null
+    logs: any[][]
+    result: any
+}
+
+export interface AfterEffectsOptions {
+    handleErrors: boolean
+    writeResults: boolean
+    renderEngine: boolean
+    logger: Logger
+    shortcut: string
+    programDir?: string
+    includes: (string | Function)[]
+}
+
+export interface AfterEffects<A extends any[], V> {
+    (...args: A): V
+    options: AfterEffectsOptions
+    execute: (...args: any[]) => Promise<any>
+    executeSync: (...args: any[]) => any
+    create: (...args: any[]) => Promise<any>
+    createSync: (...args: any[]) => any
+    scriptsDir: string | null
+    code: string[]
+}
+
 export {
     Json,
     Func

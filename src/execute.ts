@@ -7,7 +7,7 @@ import {
 } from './types'
 
 import createCommand from './create-command'
-import sendToAfterEffects from './send-to-after-effects'
+import sendToAfterEffects, { sendToAfterEffectsAsync } from './send-to-after-effects'
 
 /*** Helper ***/
 
@@ -41,7 +41,7 @@ function executeSync<A extends Json[], R extends Json | void>(
 
     const command = createCommand(commandConfig)
 
-    const result = sendToAfterEffects(command, args)
+    const result = sendToAfterEffects(command, args, renderEngine)
     return result
 }
 
@@ -50,9 +50,15 @@ async function execute<A extends Json[], R extends Json | void>(
     ...args: A
 ): Promise<ExecuteResult<R> | null> {
 
-    // TODO write createCommand as optionally asyncronous
-    // TODO write sendToAfterEffects as optionally asyncronous
-    return null
+    const { renderEngine = false, ...commandConfig } = resolveExecuteConfig(source)
+    if (renderEngine) {
+        // ensure instance of render engine is running
+    }
+
+    const command = createCommand(commandConfig)
+
+    const result = await sendToAfterEffectsAsync(command, args, renderEngine)
+    return result
 }
 
 /*** Exports ***/

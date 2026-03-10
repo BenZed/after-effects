@@ -88,7 +88,7 @@ export async function execute(source, ...args) {
 }
 
 export function createSync(source, url, ...args) {
-    const { options, adobified } = prepareCreate(source, this[CODE], this.options, ...args)
+    const { options, adobified } = prepareCreate(source, this.code, this.options, ...args)
 
     const jsxUrl = path.isAbsolute(url)
         ? url
