@@ -13,7 +13,7 @@ export interface JsonError {
 }
 
 
-export interface CommandConfig<A extends Json[], R extends Json | void, S extends boolean = boolean> {
+export interface ScriptConfig<A extends Json[], R extends Json | void, S extends boolean = boolean> {
 
     readonly source: JsonFunc<A, R>
 
@@ -48,7 +48,7 @@ export interface CommandConfig<A extends Json[], R extends Json | void, S extend
 }
 
 
-export type CreateScriptConfig = CommandConfig<[], void, false> & {
+export type CreateScriptConfig = ScriptConfig<[], void, false> & {
 
     /**
      * Target path of the file relative to the After Effect's app script folder. 
@@ -56,7 +56,7 @@ export type CreateScriptConfig = CommandConfig<[], void, false> & {
     readonly scriptName: string
 }
 
-export type ExecuteConfig<A extends Json[], R extends Json | void> = CommandConfig<A, R, boolean> & {
+export type ExecuteConfig<A extends Json[], R extends Json | void> = ScriptConfig<A, R, boolean> & {
 
     /**
      * Should the command be executed in the Render Engine or not?
