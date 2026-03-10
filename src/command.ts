@@ -1,4 +1,4 @@
-import { Command, CommandConfig, Json } from './types'
+import { CommandConfig, Json } from './types'
 import toEs3Script from './to-es3-script'
 
 /*** Cache ***/
@@ -15,9 +15,7 @@ function getEs3(source: string, transpile: boolean): string {
 
 /*** Main ***/
 
-function createCommand<A extends Json[], R extends Json | void>(
-    config: CommandConfig<A, R>
-): Command<A, R> {
+function createCommand<A extends Json[], R extends Json | void>(config: CommandConfig<A, R>) {
 
     const es3 = getEs3(config.source.toString(), config.transpileToEs3 ?? true)
 

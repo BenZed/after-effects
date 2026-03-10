@@ -1,7 +1,7 @@
 import os from 'os'
 import path from 'path'
 
-import { Json, Command, ExecuteResult } from './types'
+import { Json, CommandConfig, ExecuteResult } from './types'
 import toEs3Script from './to-es3-script'
 import { adobify } from './util/transpile'
 import { findAfterEffectsSync, findAfterEffects, AfterEffectsMissingError } from './api/common'
@@ -20,7 +20,7 @@ const PROGRAM_DIR = isMac
 
 /*** Helper ***/
 
-function buildAdobified<A extends Json[]>(command: Command<A, Json | void>, args: A) {
+function buildAdobified<A extends Json[]>(command: CommandConfig<A, Json | void>, args: A) {
 
     // When targeting the legacy ExtendScript environment, run the source through
     // toEs3Script() which babelifies it to ES3 and splits out babel prefixes.
@@ -37,7 +37,7 @@ function buildAdobified<A extends Json[]>(command: Command<A, Json | void>, args
     return adobify(scriptCmd, [], options, ...args)
 }
 
-function wrapResult<R extends Json | void>(raw: unknown, command: Command<any, R>): ExecuteResult<R> | null {
+function wrapResult<R extends Json | void>(raw: unknown, command: CommandConfig<any, R>): ExecuteResult<R> | null {
     if (!command.serializeResult || raw === null || raw === undefined)
         return null
 
@@ -51,7 +51,7 @@ function wrapResult<R extends Json | void>(raw: unknown, command: Command<any, R
 /*** Main ***/
 
 function sendToAfterEffects<A extends Json[], R extends Json | void>(
-    command: Command<A, R>,
+    command: CommandConfig<A, R>,
     args: A,
     renderEngine = false
 ): ExecuteResult<R> | null {
@@ -74,7 +74,7 @@ function sendToAfterEffects<A extends Json[], R extends Json | void>(
 }
 
 export async function sendToAfterEffectsAsync<A extends Json[], R extends Json | void>(
-    command: Command<A, R>,
+    command: CommandConfig<A, R>,
     args: A,
     renderEngine = false
 ): Promise<ExecuteResult<R> | null> {
