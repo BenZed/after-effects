@@ -4,7 +4,7 @@ import path from 'path'
 import { transform } from 'babel-core'
 
 import { CMD_RES_DIR, escaped } from '../api/common'
-import Command from '../command'
+import { Es3Script } from '../command'
 
 // Data
 
@@ -44,7 +44,7 @@ export function babelify(str: string) {
 // This is a big fucker of a function and it probably wont make a lot of sense
 // If you're not familiar with the Adobe scripting environment.
 
-export function adobify(command: Command, includes: string[], options = {}, ...scriptArgs: any[]) {
+export function adobify(command: Es3Script, includes: string[], options = {}, ...scriptArgs: any[]) {
 
     const [prefixes, babelified] = command.code
 

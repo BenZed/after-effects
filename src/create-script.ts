@@ -44,7 +44,7 @@ function resolveCreateScriptConfig(
 }
 
 function buildScriptAdobified(command: ReturnType<typeof createCommand>) {
-    const oldCmd = new OldCommand(command.source)
+    const oldCmd = OldCommand(command.source)
     const options = { handleErrors: false, writeResults: false }
     const { adobified } = adobify(oldCmd, [], options)
     return adobified

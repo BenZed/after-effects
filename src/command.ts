@@ -3,17 +3,25 @@ import isPath from 'is-valid-path'
 import { babelify } from './util/transpile'
 import { readSync } from './util/fs-util'
 
+// Types
+
+export type Es3Script = {
+    source: string
+    code: string[]
+    isFunctionExpression: boolean
+}
+
 // Helper
 
-export function inputToSource(input: Function | Command | string): string {
+export function inputToSource(input: Function | Es3Script | string): string {
 
     let source = null
 
     if (typeof input === 'function')
         source = input.toString()
 
-    else if (input instanceof Command)
-        source = (input as Command).source
+    else if (typeof input === 'object' && input !== null && 'source' in input)
+        source = input.source
 
     // If string is a path, try and read the file it's a path to.
     else if (isPath(input))
@@ -85,46 +93,27 @@ function autoDetectFunctionExpression(source: string) {
 
 // Exports
 
-export default class Command {
+export default function Command(input: string | Function | Es3Script, isFunctionExpression?: boolean): Es3Script {
 
-    static fromSource(source: string, isFunctionExpression?: boolean) {
+    const source = inputToSource(input)
 
-        return source instanceof Command
-            ? source
-            : new Command(source, isFunctionExpression)
+    // if the source is a function, then this command is definetly a function
+    // expression
+    isFunctionExpression = typeof input === 'function'
+        ? true
 
-    }
+        // otherwise, if an argument was explicitly defined, that will determine
+        // if the source is a function expression
+        : typeof isFunctionExpression === 'boolean'
+            ? isFunctionExpression
 
-    readonly source: string
+            // Otherwise we try to auto detect
+            : autoDetectFunctionExpression(source) // eslint-disable-line indent
 
-    readonly code: string[]
-
-    readonly isFunctionExpression: boolean
-
-    constructor(input: string | Function | Command, isFunctionExpression?: boolean) {
-
-        const source = inputToSource(input)
-
-        // if the source is a function, then this command is definetly a function
-        // expression
-        isFunctionExpression = typeof input === 'function'
-            ? true
-
-            // otherwise, if an argument was explicitly defined, that will determine
-            // if the source is a function expression
-            : typeof isFunctionExpression === 'boolean'
-                ? isFunctionExpression
-
-                // Otherwise we try to auto detect
-                : autoDetectFunctionExpression(source) // eslint-disable-line indent
-
-        this.source = source
-        this.code = codify(isFunctionExpression, source)
-        this.isFunctionExpression = isFunctionExpression
-    }
-
-    toString() {
-        return this.code[1] ?? ''
+    return {
+        source,
+        code: codify(isFunctionExpression, source),
+        isFunctionExpression
     }
 
 }

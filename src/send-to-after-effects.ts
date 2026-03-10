@@ -26,7 +26,7 @@ function buildAdobified<A extends Json[]>(command: Command<A, Json | void>, args
     // OldCommand which babelifies it to ES3 and splits out babel prefixes.
     // Otherwise pass the raw source so modern JS (UXP) is left intact.
     const scriptCmd = command.transpileToEs3
-        ? new OldCommand(command.source)
+        ? OldCommand(command.source)
         : { code: ['', `(${command.source.toString()})`], isFunctionExpression: true }
 
     const options = {
@@ -34,7 +34,7 @@ function buildAdobified<A extends Json[]>(command: Command<A, Json | void>, args
         writeResults: !!command.serializeResult
     }
 
-    return adobify(scriptCmd as any, [], options, ...args)
+    return adobify(scriptCmd, [], options, ...args)
 }
 
 function wrapResult<R extends Json | void>(raw: unknown, command: Command<any, R>): ExecuteResult<R> | null {
