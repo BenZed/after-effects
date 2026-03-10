@@ -6,7 +6,7 @@ import {
     JsonFunc
 } from './types'
 
-import createCommand from './create-command'
+import createCommand from './command'
 import sendToAfterEffects, { sendToAfterEffectsAsync } from './send-to-after-effects'
 
 /*** Helper ***/

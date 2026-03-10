@@ -2,7 +2,7 @@
 import execute from './execute'
 
 // import AfterEffects from './factory'
-// import Command from './command'
+// import Command from './to-es3-script'
 
 // import {
 //     checkRenderEngine,

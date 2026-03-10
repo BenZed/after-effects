@@ -4,7 +4,7 @@ import path from 'path'
 import { transform } from 'babel-core'
 
 import { CMD_RES_DIR, escaped } from '../api/common'
-import { Es3Script } from '../command'
+import { Es3Script } from '../to-es3-script'
 
 // Data
 

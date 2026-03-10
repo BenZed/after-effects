@@ -9,7 +9,7 @@ import { AfterEffectsMissingError, findAfterEffects, findAfterEffectsSync } from
 import { launchMac, launchMacSync } from './launch-mac'
 import { launchWin, launchWinSync } from './launch-win'
 
-import Command from '../command'
+import toEs3Script from '../to-es3-script'
 
 // Platform Specific Switches
 
@@ -40,7 +40,7 @@ const launchSync = isMac
 
 function prepareExec(source, includes, options, ...args) {
 
-    const command = Command.fromSource(source)
+    const command = toEs3Script(source)
 
     const { adobified, resultUrl } = adobify(command, includes, options, ...args)
     const { programDir, logger, renderEngine } = options
@@ -50,7 +50,7 @@ function prepareExec(source, includes, options, ...args) {
 
 function prepareCreate(source, includes, options, ...args) {
 
-    const command = Command.fromSource(source)
+    const command = toEs3Script(source)
 
     const createOptions = {
         ...options,

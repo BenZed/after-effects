@@ -2,7 +2,7 @@ import os from 'os'
 import path from 'path'
 
 import { Json, Command, ExecuteResult } from './types'
-import toEs3Script from './command'
+import toEs3Script from './to-es3-script'
 import { adobify } from './util/transpile'
 import { findAfterEffectsSync, findAfterEffects, AfterEffectsMissingError } from './api/common'
 import { launchMacSync, launchMac } from './api/launch-mac'

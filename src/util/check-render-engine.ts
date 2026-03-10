@@ -1,5 +1,5 @@
 import AfterEffects from '../factory'
-import Command from '../command'
+import createCommand from '../command'
 
 // Helpers
 
@@ -29,15 +29,15 @@ const createChecker = ae => {
 
 /* global app */
 
-const checkRenderEngineCommand = new Command(shouldBeRenderEngine => {
+const checkRenderEngineCommand = createCommand({ source: shouldBeRenderEngine => {
   const requiresRestart = app.isRenderEngine !== shouldBeRenderEngine
   if (requiresRestart)
     app.quit()
 
   return requiresRestart
-})
+} })
 
-const restartCommand = new Command(() => { }) // Blank
+const restartCommand = createCommand({ source: () => { } }) // Blank
 
 // Exports
 

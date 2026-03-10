@@ -2,7 +2,7 @@
 import * as api from './api'
 
 import { babelify } from './util/transpile'
-import { inputToSource } from './command'
+import { inputToSource } from './to-es3-script'
 import { AfterEffects, AfterEffectsOptions } from './types'
 
 // Defaults
