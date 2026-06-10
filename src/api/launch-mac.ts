@@ -1,11 +1,12 @@
 import path from 'path'
 
-import uuid from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 
 import { execSync } from 'child_process'
 import { write, writeSync, tryUnlink, tryUnlinkSync } from '../util/fs-util'
 
 import { AfterEffectsMissingError, parseResults, execPromise, escaped, CMD_RES_DIR } from './common'
+import { Logger } from '../types'
 
 // Helper
 
@@ -40,7 +41,7 @@ function getRenderEngineUrl(aeUrl: string) {
 
 function prepareAppleScript(adobified: string, aeUrl: string, renderEngine: boolean) {
 
-    const scptUrl = path.join(CMD_RES_DIR, `ae-command-${uuid.v4()}.scpt`)
+    const scptUrl = path.join(CMD_RES_DIR, `ae-command-${uuidv4()}.scpt`)
 
     const scptTxt = []
 
@@ -92,7 +93,7 @@ async function writeAppleScript(adobified: string, aeUrl: string, renderEngine: 
     return scptUrl
 }
 
-function executeAppleScriptSync(scriptUrl: string, resultUrl: string, logger: () => {}) {
+function executeAppleScriptSync(scriptUrl: string, resultUrl: string | null, logger: Logger) {
 
     try {
         execSync(`osascript ${scriptUrl}`)
@@ -100,21 +101,23 @@ function executeAppleScriptSync(scriptUrl: string, resultUrl: string, logger: ()
         const results = parseResults(resultUrl, logger)
 
         tryUnlinkSync(scriptUrl)
-        tryUnlinkSync(resultUrl)
+        if (resultUrl !== null)
+            tryUnlinkSync(resultUrl)
 
         return results
 
     } catch (err) {
 
         tryUnlinkSync(scriptUrl)
-        tryUnlinkSync(resultUrl)
+        if (resultUrl !== null)
+            tryUnlinkSync(resultUrl)
 
         throw checkForMissingAppHack(err as Error)
     }
 
 }
 
-async function executeAppleScript(scriptUrl: string, resultUrl: string, logger: () => {}) {
+async function executeAppleScript(scriptUrl: string, resultUrl: string | null, logger: Logger) {
 
     try {
         await execPromise(`osascript ${scriptUrl}`, null)
@@ -122,14 +125,16 @@ async function executeAppleScript(scriptUrl: string, resultUrl: string, logger: 
         const results = parseResults(resultUrl, logger)
 
         await tryUnlink(scriptUrl)
-        await tryUnlink(resultUrl)
+        if (resultUrl !== null)
+            await tryUnlink(resultUrl)
 
         return results
 
     } catch (err) {
 
         await tryUnlink(scriptUrl)
-        await tryUnlink(resultUrl)
+        if (resultUrl !== null)
+            await tryUnlink(resultUrl)
 
         throw checkForMissingAppHack(err as Error)
     }
@@ -137,7 +142,7 @@ async function executeAppleScript(scriptUrl: string, resultUrl: string, logger: 
 
 // Exports
 
-export function launchMacSync(adobified: string, aeUrl: string, resultUrl: string, logger: () => {}, renderEngine: boolean) {
+export function launchMacSync(adobified: string, aeUrl: string, resultUrl: string | null, logger: Logger, renderEngine: boolean) {
 
     const scrptUrl = writeAppleScriptSync(adobified, aeUrl, renderEngine)
 
@@ -145,7 +150,7 @@ export function launchMacSync(adobified: string, aeUrl: string, resultUrl: strin
 
 }
 
-export async function launchMac(adobified: string, aeUrl: string, resultUrl: string, logger: () => {}, renderEngine: boolean) {
+export async function launchMac(adobified: string, aeUrl: string, resultUrl: string | null, logger: Logger, renderEngine: boolean) {
 
     const scrptUrl = await writeAppleScript(adobified, aeUrl, renderEngine)
 

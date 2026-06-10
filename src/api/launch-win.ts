@@ -1,5 +1,5 @@
 import path from 'path'
-import uuid from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 
 import { execSync } from 'child_process'
 import { write, writeSync, tryUnlink, tryUnlinkSync } from '../util/fs-util'
@@ -19,7 +19,7 @@ import { Logger } from '../types'
 
 // Data
 
-const STDIO = [] as const
+const STDIO = 'ignore' as const
 
 // Helper
 
@@ -61,7 +61,7 @@ function execSetup(jsxUrl: string, aeUrl: string, renderEngine: boolean) {
 }
 
 function writeJsxSync(jsxTxt: string) {
-    const jsxUrl = path.join(CMD_RES_DIR, `ae-command-${uuid.v4()}.jsx`)
+    const jsxUrl = path.join(CMD_RES_DIR, `ae-command-${uuidv4()}.jsx`)
 
     writeSync(jsxUrl, jsxTxt)
 
@@ -69,14 +69,14 @@ function writeJsxSync(jsxTxt: string) {
 }
 
 async function writeJsx(jsxTxt: string) {
-    const jsxUrl = path.join(CMD_RES_DIR, `ae-command-${uuid.v4()}.jsx`)
+    const jsxUrl = path.join(CMD_RES_DIR, `ae-command-${uuidv4()}.jsx`)
 
     await write(jsxUrl, jsxTxt)
 
     return jsxUrl
 }
 
-function executeJsxSync(jsxUrl: string, aeUrl: string, resultUrl: string, logger: Logger, renderEngine: boolean) {
+function executeJsxSync(jsxUrl: string, aeUrl: string, resultUrl: string | null, logger: Logger, renderEngine: boolean) {
 
     const { openCmd, runCmd, runOptions, openOptions } = execSetup(jsxUrl, aeUrl, renderEngine)
 
@@ -96,11 +96,15 @@ function executeJsxSync(jsxUrl: string, aeUrl: string, resultUrl: string, logger
 
     const results = parseResults(resultUrl, logger)
 
+    tryUnlinkSync(jsxUrl)
+    if (resultUrl !== null)
+        tryUnlinkSync(resultUrl)
+
     return results
 
 }
 
-async function executeJsx(jsxUrl: string, aeUrl: string, resultUrl, logger, renderEngine) {
+async function executeJsx(jsxUrl: string, aeUrl: string, resultUrl: string | null, logger: Logger, renderEngine: boolean) {
 
     const { openCmd, runCmd, runOptions, openOptions } = execSetup(jsxUrl, aeUrl, renderEngine)
 
@@ -114,21 +118,22 @@ async function executeJsx(jsxUrl: string, aeUrl: string, resultUrl, logger, rend
     const results = parseResults(resultUrl, logger)
 
     await tryUnlink(jsxUrl)
-    await tryUnlink(resultUrl)
+    if (resultUrl !== null)
+        await tryUnlink(resultUrl)
 
     return results
 }
 
 // Exports
 
-export function launchWinSync(adobified, aeUrl, resultUrl, logger, renderEngine) {
+export function launchWinSync(adobified: string, aeUrl: string, resultUrl: string | null, logger: Logger, renderEngine: boolean) {
 
     const jsxUrl = writeJsxSync(adobified)
 
     return executeJsxSync(jsxUrl, aeUrl, resultUrl, logger, renderEngine)
 }
 
-export async function launchWin(adobified, aeUrl, resultUrl, logger, renderEngine) {
+export async function launchWin(adobified: string, aeUrl: string, resultUrl: string | null, logger: Logger, renderEngine: boolean) {
 
     const jsxUrl = await writeJsx(adobified)
 

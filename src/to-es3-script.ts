@@ -7,7 +7,7 @@ import { readSync } from './util/fs-util'
 
 export type Es3Script = {
     source: string
-    code: string[]
+    code: [prefixes: string, body: string]
     isFunctionExpression: boolean
 }
 
@@ -20,8 +20,11 @@ export function inputToSource(input: Function | Es3Script | string): string {
     if (typeof input === 'function')
         source = input.toString()
 
-    else if (typeof input === 'object' && input !== null && 'source' in input)
-        source = input.source
+    else if (typeof input === 'object' && input !== null && 'source' in input) {
+        // the source property may itself be a function (e.g. a ScriptConfig)
+        const inner: unknown = input.source
+        source = typeof inner === 'function' ? inner.toString() : inner
+    }
 
     // If string is a path, try and read the file it's a path to.
     else if (isPath(input))
@@ -44,7 +47,7 @@ export function inputToSource(input: Function | Es3Script | string): string {
 
 }
 
-function codify(isFunctionExpression: boolean, source: string) {
+function codify(isFunctionExpression: boolean, source: string): [prefixes: string, body: string] {
 
     // Source must be evaluated in parenthesis if we're making a function expression
     // otherwise this will break.
@@ -62,7 +65,7 @@ function codify(isFunctionExpression: boolean, source: string) {
         // Isolate the babel prefixes and remove the 'use strict' directive. (After Effects doesn't use it)
         prefixes = babelified
             .substring(0, funcStart)
-            .replace(/'use\sstrict';(\n)/, '')
+            .replace(/["']use\sstrict["'];(\n)?/, '')
             .trim()
 
         // Isolate babelified code to just the function expression (remove babel prefixes and the final ;)

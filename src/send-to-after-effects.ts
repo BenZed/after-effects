@@ -1,8 +1,8 @@
 import os from 'os'
 import path from 'path'
 
-import { Json, ScriptConfig, ExecuteResult } from './types'
-import toEs3Script from './to-es3-script'
+import { Json, ScriptConfig, ExecuteResult, AfterEffectsResults } from './types'
+import toEs3Script, { Es3Script } from './to-es3-script'
 import { adobify } from './util/transpile'
 import { findAfterEffectsSync, findAfterEffects, AfterEffectsMissingError } from './api/common'
 import { launchMacSync, launchMac } from './api/launch-mac'
@@ -12,7 +12,7 @@ import { launchWinSync, launchWin } from './api/launch-win'
 
 const platform = os.platform()
 const isMac = platform === 'darwin'
-const isWin = !isMac && platform.includes('win')
+const isWin = platform === 'win32'
 
 const PROGRAM_DIR = isMac
     ? path.resolve('/Applications')
@@ -20,82 +20,90 @@ const PROGRAM_DIR = isMac
 
 /*** Helper ***/
 
-function buildAdobified<A extends Json[]>(command: ScriptConfig<A, Json | void>, args: A) {
+function assertSupportedPlatform(): void {
+    if (!isMac && !isWin)
+        throw new Error('Cannot run After Effects commands in an environment it cannot be installed in.')
+}
+
+function buildAdobified<A extends Json[]>(config: ScriptConfig<A, Json | void>, args: A) {
 
     // When targeting the legacy ExtendScript environment, run the source through
     // toEs3Script() which babelifies it to ES3 and splits out babel prefixes.
-    // Otherwise pass the raw source so modern JS (UXP) is left intact.
-    const transpile = command.transpileToEs3 ?? true
-    const scriptCmd = transpile
-        ? toEs3Script(command.source)
-        : { code: ['', `(${command.source.toString()})`], isFunctionExpression: true }
+    // Otherwise pass the raw source so modern JS is left intact.
+    const transpile = config.transpileToEs3 ?? true
 
-    const serialize = command.serializeResult ?? true
+    const source = config.source.toString()
+    const script: Es3Script = transpile
+        ? toEs3Script(source)
+        : { source, code: ['', `(${source})`], isFunctionExpression: true }
+
+    const serialize = config.serializeResult ?? true
     const options = {
-        handleErrors: !!serialize,
-        writeResults: !!serialize
+        handleErrors: serialize,
+        writeResults: serialize
     }
 
-    return adobify(scriptCmd, [], options, ...args)
+    return adobify(script, [], options, ...args)
 }
 
-function wrapResult<R extends Json | void>(raw: unknown, command: ScriptConfig<any, R>): ExecuteResult<R> | null {
-    if (!(command.serializeResult ?? true) || raw === null || raw === undefined)
-        return null
+function wrapResult<R extends Json | void>(
+    results: AfterEffectsResults | null
+): ExecuteResult<R> | null {
 
-    return {
-        result: raw as R,
-        error: null,
-        logs: { info: [], warn: [], error: [] }
-    }
+    // parseResults has already forwarded logs to the logger and thrown
+    // AfterEffectsScriptError for any error reported by the script.
+    return results === null
+        ? null
+        : {
+            result: results.result as R,
+            logs: results.logs ?? []
+        }
 }
 
 /*** Main ***/
 
 function sendToAfterEffects<A extends Json[], R extends Json | void>(
-    command: ScriptConfig<A, R>,
+    config: ScriptConfig<A, R>,
     args: A,
     renderEngine = false
 ): ExecuteResult<R> | null {
 
-    const { adobified, resultUrl } = buildAdobified(command, args)
-    const programDir = command.appPath || PROGRAM_DIR
+    assertSupportedPlatform()
+
+    const { adobified, resultUrl } = buildAdobified(config, args)
+    const programDir = config.appPath || PROGRAM_DIR
 
     const aeUrl = findAfterEffectsSync(programDir, isMac)
     if (!aeUrl)
         throw new AfterEffectsMissingError()
 
-    if (!isMac && !isWin)
-        throw new Error('Cannot run After Effects commands in an environment it cannot be installed in.')
-
-    const raw = isMac
+    const results = isMac
         ? launchMacSync(adobified, aeUrl, resultUrl, console.log, renderEngine)
         : launchWinSync(adobified, aeUrl, resultUrl, console.log, renderEngine)
 
-    return wrapResult(raw, command)
+    return wrapResult(results)
 }
 
 export async function sendToAfterEffectsAsync<A extends Json[], R extends Json | void>(
-    command: ScriptConfig<A, R>,
+    config: ScriptConfig<A, R>,
     args: A,
     renderEngine = false
 ): Promise<ExecuteResult<R> | null> {
 
-    const { adobified, resultUrl } = buildAdobified(command, args)
-    const programDir = command.appPath || PROGRAM_DIR
+    assertSupportedPlatform()
+
+    const { adobified, resultUrl } = buildAdobified(config, args)
+    const programDir = config.appPath || PROGRAM_DIR
 
     const aeUrl = await findAfterEffects(programDir, isMac)
     if (!aeUrl)
         throw new AfterEffectsMissingError()
 
-    if (!isMac && !isWin)
-        throw new Error('Cannot run After Effects commands in an environment it cannot be installed in.')
-
-    const raw = isMac
+    const results = isMac
         ? await launchMac(adobified, aeUrl, resultUrl, console.log, renderEngine)
         : await launchWin(adobified, aeUrl, resultUrl, console.log, renderEngine)
 
-    return wrapResult(raw, command)
+    return wrapResult(results)
 }
 
 /*** Exports ***/

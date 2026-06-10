@@ -1,4 +1,4 @@
-import uuid from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 import path from 'path'
 
 import { transform } from 'babel-core'
@@ -35,7 +35,8 @@ export function babelify(str: string) {
         const { code } = transform(str, BABEL_OPTIONS)
         return code
 
-    } catch ({ message }) {
+    } catch (err) {
+        const message = err instanceof Error ? err.message : String(err)
         throw new Error('Source could not be transpiled: ' + message)
     }
 
@@ -44,7 +45,12 @@ export function babelify(str: string) {
 // This is a big fucker of a function and it probably wont make a lot of sense
 // If you're not familiar with the Adobe scripting environment.
 
-export function adobify(command: Es3Script, includes: string[], options = {}, ...scriptArgs: any[]) {
+export interface AdobifyOptions {
+    handleErrors?: boolean
+    writeResults?: boolean
+}
+
+export function adobify(command: Es3Script, includes: string[], options: AdobifyOptions = {}, ...scriptArgs: any[]) {
 
     const [prefixes, babelified] = command.code
 
@@ -56,7 +62,7 @@ export function adobify(command: Es3Script, includes: string[], options = {}, ..
     const doResultWriting = isFunctionExpression && writeResults
 
     const resultUrl = doResultWriting || doErrorHandling
-        ? path.join(CMD_RES_DIR, `ae-result-${uuid.v4()}.js`)
+        ? path.join(CMD_RES_DIR, `ae-result-${uuidv4()}.js`)
         : null
 
     const lines = []
