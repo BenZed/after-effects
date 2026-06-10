@@ -24,10 +24,15 @@ export interface ScriptConfig<A extends Json[], R extends Json | void, S extends
     readonly serializeResult?: S
 
     /**
-     * Prepend an es5 shim to the es3 environment inside After Effects, allowing the source
-     * method to use newer javascript methods.
+     * Prepend an esnext library shim to the es3 environment inside After Effects,
+     * allowing the source method to use modern javascript methods such as
+     * Object.assign, Array.prototype.find and String.prototype.padStart.
+     *
+     * Only synchronous, es3-implementable methods are shimmed. Engine-level
+     * features (Symbol, Promise, Map/Set, iterators, generators) are not
+     * available inside After Effects.
      */
-    readonly prependEs5Shim?: boolean
+    readonly prependEsnextShim?: boolean
 
     /**
      * Preprend arbitrary es3 code for edge cases.

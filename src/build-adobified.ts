@@ -4,19 +4,25 @@ import { Json, ScriptConfig } from './types'
 import toEs3Script, { Es3Script } from './to-es3-script'
 import { adobify } from './util/transpile'
 import { readSync } from './util/fs-util'
+import esnextShimSource from './esnext-shim'
 
-/*** ES5 Shim ***/
+/*** Shim ***/
 
 // resolves under both commonjs (tsc output) and esm (vitest)
 const requireResolve = createRequire(__filename).resolve
 
-let es5Shim: string | null = null
+let shim: string | null = null
 
-function getEs5Shim(): string {
-    if (es5Shim === null)
-        es5Shim = readSync(requireResolve('extendscript-es5-shim'))
+/**
+ * The full shim prepended by prependEsnextShim: the extendscript-es5-shim
+ * package providing the es5 baseline (including JSON), followed by our own
+ * es3-compatible polyfills for es2015+ library methods.
+ */
+export function getShim(): string {
+    if (shim === null)
+        shim = readSync(requireResolve('extendscript-es5-shim')) + '\n' + esnextShimSource
 
-    return es5Shim ?? ''
+    return shim ?? ''
 }
 
 /*** Main ***/
@@ -43,8 +49,8 @@ export default function buildAdobified<A extends Json[]>(
 
     const includes: string[] = []
 
-    if (config.prependEs5Shim ?? false)
-        includes.push(getEs5Shim())
+    if (config.prependEsnextShim ?? false)
+        includes.push(getShim())
 
     includes.push(...config.prependCustomEs3 ?? [])
 

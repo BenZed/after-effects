@@ -33,7 +33,7 @@ function resolveCreateScriptConfig(
 
     const config: CreateScriptConfig = {
         source,
-        prependEs5Shim: true,
+        prependEsnextShim: true,
         serializeResult: false,
         scriptName
     }

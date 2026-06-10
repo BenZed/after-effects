@@ -21,21 +21,25 @@ describe('buildAdobified', () => {
         expect(adobified).toContain('=>')
     })
 
-    it('prepends the es5 shim when requested', () => {
+    it('prepends the esnext shim when requested', () => {
         const { adobified } = buildAdobified(
-            { source: () => undefined, prependEs5Shim: true },
+            { source: () => undefined, prependEsnextShim: true },
             [],
             false
         )
 
-        // the shim polyfills Array.prototype methods for ExtendScript
+        // es5 baseline from extendscript-es5-shim
         expect(adobified).toContain('Array.prototype.filter')
+        // es2015+ layer from esnext-shim
+        expect(adobified).toContain('Object.assign')
+        expect(adobified).toContain('findLastIndex')
     })
 
-    it('omits the es5 shim by default', () => {
+    it('omits the shim by default', () => {
         const { adobified } = buildAdobified({ source: () => undefined }, [], false)
 
         expect(adobified).not.toContain('Array.prototype.filter')
+        expect(adobified).not.toContain('findLastIndex')
     })
 
     it('prepends custom es3 code before the script body', () => {
