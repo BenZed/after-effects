@@ -8,3 +8,9 @@ export default execute
 export * from './types'
 export * from './execute'
 export * from './create-script'
+
+export {
+    AfterEffectsMissingError,
+    AfterEffectsScriptError,
+    NoResultError
+} from './api/common'
