@@ -2,8 +2,7 @@ import os from 'os'
 import path from 'path'
 
 import { Json, ScriptConfig, ExecuteResult, AfterEffectsResults } from './types'
-import toEs3Script, { Es3Script } from './to-es3-script'
-import { adobify } from './util/transpile'
+import buildAdobified from './build-adobified'
 import { findAfterEffectsSync, findAfterEffects, AfterEffectsMissingError } from './api/common'
 import { launchMacSync, launchMac } from './api/launch-mac'
 import { launchWinSync, launchWin } from './api/launch-win'
@@ -23,27 +22,6 @@ const PROGRAM_DIR = isMac
 function assertSupportedPlatform(): void {
     if (!isMac && !isWin)
         throw new Error('Cannot run After Effects commands in an environment it cannot be installed in.')
-}
-
-function buildAdobified<A extends Json[]>(config: ScriptConfig<A, Json | void>, args: A) {
-
-    // When targeting the legacy ExtendScript environment, run the source through
-    // toEs3Script() which babelifies it to ES3 and splits out babel prefixes.
-    // Otherwise pass the raw source so modern JS is left intact.
-    const transpile = config.transpileToEs3 ?? true
-
-    const source = config.source.toString()
-    const script: Es3Script = transpile
-        ? toEs3Script(source)
-        : { source, code: ['', `(${source})`], isFunctionExpression: true }
-
-    const serialize = config.serializeResult ?? true
-    const options = {
-        handleErrors: serialize,
-        writeResults: serialize
-    }
-
-    return adobify(script, [], options, ...args)
 }
 
 function wrapResult<R extends Json | void>(
@@ -70,7 +48,7 @@ function sendToAfterEffects<A extends Json[], R extends Json | void>(
 
     assertSupportedPlatform()
 
-    const { adobified, resultUrl } = buildAdobified(config, args)
+    const { adobified, resultUrl } = buildAdobified(config, args, config.serializeResult ?? true)
     const programDir = config.appPath || PROGRAM_DIR
 
     const aeUrl = findAfterEffectsSync(programDir, isMac)
@@ -92,7 +70,7 @@ export async function sendToAfterEffectsAsync<A extends Json[], R extends Json |
 
     assertSupportedPlatform()
 
-    const { adobified, resultUrl } = buildAdobified(config, args)
+    const { adobified, resultUrl } = buildAdobified(config, args, config.serializeResult ?? true)
     const programDir = config.appPath || PROGRAM_DIR
 
     const aeUrl = await findAfterEffects(programDir, isMac)

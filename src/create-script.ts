@@ -2,8 +2,7 @@ import os from 'os'
 import path from 'path'
 
 import { JsonFunc, CreateScriptConfig } from './types'
-import toEs3Script from './to-es3-script'
-import { adobify } from './util/transpile'
+import buildAdobified from './build-adobified'
 import { write, writeSync } from './util/fs-util'
 import { findAfterEffects, findAfterEffectsSync, AfterEffectsMissingError } from './api/common'
 
@@ -43,9 +42,8 @@ function resolveCreateScriptConfig(
 }
 
 function buildScriptAdobified(config: CreateScriptConfig) {
-    const scriptCmd = toEs3Script(config.source)
-    const options = { handleErrors: false, writeResults: false }
-    const { adobified } = adobify(scriptCmd, [], options)
+    // installed scripts never round-trip results back to node
+    const { adobified } = buildAdobified(config, [], false)
     return adobified
 }
 
