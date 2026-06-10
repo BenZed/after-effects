@@ -152,6 +152,31 @@ await createScript({
 
 Absolute `scriptName` paths are written as-is, anywhere on disk.
 
+### Session bootstrap
+
+The esnext shim is non-trivial in size. If you're running many `execute` calls in a long-lived After Effects session, you can install the shim once via a startup script and skip it on every individual execution:
+
+```js
+import { createScriptSync, executeSync } from 'after-effects'
+
+// Run this once to write the shim into AE's Startup folder.
+// After Effects will load it automatically on every launch.
+createScriptSync({
+    source: () => { /* shim only, no-op body */ },
+    prependEsnextShim: true,
+    serializeResult: false,
+    scriptName: 'Startup/esnext-shim.jsx'
+})
+
+// Now all execute calls can use esnext methods without carrying the shim.
+executeSync({
+    source: () => app.project.activeItem.name.includes('comp'),
+    prependEsnextShim: false
+})
+```
+
+This works because the ExtendScript environment [persists between executions](#persistent-environment) — prototype patches applied by the startup script survive for the lifetime of the AE session.
+
 # Error Handling
 
 Errors thrown inside After Effects are serialized back and rethrown in node as `AfterEffectsScriptError`. Two other error types cover the usual suspects:
