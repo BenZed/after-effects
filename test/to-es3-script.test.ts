@@ -47,7 +47,8 @@ describe('toEs3Script', () => {
         const script = toEs3Script(() => {
             const x = 1
             let y = 2
-            return x + y
+            y = y + x
+            return y
         })
         const [, body] = script.code
 

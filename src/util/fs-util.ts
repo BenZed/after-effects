@@ -19,7 +19,7 @@ export function isAccessibleDirSync(url: string) {
 
   try {
     value = fs.statSync(url).isDirectory()
-  } catch (err) {
+  } catch {
     value = false
   }
 
@@ -33,7 +33,7 @@ export async function isAccessibleDir(url: string) {
   try {
     const stats = await fs.statSync(url)
     value = stats.isDirectory()
-  } catch (err) {
+  } catch {
     value = false
   }
 
@@ -50,7 +50,7 @@ export function isAccessibleFileSync(url: string, ext?: string) {
 
   try {
     value = fs.statSync(url).isFile()
-  } catch (err) {
+  } catch {
     value = false
   }
 
@@ -67,7 +67,7 @@ export async function isAccessibleFile(url: string, ext?: string) {
   try {
     const stats = await fs.statSync(url)
     value = stats.isFile()
-  } catch (err) {
+  } catch {
     value = false
   }
 
@@ -78,7 +78,7 @@ export function readSync(url: string) {
 
   try {
     return fs.readFileSync(url, 'utf-8')
-  } catch (err) {
+  } catch {
     throw new NodeJsWritePermissionError(url)
   }
 }
@@ -87,7 +87,7 @@ export async function read(url: string): Promise<string> {
 
   try {
     return await new Promise((resolve, reject) => fs.readFile(url, (e, str) => e ? reject(e) : resolve(str.toString())))
-  } catch (err) {
+  } catch {
     throw new NodeJsWritePermissionError(url)
   }
 }
@@ -104,7 +104,7 @@ export async function write(url: string, txt: string): Promise<void> {
 
   try {
     return await new Promise<void>((resolve, reject) => fs.writeFile(url, txt, e => e ? reject(e) : resolve()))
-  } catch (err) {
+  } catch {
     throw new NodeJsWritePermissionError(url)
   }
 
@@ -114,7 +114,7 @@ export function writeSync(url: string, txt: string) {
 
   try {
     fs.writeFileSync(url, txt)
-  } catch (err) {
+  } catch {
     throw new NodeJsWritePermissionError(url)
   }
 
@@ -125,7 +125,7 @@ export function tryUnlinkSync(url: string) {
   try {
     fs.unlinkSync(url)
     return true
-  } catch (err) {
+  } catch {
     return false
   }
 

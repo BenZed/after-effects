@@ -5,6 +5,8 @@ import { readSync } from './util/fs-util'
 
 // Types
 
+type AnyFunc = (...args: any[]) => unknown
+
 export type Es3Script = {
     source: string
     code: [prefixes: string, body: string]
@@ -13,7 +15,7 @@ export type Es3Script = {
 
 // Helper
 
-export function inputToSource(input: Function | Es3Script | string): string {
+export function inputToSource(input: AnyFunc | Es3Script | string): string {
 
     let source = null
 
@@ -96,7 +98,7 @@ function autoDetectFunctionExpression(source: string) {
 
 // Exports
 
-export default function toEs3Script(input: string | Function | Es3Script, isFunctionExpression?: boolean): Es3Script {
+export default function toEs3Script(input: string | AnyFunc | Es3Script, isFunctionExpression?: boolean): Es3Script {
 
     const source = inputToSource(input)
 
@@ -111,7 +113,7 @@ export default function toEs3Script(input: string | Function | Es3Script, isFunc
             ? isFunctionExpression
 
             // Otherwise we try to auto detect
-            : autoDetectFunctionExpression(source) // eslint-disable-line indent
+            : autoDetectFunctionExpression(source)
 
     return {
         source,
