@@ -1,6 +1,6 @@
 import path from 'path'
 
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 
 import { execSync } from 'child_process'
 import { write, writeSync, tryUnlink, tryUnlinkSync } from '../util/fs-util'
@@ -41,7 +41,7 @@ function getRenderEngineUrl(aeUrl: string) {
 
 function prepareAppleScript(adobified: string, aeUrl: string, renderEngine: boolean) {
 
-    const scptUrl = path.join(CMD_RES_DIR, `ae-command-${uuidv4()}.scpt`)
+    const scptUrl = path.join(CMD_RES_DIR, `ae-command-${randomUUID()}.scpt`)
 
     const scptTxt = []
 
@@ -52,7 +52,7 @@ function prepareAppleScript(adobified: string, aeUrl: string, renderEngine: bool
         scptTxt.push(
             `if application "${aeUrl}" is not running then`,
             `  tell application "${cmdUrl}" to activate`,
-            `  delay 8`,
+            '  delay 8',
             'end if'
         )
     }

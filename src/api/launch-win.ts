@@ -1,5 +1,5 @@
 import path from 'path'
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 
 import { execSync } from 'child_process'
 import { write, writeSync, tryUnlink, tryUnlinkSync } from '../util/fs-util'
@@ -61,7 +61,7 @@ function execSetup(jsxUrl: string, aeUrl: string, renderEngine: boolean) {
 }
 
 function writeJsxSync(jsxTxt: string) {
-    const jsxUrl = path.join(CMD_RES_DIR, `ae-command-${uuidv4()}.jsx`)
+    const jsxUrl = path.join(CMD_RES_DIR, `ae-command-${randomUUID()}.jsx`)
 
     writeSync(jsxUrl, jsxTxt)
 
@@ -69,7 +69,7 @@ function writeJsxSync(jsxTxt: string) {
 }
 
 async function writeJsx(jsxTxt: string) {
-    const jsxUrl = path.join(CMD_RES_DIR, `ae-command-${uuidv4()}.jsx`)
+    const jsxUrl = path.join(CMD_RES_DIR, `ae-command-${randomUUID()}.jsx`)
 
     await write(jsxUrl, jsxTxt)
 
@@ -82,7 +82,7 @@ function executeJsxSync(jsxUrl: string, aeUrl: string, resultUrl: string | null,
 
     try {
         execSync(openCmd, openOptions)
-    } catch (err) {
+    } catch {
         // If after effects IS open, the open command will do nothing and close right away.
 
         // If after effects is NOT open, the open command will open after effects
@@ -110,7 +110,7 @@ async function executeJsx(jsxUrl: string, aeUrl: string, resultUrl: string | nul
 
     try {
         await execPromise(openCmd, openOptions)
-    } catch (err) {
+    } catch {
         // See above
     }
     await execPromise(runCmd, runOptions)

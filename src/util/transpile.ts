@@ -1,28 +1,38 @@
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
+import { createRequire } from 'module'
 import path from 'path'
 
-import { transform } from 'babel-core'
+import { transformSync, TransformOptions } from '@babel/core'
 
 import { CMD_RES_DIR, escaped } from '../api/common'
 import { Es3Script } from '../to-es3-script'
 
 // Data
 
-const BABEL_OPTIONS = {
+// resolves under both commonjs (tsc output) and esm (vitest)
+const requireModule = createRequire(__filename)
+
+const BABEL_OPTIONS: TransformOptions = {
 
     presets: [
-        require('babel-preset-es2015')
+        [requireModule('@babel/preset-env'), {
+            // The ExtendScript engine inside After Effects is ES3. ie 8 is the
+            // oldest target preset-env supports and covers the same transforms
+            // the old es2015 + es3-literal plugin stack did.
+            targets: { ie: '8' },
+            modules: false
+        }]
     ],
     plugins: [
-        require('babel-plugin-transform-es3-member-expression-literals'),
-        require('babel-plugin-transform-es3-property-literals'),
-        require('babel-plugin-transform-es5-property-mutators')
+        // getters/setters in object literals don't exist in ES3
+        requireModule('@babel/plugin-transform-property-mutators')
     ],
-    // generatorOpts: {
-    //   quotes: 'single'
-    // },
-    sourceType: 'script' as const,
-    minified: false
+    sourceType: 'script',
+    compact: false,
+
+    // never pick up babel config from the host project
+    babelrc: false,
+    configFile: false
 
 }
 
@@ -32,8 +42,8 @@ export function babelify(str: string) {
 
     try {
 
-        const { code } = transform(str, BABEL_OPTIONS)
-        return code
+        const result = transformSync(str, BABEL_OPTIONS)
+        return result?.code ?? ''
 
     } catch (err) {
         const message = err instanceof Error ? err.message : String(err)
@@ -62,7 +72,7 @@ export function adobify(command: Es3Script, includes: string[], options: Adobify
     const doResultWriting = isFunctionExpression && writeResults
 
     const resultUrl = doResultWriting || doErrorHandling
-        ? path.join(CMD_RES_DIR, `ae-result-${uuidv4()}.js`)
+        ? path.join(CMD_RES_DIR, `ae-result-${randomUUID()}.js`)
         : null
 
     const lines = []
