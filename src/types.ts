@@ -67,17 +67,13 @@ export type ExecuteConfig<A extends Json[], R extends Json | void> = ScriptConfi
 export interface ExecuteResult<R extends Json | void> {
 
     /**
-     * Any console.log statements that were used inside the Command.source function will 
+     * Arguments of any console.log statements made inside the source function,
+     * one entry per call. Script errors are not returned here; they are thrown
+     * as AfterEffectsScriptError.
      */
-    readonly logs: {
-        readonly info: readonly Json[],
-        readonly warn: readonly Json[],
-        readonly error: readonly Json[]
-    }
+    readonly logs: readonly Json[][]
 
     readonly result: R
-
-    readonly error: JsonError | null
 
 }
 
@@ -88,31 +84,11 @@ export type Logger = (...args: any[]) => void
 /** Shape of errors serialized out of the AE scripting environment */
 export type ErrorJson = JsonError
 
+/** Shape of the results file written from inside After Effects */
 export interface AfterEffectsResults {
     error: ErrorJson | null
-    logs: any[][]
+    logs: Json[][]
     result: any
-}
-
-export interface AfterEffectsOptions {
-    handleErrors: boolean
-    writeResults: boolean
-    renderEngine: boolean
-    logger: Logger
-    shortcut: string
-    programDir?: string
-    includes: (string | Function)[]
-}
-
-export interface AfterEffects<A extends any[], V> {
-    (...args: A): V
-    options: AfterEffectsOptions
-    execute: (...args: any[]) => Promise<any>
-    executeSync: (...args: any[]) => any
-    create: (...args: any[]) => Promise<any>
-    createSync: (...args: any[]) => any
-    scriptsDir: string | null
-    code: string[]
 }
 
 export {

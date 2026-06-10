@@ -1,24 +1,7 @@
 
 import execute from './execute'
 
-// import AfterEffects from './factory'
-// import Command from './to-es3-script'
-
-// import {
-//     checkRenderEngine,
-//     checkRenderEngineSync
-// } from './util/check-render-engine'
-
-// // Exports
-
-// export {
-//     AfterEffects,
-//     Command,
-//     checkRenderEngine,
-//     checkRenderEngineSync
-// }
-
-// export default new AfterEffects()
+// Exports
 
 export default execute
 
